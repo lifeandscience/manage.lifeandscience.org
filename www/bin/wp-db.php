@@ -490,7 +490,7 @@ class wpdb {
 	function __construct( $dbuser, $dbpassword, $dbname, $dbhost ) {
 		register_shutdown_function( array( &$this, '__destruct' ) );
 
-		if ( WP_DEBUG )
+		if ( defined('WP_DEBUG') and WP_DEBUG == true ) 	
 			$this->show_errors();
 
 		$this->init_charset();
@@ -1030,7 +1030,7 @@ class wpdb {
 
 		$this->is_mysql = true;
 
-		if ( WP_DEBUG ) {
+		if ( defined('WP_DEBUG') and WP_DEBUG == true ) {
 			$this->dbh = mysql_connect( $this->dbhost, $this->dbuser, $this->dbpassword, true );
 		} else {
 			$this->dbh = @mysql_connect( $this->dbhost, $this->dbuser, $this->dbpassword, true );
