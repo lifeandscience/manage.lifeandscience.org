@@ -26,11 +26,11 @@
 
 	$db = new wpdb(SITE_DB_USER, SITE_DB_PASSWORD, SITE_DB_NAME, SITE_DB_HOST);
 
-	$count = $_GET["count"];
-	$page = $_GET["page"];
-	$start_date = $_GET["start_date"];
-	$end_date = $_GET["end_date"];
-	$detail_level = $_GET["detail_level"];	
+	$count = isset($_GET["count"]) ? $_GET["count"] : null;
+	$page = isset($_GET["page"]) ? $_GET["page"] : null;
+	$start_date = isset($_GET["start_date"]) ? $_GET["start_date"] : null;
+	$end_date = isset($_GET["end_date"]) ? $_GET["end_date"] : null;
+	$detail_level = isset($_GET["detail_level"]) ? $_GET["detail_level"] : null;
 	
 	//ERROR: No Detail Level specified
 	if(!$detail_level) {
@@ -41,7 +41,6 @@
 		echo json_encode($error);
 		return;
 	}
-	
 	
 	/* TODO:
 		

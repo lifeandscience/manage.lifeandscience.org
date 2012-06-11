@@ -93,6 +93,7 @@ ul.topnav li a.selected {
 }
 
 
+
 /* Form Controls */
 
 textarea,
@@ -100,17 +101,40 @@ input,
 select {
 	font-size: 11pt;
 }
+
 input.inputfield {
 	width: 350px;
 }
+
+input.inputfield.short {
+	width: 110px;
+}
+
 textarea {
 	font-family: Helvetica, Arial;
 	height: 200px;
 	width: 355px;
 }
 
+textarea.short {
+	font-family: Helvetica, Arial;
+	height: 50px;
+	width: 355px;
+}
+
+.required {
+	font-size: 13pt;
+	color: #E87820;
+	padding: 0 3px;
+}
+
+
 .button {
 	margin: 20px 5px;
+}
+
+#ui-datepicker-div { 
+	font-size: 12px; 
 }
 
 /* Generic Global Styles */

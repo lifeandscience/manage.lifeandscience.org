@@ -2,7 +2,8 @@ RewriteEngine On
 
 
 RewriteRule ^events/edit/(.*)/?$ index.php?page=edit_events&event_id=$1 [L,NC]
-RewriteRule ^events/(add|manage)/?$ index.php?page=$1_events [L,NC]
+RewriteRule ^events/(add|manage|addspecial)/?$ index.php?page=$1_events [L,NC]
+RewriteRule ^(settings)/?$ index.php?page=$1 [L,NC]
 
 
 

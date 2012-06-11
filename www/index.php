@@ -5,8 +5,7 @@
 	
 	$db = new wpdb(SITE_DB_USER, SITE_DB_PASSWORD, SITE_DB_NAME, SITE_DB_HOST);
 	
-	$page = $_GET["page"];
-	
+	$page = isset($_GET["page"]) ? $_GET["page"] : null;
 ?>
 
 <!DOCTYPE html> 
@@ -35,8 +34,9 @@
 					<li><a href="/events/add">Add Weekly Event</a></li>
 					<li><a href="/events/addspecial">Add Special Event</a></li>
 					<li><a href="/events/edit/1">Edit Event</a></li>
-					<li><a href="/events/manage">Manage Events</a></li>					
-										
+					<li><a href="/events/manage">Manage Events</a></li>
+					<li><a href="/settings">Settings</a></li>			
+
 		        </ul>
 			</nav>
 		</header>
@@ -44,14 +44,12 @@
 		<section>
 			<?php
 				//LOADER			
-				if(!empty($page)) {
+				if($page) {
 					include("php/$page.php");
 				} else {
 					include("php/main.php");
 				}
-					
 			?>
-
 
 		</section>
 				
