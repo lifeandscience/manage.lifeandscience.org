@@ -27,16 +27,25 @@
 		move_uploaded_file($filetmp, $dir . "/" . $filename);	
 	}
 	
-	//Reformat the date to fit the MySQL date structure
-	$date = date("Y-m-d",strtotime($_POST['date']));
-	
+	//See if we have multiple events
+	$dates = explode(",", $_POST["date"]);
+	$num_dates = count($dates);
+	if($num_dates == 0) {
+		//TODO: Server-side validation here, please.
+		error_log("no date selected");
+	}
+
+	$group_id = 0;	
 	$members_only = ($_POST['members_only'] == "on") ? 1 : 0;	
 
 	//NEW EVENT - INSERT
 	if($event_id == "") {
 		$wasAdding = 1;
-		$insert_params = array("name" => $_POST['name'],
-								"date" => $date,
+		$rows_inserted = 0;
+		
+		for($x = 0; $x < $num_dates; $x++) {
+			$insert_params = array("name" => $_POST['name'],
+								"date" => date("Y-m-d",strtotime($dates[$x])),
 								"time" => $_POST['time'],
 								"image" => $filename,
 								"fb_link" => $_POST['fb_link'],
@@ -46,16 +55,35 @@
 								"cost_members" => $_POST['cost_members'],
 								"cost_public" => $_POST['cost_public'],
 								"custom_1" => $_POST['custom_1'],																
-								"added" => date("Y-m-d H:i:s")
+								"added" => date("Y-m-d H:i:s"),
+								"group_id" => $group_id
 								);
 
-		$success = $db->insert('events_special', $insert_params);	
+			$success = $db->insert('events_special', $insert_params);
+			if($success === 1) {
+				$rows_inserted++;	
+			} else {
+				error_log("Unable to insert event '". $_POST["name"] . "' on " . $dates[$x]);
+			}
+			
+			//if this is the first date we are saving, and there are multiple dates.. use the insert_id of the first as the group_id for all events.
+			if($x == 0 && $num_dates > 1) {
+				$group_id = $db->insert_id;
+				//now, update that first row we just inserted with the right group_id
+				$db->update('events_special', array("group_id" => $group_id), array("id" => $db->insert_id));
+			}
+		}
+		
+//		error_log($rows_inserted . " of " . $num_dates . " rows inserted into the database");
+		if($rows_inserted == $num_dates) $success = 1; //only claim success if we inserted all of the rows
+		
+		
 	} 
 	//EDITING EVENT - UPDATE
 	else {
 	
 		$params = array("name" => $_POST['name'],
-								"date" => $date,
+								"date" => date("Y-m-d",strtotime($_POST['date'])),
 								"time" => $_POST['time'],
 								"fb_link" => $_POST['fb_link'],
 								"description" => $_POST['description'],
