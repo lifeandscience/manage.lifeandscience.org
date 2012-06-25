@@ -37,7 +37,7 @@
 		$error = new ErrorObject();
 		$error->code = "ERROR";
 		$error->message = "You must specify the level of detail for the response.";
-		$error->details = "You must include the `detail_level` property with either Summary or Full.";
+		$error->details = "You must include the `detail_level` parameter with either Summary or Full.";
 		echo json_encode($error);
 		return;
 	}

@@ -134,7 +134,8 @@ textarea.short {
 }
 
 #ui-datepicker-div { 
-	font-size: 12px; 
+	font-size: 12px;
+	padding: 10px;
 }
 
 

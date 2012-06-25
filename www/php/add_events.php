@@ -32,7 +32,7 @@
 						$timestamp = strtotime('next Monday');
 						for ($x = 0; $x < 7; $x++) {
 							$name = strftime('%A', $timestamp);
-							echo "<option name='day_{$count}' value='{$name}'/>{$name}</option>";
+							echo "<option name='day_{$x}' value='{$name}'/>{$name}</option>";
 							$timestamp = strtotime('+1 day', $timestamp);
 						}
 					?>

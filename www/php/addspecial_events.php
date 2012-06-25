@@ -26,7 +26,8 @@
 	        </tr>
 			<tr>
 	            <td>Date(s): </td>
-	            <td><input id="date" name="date" type="text" class="inputfield" placeholder="Select a date for this event"><span class="required">*</span>
+	            <td><div id="ui-datepicker-div"></div>
+	            <input id="date" name="date" type="text" class="inputfield" placeholder="Select a date for this event"><span class="required">*</span>
 	            <span class="tiny">You can select multiple dates.</span></td>
 	        </tr>
 			<tr>
@@ -85,7 +86,9 @@
 <script type="text/javascript">
 
 	$(function() {
-		$("#date").multiDatesPicker();
+		$("#ui-datepicker-div ").multiDatesPicker({
+			altField: '#date'
+		});
 	});
 	
 	$("#members_only").change(function() {
