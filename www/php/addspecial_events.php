@@ -31,8 +31,22 @@
 	            <span class="tiny">You can select multiple dates.</span></td>
 	        </tr>
 			<tr>
-	            <td>Time: </td>
-	            <td><select name="time" style="width: 120px">
+	            <td>Start time: </td>
+	            <td><select name="start_time" style="width: 120px" id="start_time">
+	            	<option selected="selected"></option>
+		            <?php
+			            $begin = strtotime($START_TIME);
+			            $end = strtotime($END_TIME);
+						for ($i = $begin; $i <= $end; $i += 60 * $INTERVAL) {
+							echo "<option value='". date('H:i', $i) . "'>" . date('g:i A', $i) . "</option>";
+						}
+		            ?>
+	        </select><span class="required">*</span>
+	        <input type="checkbox" name="all_day" id="all_day" style="vertical-align:middle;" /><label for="all_day">All-day event</label></td>
+	        </tr>
+	        <tr>
+	            <td>End time: </td>
+	            <td><select name="end_time" style="width: 120px" id="end_time">
 	            	<option selected="selected"></option>
 		            <?php
 			            $begin = strtotime($START_TIME);
@@ -93,6 +107,12 @@
 	
 	$("#members_only").change(function() {
 		$("#cost_public").prop("disabled", this.checked);
+	});
+	
+	//Disable start/end times for all-day events
+	$("#all_day").change(function() {
+		$("#end_time").prop("disabled", this.checked);
+		$("#start_time").prop("disabled", this.checked);
 	});
 	
 	function cancel() {

@@ -36,7 +36,8 @@
 	}
 
 	$group_id = 0;	
-	$members_only = ($_POST['members_only'] == "on") ? 1 : 0;	
+	$members_only = ($_POST['members_only'] == "on") ? 1 : 0;
+	$all_day = ($_POST['all_day'] == "on") ? 1 : 0;		
 
 	//NEW EVENT - INSERT
 	if($event_id == "") {
@@ -46,12 +47,14 @@
 		for($x = 0; $x < $num_dates; $x++) {
 			$insert_params = array("name" => $_POST['name'],
 								"date" => date("Y-m-d",strtotime($dates[$x])),
-								"time" => $_POST['time'],
+								"start_time" => $_POST['start_time'],
+								"end_time" => $_POST['end_time'],
 								"image" => $filename,
 								"fb_link" => $_POST['fb_link'],
 								"description" => $_POST['description'],
 								"special_note" => $_POST['special_note'],
 								"members_only" => $members_only,
+								"all_day" => $all_day,
 								"cost_members" => $_POST['cost_members'],
 								"cost_public" => $_POST['cost_public'],
 								"custom_1" => $_POST['custom_1'],																
@@ -84,11 +87,13 @@
 	
 		$params = array("name" => $_POST['name'],
 								"date" => date("Y-m-d",strtotime($_POST['date'])),
-								"time" => $_POST['time'],
+								"start_time" => $_POST['start_time'],
+								"end_time" => $_POST['end_time'],
 								"fb_link" => $_POST['fb_link'],
 								"description" => $_POST['description'],
 								"special_note" => $_POST['special_note'],
 								"members_only" => $members_only,
+								"all_day" => $all_day,
 								"cost_members" => $_POST['cost_members'],
 								"cost_public" => $_POST['cost_public'],
 								"custom_1" => $_POST['custom_1'] );

@@ -1,7 +1,7 @@
 <?php
 if(file_exists($_SERVER['DOCUMENT_ROOT'] . '/../config.inc.php')){
 	require_once($_SERVER['DOCUMENT_ROOT'] . '/../config.inc.php');
-}else{
+} else {
 	//database settings
 	define('SITE_DB_NAME', 'ncmls');
 	define('SITE_DB_USER', 'root');

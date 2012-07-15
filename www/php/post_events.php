@@ -13,6 +13,8 @@
 	
 	$dir = "../uploads";
 	
+	$all_day = ($_POST['all_day'] == "on") ? 1 : 0;	
+	
 	$filename = "";
 	if( $_FILES['thumbnail']['name'] ) {
 		
@@ -33,7 +35,9 @@
 		$insert_params = array("name" => $_POST['name'],
 								"description" => $_POST['description'],
 								"day_of_week" => $_POST['day_of_week'],
-								"time" => $_POST['time'],
+								"start_time" => $_POST['start_time'],
+								"end_time" => $_POST['end_time'],
+								"all_day" => $all_day,
 								"added" => date("Y-m-d H:i:s"),
 								"icon" => $filename
 								);
@@ -46,7 +50,9 @@
 		$params = array("name" => $_POST['name'],
 						"description" => $_POST['description'],
 						"day_of_week" => $_POST['day_of_week'],						
-						"time" => $_POST['time'] );
+						"start_time" => $_POST['start_time'],
+						"end_time" => $_POST['end_time'],
+						"all_day" => $all_day );
 		//Only update the filename if the user uploaded a new one.
 		if($filename != "") {
 			$params["icon"] = $filename;
