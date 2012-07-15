@@ -18,11 +18,9 @@
 
 */
 
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/api/1/events/getEventsByGroupId.php");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/api/1/events/getEvents.php");
 	
-	print_r( getEventsByGroupId(25) , false);
-	
-	
+	print_r( getEvents(/* count */ 3, /* page */ 0, /* start */ null, /* end */ "20120808", /* detail */ "Summary") , false);	
 
 
 	
