@@ -2,7 +2,7 @@
 <div id="errordiv" style="margin-top:8px;" class="noDisplay error">An error occurred.</div>
 <div id="successdiv" style="margin-top:8px;" class="noDisplay success">Settings saved.</div>
 
-<form id="settings" enctype="multipart/form-data" action="/php/post_settings.php" method="post">
+<form id="settings" enctype="multipart/form-data" action="/events/php/post_settings.php" method="post">
     <table>
 		<?php
 

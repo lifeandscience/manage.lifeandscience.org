@@ -1,7 +1,7 @@
 <?php
 
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bin/config.inc.php");
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/bin/wp-db.php");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/events/bin/config.inc.php");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/events/bin/wp-db.php");
 	
 	$db = new wpdb(SITE_DB_USER, SITE_DB_PASSWORD, SITE_DB_NAME, SITE_DB_HOST);
 

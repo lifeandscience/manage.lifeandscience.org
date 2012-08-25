@@ -1,13 +1,14 @@
 <?php
 
 	/*
-		RESOURCE: getEventsByGroupId
+		RESOURCE: getEventsByMonth
 		API VERSION: 1
-		URL: /api/1/events/getEventsByGroupId.php?groupId=28
+		URL: /api/1/events/getEventsByMonth.php?month=2&year=2013
 		
 		PARAMETERS:
 		
-			groupId (integer)	(required)		ex. 28
+			month (integer)	(required)		ex. 2 (Feb)
+			year (integer) (optional, default = current year) ex. 2013
 		
 		EXAMPLE RESPONSE:
 		
@@ -37,24 +38,28 @@
 	
 	*/
 
-	function getEventsByGroupId($groupId = null) {
+	function getEventsByMonth($month = null, $year = null) {
 	
-		require_once($_SERVER['DOCUMENT_ROOT'] . "/bin/config.inc.php");
-		require_once($_SERVER['DOCUMENT_ROOT'] . "/bin/wp-db.php");
-		require_once($_SERVER['DOCUMENT_ROOT'] . "/bin/api.php");
+		require_once($_SERVER['DOCUMENT_ROOT'] . "/events/bin/config.inc.php");
+		require_once($_SERVER['DOCUMENT_ROOT'] . "/events/bin/wp-db.php");
+		require_once($_SERVER['DOCUMENT_ROOT'] . "/events/bin/api.php");
 	
 		$db = new wpdb(SITE_DB_USER, SITE_DB_PASSWORD, SITE_DB_NAME, SITE_DB_HOST);
 		
-		//ERROR: No Group Id specified
-		if(!$groupId) {
+		//ERROR: No Month specified
+		if(!$month) {
 			$error = new ErrorObject();
 			$error->code = "ERROR";
-			$error->message = "No groupId specified.";
-			$error->details = "You must include the `groupId` parameter.";
+			$error->message = "No month specified.";
+			$error->details = "You must include the `month` parameter using the integer representation.";
 			return $error;
 		}
 		
-		$events = $db->get_results($db->prepare("SELECT * FROM `events_special` WHERE `active` = 1 AND `group_id` = %d", $groupId));
+		if($year) {
+			$events = $db->get_results($db->prepare("SELECT * FROM `events_special` WHERE `active` = 1 AND MONTH(date) = %d AND YEAR(date) = %d", $month, $year));		
+		} else {
+			$events = $db->get_results($db->prepare("SELECT * FROM `events_special` WHERE `active` = 1 AND MONTH(date) = %d AND YEAR(date) = YEAR(CURDATE())", $month));			
+		}
 
 		if(!$events) {
 			$events = array(); //return an empty array instead of null if no events are found matching the specified month
@@ -63,12 +68,13 @@
 		return $events;
 	}
 	
-	$groupId = isset($_GET["groupId"]) ? $_GET["groupId"] : null;
+	$month = isset($_GET["month"]) ? $_GET["month"] : null;
+	$year = isset($_GET["year"]) ? $_GET["year"] : null;
 	
 	//Check to see if this is a direct GET request, or a PHP include from another page.
 	if(stripos($_SERVER["SCRIPT_FILENAME"], "api/") !== FALSE) {
 		//this script was called directly, likely as a GET request from some javascript
-		$events = getEventsByGroupId($groupId);
+		$events = getEventsByMonth($month, $year);
 		echo json_encode($events);
 	}
 
