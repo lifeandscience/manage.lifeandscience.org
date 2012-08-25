@@ -13,7 +13,7 @@
 
 <h2>Create Special Event</h2>
 <p>These events occur on a specific date(s). (ex. Dec 25, 2012 at 7 AM, Sundays in April)</p>
-<form id="addEvent" enctype="multipart/form-data" action="/events/php/post_special_events.php" method="post">
+<form id="addEvent" enctype="multipart/form-data" action="/events/php/post_special.php" method="post">
     <table>
 		<thead>
 			<th style="width:150px;">&nbsp;</th>

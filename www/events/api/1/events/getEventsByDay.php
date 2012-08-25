@@ -7,7 +7,7 @@
 		
 		PARAMETERS:
 		
-			day (string)	(required)		ex. Monday
+			day (string)			(required)		ex. Monday
 					
 		EXAMPLE RESPONSE:
 		
@@ -47,7 +47,7 @@
 			return $error;
 		}
 		
-		$events = $db->get_results($db->prepare("SELECT * FROM `events_weekly` WHERE `active` = 1 AND `day_of_week` = %s", $day));			
+		$events = $db->get_results($db->prepare("SELECT * FROM `events_weekly` WHERE `active` = 1 AND `day_of_week` = %s ORDER BY `start_time` ASC", $day));			
 
 		if(!$events) {
 			$events = array(); //return an empty array instead of null if no events are found matching the specified month

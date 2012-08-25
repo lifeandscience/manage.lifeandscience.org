@@ -64,14 +64,14 @@
 	if($success === 1) {	
 			
 		if($wasAdding == 1) {
-			echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/add/?success=true';</script>";
+			echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/weekly/add/?success=true';</script>";
 		} else {
-			echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/edit/?event_id={$event_id}&success=true';</script>";
+			echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/weekly/edit/{$event_id}/?success=true';</script>";
 		}
 		
 	} else {
 		//An error occurred while adding the row.
-		echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/add/?error';</script>";
+		echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/weekly/add/?error';</script>";
 		
 	}	
 ?>

@@ -1,8 +1,16 @@
 RewriteEngine On
 
 
-RewriteRule ^events/edit/(.*)/?$ /events/index.php?page=edit_events&event_id=$1 [L,NC]
-RewriteRule ^events/(add|manage|addspecial)/?$ /events/index.php?page=$1_events [L,NC]
+RewriteRule ^events/(weekly|special)/edit/(.*)/?$ /events/index.php?page=add_$1&event_id=$2 [L,NC]
+
+
+
+
+RewriteRule ^events/(weekly|special)/add/?$ /events/index.php?page=add_$1 [L,NC]
+RewriteRule ^events/(weekly|special)/?$ /events/index.php?page=$1 [L,NC]
+
+
+
 RewriteRule ^events/(settings)/?$ /events/index.php?page=$1 [L,NC]
 
 

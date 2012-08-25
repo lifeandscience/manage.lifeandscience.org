@@ -4,7 +4,7 @@
 body {
 	margin: 0;
 	padding: 0;
-	background: #444;
+	background: #3e3e42;
 	color: #FFF;
 }
 
@@ -186,7 +186,35 @@ table tr td {
 }
 
 
+/* Weekly page */
 
+div.day_selector {
+	margin: 20px;
+}
+ul.days {
+	list-style: none;
+	padding: 5px;
+}
+ul.days > li {
+	float: left;
+	position: relative;
+	padding-right: 10px;
+
+}
+
+div.weeklyEvent {
+	padding: 10px;
+}
+div.weeklyEvent .eventTime {
+	font-size: 12pt;
+	color: #ededed;
+	padding-right: 10px;
+	font-weight: bold;
+}
+div.weeklyEvent .eventName {
+	font-size: 11pt;
+	color: #ccc;
+}
 
 
 

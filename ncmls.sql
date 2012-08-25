@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 14, 2012 at 10:27 PM
+-- Generation Time: Aug 25, 2012 at 03:06 AM
 -- Server version: 5.5.9
 -- PHP Version: 5.3.6
 
@@ -29,8 +29,8 @@ CREATE TABLE `events_special` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` text NOT NULL,
   `date` date NOT NULL,
-  `start_time` time NOT NULL,
-  `end_time` time NOT NULL,
+  `start_time` varchar(11) NOT NULL,
+  `end_time` varchar(11) NOT NULL,
   `all_day` tinyint(1) NOT NULL DEFAULT '0',
   `image` varchar(255) NOT NULL,
   `fb_link` text NOT NULL,
@@ -46,7 +46,7 @@ CREATE TABLE `events_special` (
   PRIMARY KEY (`id`),
   KEY `date` (`date`),
   KEY `active` (`active`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=40 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=42 ;
 
 -- --------------------------------------------------------
 
@@ -58,8 +58,8 @@ CREATE TABLE `events_weekly` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `day_of_week` varchar(255) NOT NULL,
-  `start_time` time NOT NULL,
-  `end_time` time NOT NULL,
+  `start_time` varchar(11) NOT NULL,
+  `end_time` varchar(11) NOT NULL,
   `all_day` tinyint(1) NOT NULL DEFAULT '0',
   `description` text NOT NULL,
   `icon` varchar(255) NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE `events_weekly` (
   PRIMARY KEY (`id`),
   KEY `day_of_week` (`day_of_week`),
   KEY `active` (`active`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=30 ;
 
 -- --------------------------------------------------------
 

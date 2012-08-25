@@ -1,2 +1,0 @@
-
-<h2>MANAGE EVENTS</h2>

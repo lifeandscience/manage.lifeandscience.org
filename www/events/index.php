@@ -31,12 +31,10 @@
 		<header>
 			<nav>
 				<ul class="topnav"> 
-					<li><a href="/events">Home</a></li>				
-					<li><a href="/events/add">Add Weekly Event</a></li>
-					<li><a href="/events/addspecial">Add Special Event</a></li>
-					<li><a href="/events/edit/1">Edit Event</a></li>
-					<li><a href="/events/manage">Manage Events</a></li>
-					<li><a href="/events/settings">Settings</a></li>			
+					<li><a href="/events"<?php if(!$page) echo " class='selected' "; ?>>Home</a></li>				
+					<li><a href="/events/weekly"<?php if($page == "weekly") echo " class='selected' "; ?>>Weekly Events</a></li>
+					<li><a href="/events/special"<?php if($page == "special") echo " class='selected' "; ?>>Special Events</a></li>
+					<li><a href="/events/settings"<?php if($page == "settings") echo " class='selected' "; ?>>Settings</a></li>			
 
 		        </ul>
 			</nav>

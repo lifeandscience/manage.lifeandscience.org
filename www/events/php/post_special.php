@@ -108,14 +108,14 @@
 	if($success === 1) {	
 			
 		if($wasAdding == 1) {
-			echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/addspecial/?success=true';</script>";
+			echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/special/add/?success=true';</script>";
 		} else {
-			echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/edit/?event_id={$event_id}&success=true';</script>";
+			echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/special/edit/?event_id={$event_id}&success=true';</script>";
 		}
 		
 	} else {
 		//An error occurred while adding the row.
-		echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/addspecial/?error';</script>";
+		echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/special/add/?error';</script>";
 		
 	}	
 ?>
