@@ -3,7 +3,7 @@
 	/*
 		RESOURCE: getEventsByDate
 		API VERSION: 1
-		URL: /api/1/events/getEventsByDate.php?date=20130216
+		URL: /events/api/1/events/getEventsByDate.php?date=20130216
 		
 		PARAMETERS:
 		

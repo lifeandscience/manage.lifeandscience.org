@@ -3,7 +3,7 @@
 	/*
 		RESOURCE: getEvents
 		API VERSION: 1
-		URL: /api/1/events/getEvents.php?detail_level=summary&count=20&page=1
+		URL: /events/api/1/events/getEvents.php?detail_level=summary&count=20&page=1
 		
 		PARAMETERS:
 		
@@ -91,11 +91,11 @@
 			
 			if($count) {
 			
-				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND `date` BETWEEN %d AND %d LIMIT %d, %d", $start_date, $end_date, $offset, $count));
+				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND `date` BETWEEN %d AND %d ORDER BY `date` ASC LIMIT %d, %d", $start_date, $end_date, $offset, $count));
 				
 			} else {
 				
-				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND `date` BETWEEN %d AND %d", $start_date, $end_date));
+				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND `date` BETWEEN %d AND %d ORDER BY `date` ASC", $start_date, $end_date));
 				
 			}
 			
@@ -103,11 +103,11 @@
 
 			if($count) {
 			
-				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND `date` >= %d LIMIT %d, %d", $start_date, $offset, $count));
+				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND `date` >= %d ORDER BY `date` ASC LIMIT %d, %d", $start_date, $offset, $count));
 				
 			} else {
 				
-				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND `date` >= %d", $start_date));
+				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND `date` >= %d ORDER BY `date` ASC", $start_date));
 				
 			}
 

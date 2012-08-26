@@ -186,6 +186,19 @@ table tr td {
 }
 
 
+/* Error Handling */
+
+span.inlineError {
+	font-size: 10pt;
+	padding: 0 10px;
+	color: #EE4343;
+	display: none;
+}
+
+.invalid {
+
+}
+
 /* Weekly page */
 
 div.day_selector {
@@ -202,18 +215,24 @@ ul.days > li {
 
 }
 
-div.weeklyEvent {
+div.weeklyEvent, div.specialEvent {
 	padding: 10px;
 }
-div.weeklyEvent .eventTime {
+.eventTime {
 	font-size: 12pt;
 	color: #ededed;
 	padding-right: 10px;
 	font-weight: bold;
 }
-div.weeklyEvent .eventName {
+.eventName {
 	font-size: 11pt;
 	color: #ccc;
+}
+.eventDate {
+	font-size: 13pt;
+	color: #ccc;
+	padding-right: 10px;
+	font-weight: bold;
 }
 
 

@@ -3,7 +3,7 @@
 	/*
 		RESOURCE: getEventsByGroupId
 		API VERSION: 1
-		URL: /api/1/events/getEventsByGroupId.php?groupId=28
+		URL: /events/api/1/events/getEventsByGroupId.php?groupId=28
 		
 		PARAMETERS:
 		

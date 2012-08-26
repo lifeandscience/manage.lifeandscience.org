@@ -3,7 +3,7 @@
 	/*
 		RESOURCE: getEventsByMonth
 		API VERSION: 1
-		URL: /api/1/events/getEventsByMonth.php?month=2&year=2013
+		URL: /events/api/1/events/getEventsByMonth.php?month=2&year=2013
 		
 		PARAMETERS:
 		

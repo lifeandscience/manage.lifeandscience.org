@@ -23,6 +23,7 @@
 ?>
 
 <div id="errordiv" style="margin-top:8px;" class="noDisplay error">An error occurred.</div>
+<div id="validationdiv" style="margin-top:8px;" class="noDisplay error">Please correct the errors below and try again.</div>
 
 
 <?php
@@ -53,11 +54,12 @@
 		<tbody>
 	        <tr>
 	            <td>Event Name: </td>
-	            <td><input type="text" name="name" id="name" class="inputfield" value="<?= ($event) ? $event->name : "" ?>" /><span class="required">*</span></td>
+	            <td><input type="text" name="name" id="name" class="inputfield" value="<?= ($event) ? $event->name : "" ?>" /><span class="required">*</span>
+	            	<span class="inlineError" id="nameError">Enter an event name</span></td>
 	        </tr>
 			<tr>
 	            <td>Day: </td>
-	            <td><select name="day_of_week" style="width: 120px">
+	            <td><select name="day_of_week" id="day_of_week" style="width: 120px">
 	            	<option></option>
 					<?php
 						$timestamp = strtotime('next Monday');
@@ -68,7 +70,7 @@
 							$timestamp = strtotime('+1 day', $timestamp);
 						}
 					?>
-	             </select><span class="required">*</span></td>
+	             </select><span class="required">*</span><span class="inlineError" id="dayError">Select a day</span></td>
 	        </tr>
 			<tr>
 	            <td>Start time: </td>
@@ -84,7 +86,7 @@
 		            ?>
 	        </select><span class="required">*</span>
 	        <input type="checkbox" name="all_day" id="all_day" style="vertical-align:middle;" <?= ($event && $event->all_day === "1") ? "checked=checked" : "" ?> />
-	        <label for="all_day">All-day event</label></td>
+	        <label for="all_day">All-day event</label><span class="inlineError" id="startError">Select a start time or all-day event.</span></td>
 	        </tr>
 	        <tr>
 	            <td>End time: </td>
@@ -98,7 +100,7 @@
 							echo "<option value='". date('H:i', $i) . "' {$sel} >" . date('g:i A', $i) . "</option>";
 						}
 		            ?>
-	        </select><span class="required">*</span></td>
+	        </select></td>
 	        </tr>
 	        <tr>
 	            <td>Description: </td>
@@ -109,25 +111,91 @@
 	            <td><input type="file" name="thumbnail" />
 		            <?php
 		            	if($event && $event->icon) {
-			            	echo "<img src=\"/events/uploads/" . $event->icon . "\" height='50' width='50' />";
+		            		$path = "/events/uploads/" . $event->icon;
+		            		echo "<img src=\"" . $path . "\" height='50' width='50' />";
 		            	}
 		            ?>
 	            </td>
 	        </tr>
 	        <tr>
-	            <td colspan="2" align="center"><input type="submit" class="button" value="<?= ($event) ? "Edit" : "Create" ?> Event" />
+	            <td colspan="2" align="center"><input type="button" onclick="validate()" class="button" value="<?= ($event) ? "Edit" : "Create" ?> Event" />
 				<span class="tiny">or</span> <a class="tiny" href="#" onclick="cancel();">Cancel</a></td></td>
 			</tr> 
 		</tbody>
     </table>
 </form>
 
+<?php
+
+	//Show a delete link if we are in edit mode
+	if($event) {
+		echo "<div class=\"delete\"><a href=\"#\" id=\"deleteLink\">Delete this event</a></div>";
+	}	
+	
+?>
+
 <script type="text/javascript">
 
-	function cancel() {
-		var ref = "<?= $_SERVER['HTTP_REFERER']; ?>" || "/";
-		window.setTimeout("window.location.href = '" + ref + "';", 500);
+	function validate() {		
+		var name = $('#name').val();
+		var day = $('#day_of_week').val();
+		var start_time = $('#start_time').val();
+		var all_day = $('#all_day').is(':checked');
+		
+		if(!start_time && !all_day) {
+			$('#startError').show();
+		} else {
+			$('#startError').hide();
+		}
+		
+		if(!day) {
+			$('#dayError').show();
+		} else {
+			$('#dayError').hide();
+		}
+		
+		$('#nameError').toggle(name == "");
+		
+		if(!day || !name || (!start_time && !all_day) ) {
+			$("#validationdiv").show();
+		}
+		else {
+			$("#validationdiv").hide();
+			$('#addEvent').submit();
+		}
 	}
+
+	function cancel() {
+		history.back();
+	}
+	
+	<?php if($event) { ?>
+		function deleteEvent(e) {
+			e.preventDefault();
+			var event_id = <?= $event->id ?>;
+			var yesDelete = confirm("Are you sure you want to delete \"<?= $event->name ?>\"?");
+			if(yesDelete) {
+				$.ajax({
+					type: "POST",
+					url: "/events/php/delete.php",
+					data: { event_type : "weekly", event_id : event_id },
+					success: function(response){
+				  		if(response.trim() === "OK") {
+					  		window.location.href = "/events/weekly/#<?= $event->day_of_week ?>";					  		
+				  		} else {
+					  		$("#errordiv").show();
+				  		}
+				  }
+				});
+			}
+		}
+		
+		$("#deleteLink").click(function(e) {
+			deleteEvent(e);		
+		});
+	
+	<?php } ?>
+	
 	
 	//Disable start/end times for all-day events
 	$("#all_day").change(function() {

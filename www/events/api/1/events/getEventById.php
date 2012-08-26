@@ -3,7 +3,7 @@
 	/*
 		RESOURCE: getEventsById
 		API VERSION: 1
-		URL: /api/1/events/getEventById.php?id=28
+		URL: /events/api/1/events/getEventById.php?id=28
 		
 		PARAMETERS:
 		

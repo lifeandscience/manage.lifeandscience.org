@@ -36,7 +36,6 @@
 				$("#list").empty();
 				if(data && data.length > 0) {
 					$.each(data, function(index, event) {	
-
 						var displayTime;
 						var html = "<div class=\"weeklyEvent\">";
 						
@@ -49,9 +48,7 @@
 							}
 						}
 						html += "<span class=\"eventTime\">" + displayTime + "</span>";
-						html += "<span class=\"eventName\"><a href=\"/events/weekly/edit/" + event.id + "\" title=\"Click to Edit\">" + event.name + "</a></span>";
-						console.debug(event);
-						
+						html += "<span class=\"eventName\"><a href=\"/events/weekly/edit/" + event.id + "\" title=\"Click to Edit\">" + event.name + "</a></span>";						
 						$("#list").append(html);
 						
 					});

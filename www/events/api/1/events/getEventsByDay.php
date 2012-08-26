@@ -3,7 +3,7 @@
 	/*
 		RESOURCE: getEventsByDay
 		API VERSION: 1
-		URL: /api/1/events/getEventsByDay.php?day=Monday
+		URL: /events/api/1/events/getEventsByDay.php?day=Monday
 		
 		PARAMETERS:
 		
