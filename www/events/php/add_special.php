@@ -40,6 +40,7 @@
 		if($event_id) {
 			echo "<input id='event_id' name='event_id' type='hidden' value='" . $event_id ."' />";
 			echo "<input id='group_id' name='group_id' type='hidden' value='" . $event->group_id ."' />";
+			echo "<input id='edit_all' name='edit_all' type='hidden' value='' />";
 		}
 	?>
     <table>
@@ -113,7 +114,7 @@
 	        </tr>
 	        <tr>
 	            <td>Image: </td>
-	            <td><input type="file" name="thumbnail" />
+	            <td><input type="file" name="thumbnail" id="thumbnail" />
 		            <?php
 		            	if($event && $event->image) {
 		            		$path = "/events/uploads/" . $event->image;
@@ -151,8 +152,13 @@
 <div id="delete-confirm" title="You're deleting an event." style="display:none;">
 	<p>Do you want to delete this and all occurrences of this event, or only the selected occurrence?</p>
 </div>
+<div id="edit-confirm" title="You're changing a repeating event." style="display:none;">
+	<p>Do you want to change only this occurrence of the event, or this and all occurrences?</p>
+</div>
 
 <script type="text/javascript">
+	
+	
 
 	function validate() {
 		var name = $('#name').val();
@@ -183,10 +189,32 @@
 			//check to see if we are editing a multi-day event
 			var group_id = <?= ($event) ? $event->group_id : "null" ?>;
 			if(group_id > 0) {
-				//TODO: prompt the user about editing a group event. Figure out what to do.
+				var hasChanged = hasEventChanged();
+				if(hasChanged) {
+					//Prompt user to edit all events or only this one
+					$("#edit-confirm").dialog({
+						resizable: false,
+						modal: true,
+						width: 500,
+						buttons: {
+							"Only This Event": function() {
+								$("#edit_all").val("false");
+								$(this).dialog( "close" );
+								$('#addEvent').submit();
+							},
+							"All Events": function() {
+								$("#edit_all").val("true");
+								$(this).dialog( "close" );
+								$('#addEvent').submit();
+							}	
+						}
+					});
+				} else {
+					$('#addEvent').submit();
+				}
+			} else {
+				$('#addEvent').submit();				
 			}
-	
-			$('#addEvent').submit();
 		}
 	}
 
@@ -222,6 +250,25 @@
 	}
 	
 	<?php if($event) { ?>
+	
+		//checks to see if at least 1 *non-date* field has changed
+		//only called when we are editing a group event
+		function hasEventChanged() {
+			if($('#name').val() != "<?= $event->name ?>") return true;
+			if($('#description').val() != "<?= $event->description ?>") return true;
+			if($('#start_time').val() != "<?= $event->start_time ?>") return true;
+			if($('#end_time').val() != "<?= $event->end_time ?>") return true;
+			if($('#fb_link').val() != "<?= $event->fb_link ?>") return true;
+			if($('#thumbnail').val() != "") return true;
+			if($('#special_note').val() != "<?= $event->special_note ?>") return true;
+			if($('#custom_1').val() != "<?= $event->custom_1 ?>") return true;	
+			if($('#cost_members').val() != "<?= $event->cost_members ?>") return true;
+			if($('#cost_public').val() != "<?= $event->cost_public ?>") return true;	
+			if($('#members_only').is(':checked') != <?= ($event->members_only === "1") ? 1 : 0 ?>) return true;
+			if($('#all_day').is(':checked') != <?= ($event->all_day === "1") ? 1 : 0 ?>) return true;
+			return false; //only date changed, or nothing changed at all
+		}
+	
 		function deleteEvent(e) {
 			e.preventDefault();
 			var event_id = <?= $event->id ?>;

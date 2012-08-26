@@ -90,7 +90,11 @@
 		} 
 		//EDITING EVENT - UPDATE
 		else {
-			error_log($_POST['date']);
+		
+			//Edit only this event, or all future events?
+			$edit_all = $_POST["edit_all"];
+			$group_id = $_POST["group_id"];
+					
 			$params = array("name" => $_POST['name'],
 									"date" => date("Y-m-d",strtotime($_POST['date'])),
 									"start_time" => $_POST['start_time'],
@@ -107,8 +111,21 @@
 			if($filename != "") {
 				$params["image"] = $filename;
 			}
+			//Only update this event (not the entire group). so, we should orphan this event from the group.
+			if($group_id > 0 && $edit_all === "false") {
+				$params["group_id"] = 0;
+			}
 			$updated = $db->update('events_special', $params, array("id" => $event_id));
-			if($updated !== false) $success = 1; //since a no-op update should not return an error. query actually returns # of rows updated
+			if($updated !== false) $success = 1; //since a no-op update should not return an error. query actually returns # of rows updated		
+			
+			// If edit 'All future events' was selected. Update all properties *except the date* in all linked events.
+			if($group_id > 0 && $edit_all === "true") {
+				//Don't change all of the events in the group to the same date!
+				unset($params["date"]);
+				
+				$updated2 = $db->update('events_special', $params, array("group_id" => $group_id));
+				if($updated2 !== false && $success == 1) $success = 1;
+			}
 		}
 
 	} //end validation block
