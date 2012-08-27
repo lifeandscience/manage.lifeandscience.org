@@ -15,6 +15,7 @@
 
 <script type="text/javascript">
 
+	var dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]; //bummer
 	var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ]; //bummer
 
 	$("a.filterLink").click(function(e) {
@@ -59,7 +60,7 @@
 						//format the date like "August 25"
 						var parts = event.date.match(/(\d+)/g);
 						var displayDate = new Date(parts[0], parts[1]-1, parts[2]); //JS Date month is indexed 0-11
-						displayDate = monthNames[displayDate.getMonth()] + " " + displayDate.getDate();
+						displayDate = dayNames[displayDate.getDay()] + ", " + monthNames[displayDate.getMonth()] + " " + displayDate.getDate();
 
 						html += "<span class=\"eventDate\">" + displayDate + "</span>";
 						html += "<span class=\"eventTime\">" + displayTime + "</span>";

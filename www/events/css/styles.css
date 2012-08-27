@@ -46,14 +46,19 @@ section {
 }
 
 header {
-	height: 150px;
+	height: 100px;
+	margin-top: 60px;
 }
 
+.site_title {
+	display: inline;
+	text-align: left;
+}
 nav {
 	display: inline;
 	height: 26px;
 	float: right;
-	margin-top: 60px;
+
 }
 
 ul {
@@ -197,6 +202,24 @@ span.inlineError {
 
 .invalid {
 
+}
+
+/* Home page */
+
+div.eventActions {
+	margin: 30px;
+	float: right;
+}
+div.eventActions > div {
+	padding: 10px;
+}
+
+div.eventList {
+	margin: 30px;
+}
+
+div.eventList > .event {
+	padding: 5px 0;
 }
 
 /* Weekly page */

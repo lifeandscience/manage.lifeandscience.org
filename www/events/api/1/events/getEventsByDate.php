@@ -65,14 +65,19 @@
 		
 		$day_of_week = date('l', strtotime($date));
 		
-		$events = $db->get_results($db->prepare("SELECT * FROM `events_special` WHERE `active` = 1 AND `date` = %d", $date));
-		$events2 = $db->get_results($db->prepare("SELECT * FROM `events_weekly` WHERE `active` = 1 AND `day_of_week` = %s", $day_of_week));
+		$events = $db->get_results($db->prepare("SELECT * FROM `events_special` WHERE `active` = 1 AND `date` = %d ORDER BY `start_time` ASC", $date));
+		$events2 = $db->get_results($db->prepare("SELECT * FROM `events_weekly` WHERE `active` = 1 AND `day_of_week` = %s ORDER BY `start_time` ASC", $day_of_week));
 		
 		$events_combined = array_merge($events, $events2);
-
+	
 		if(!$events_combined) {
 			$events_combined = array(); //return an empty array instead of null if no events are found matching the specified month
 		}
+		
+		//Sort the array by start_time
+		usort($events_combined, function($a, $b) {
+			return strcmp($a->start_time, $b->start_time);
+		});
 		
 		return $events_combined;
 	}

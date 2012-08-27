@@ -56,9 +56,9 @@
 		}
 		
 		if($year) {
-			$events = $db->get_results($db->prepare("SELECT * FROM `events_special` WHERE `active` = 1 AND MONTH(date) = %d AND YEAR(date) = %d", $month, $year));		
+			$events = $db->get_results($db->prepare("SELECT * FROM `events_special` WHERE `active` = 1 AND MONTH(date) = %d AND YEAR(date) = %d ORDER BY `date` ASC", $month, $year));		
 		} else {
-			$events = $db->get_results($db->prepare("SELECT * FROM `events_special` WHERE `active` = 1 AND MONTH(date) = %d AND YEAR(date) = YEAR(CURDATE())", $month));			
+			$events = $db->get_results($db->prepare("SELECT * FROM `events_special` WHERE `active` = 1 AND MONTH(date) = %d AND YEAR(date) = YEAR(CURDATE()) ORDER BY `date` ASC", $month));			
 		}
 
 		if(!$events) {

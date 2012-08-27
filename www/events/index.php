@@ -29,6 +29,7 @@
 	<div class="wrapper">
 	
 		<header>
+			<h2 class="site_title"><a href="/events">NCMLS Event Management</a></h2>
 			<nav>
 				<ul class="topnav"> 
 					<li><a href="/events"<?php if(!$page) echo " class='selected' "; ?>>Home</a></li>				
@@ -46,7 +47,7 @@
 				if($page) {
 					include("php/$page.php");
 				} else {
-					include("php/main.php");
+					include("php/home.php");
 				}
 			?>
 

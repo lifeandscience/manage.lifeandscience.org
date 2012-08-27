@@ -54,7 +54,7 @@
 			return $error;
 		}
 		
-		$events = $db->get_results($db->prepare("SELECT * FROM `events_special` WHERE `active` = 1 AND `group_id` = %d", $groupId));
+		$events = $db->get_results($db->prepare("SELECT * FROM `events_special` WHERE `active` = 1 AND `group_id` = %d ORDER BY `date` ASC", $groupId));
 
 		if(!$events) {
 			$events = array(); //return an empty array instead of null if no events are found matching the specified month
