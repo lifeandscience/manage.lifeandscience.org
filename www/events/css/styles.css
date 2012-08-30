@@ -9,11 +9,11 @@ body {
 }
 
 a {	
-	color: #AAA;
+	color: #75cbd1;
 	text-decoration: none;
 }
 a:hover {
-	color: #af2424;
+	color: #c7e8ea;
 }
 
 body,p {
@@ -21,10 +21,15 @@ body,p {
 	font-family: Helvetica, Arial, sans-serif;
 }
 
+h2 {
+	font-weight: 200;
+}
+
 h3 {
 	font-size: 24pt;
 	text-align: left;
 	margin: 0;
+	font-weight: 200;
 }
 
 header, section, footer {
@@ -53,7 +58,18 @@ header {
 .site_title {
 	display: inline;
 	text-align: left;
+	font-size: 24pt;
+	font-weight: 400;
 }
+.site_title a {
+	color: #fff;
+}
+.site_title a.selected {
+	text-decoration: none;
+}
+
+
+/* Navigation Menu */
 nav {
 	display: inline;
 	height: 26px;
@@ -72,6 +88,7 @@ ul.topnav {
 	font-size: 13pt;
 	float: right;
 }
+
 ul.topnav li {
 	margin: 0 8px 0 0;
 	padding: 0 3px;
@@ -90,11 +107,11 @@ ul.topnav li a{
 	float: left;
 }
 ul.topnav li a.selected {
-	border-bottom: 3px solid #af2424;
+	border-bottom: 3px solid #75cbd1;
 }
 ul.topnav li a:hover, 
 ul.topnav li a.selected {
-	color: #c1c1c1;
+	color: #ababab;
 }
 
 
@@ -168,7 +185,6 @@ table.ui-datepicker-calendar {border-collapse: separate;}
 }
 .tiny {
 	font-size: 10pt;
-	color: #ccc;
 }
 .error {
 	font-size: 11pt;
@@ -204,6 +220,11 @@ span.inlineError {
 
 }
 
+.noEvents {
+	font-size: 12pt;
+	color: #ccc;
+}
+
 /* Home page */
 
 div.eventActions {
@@ -214,6 +235,7 @@ div.eventActions > div {
 	padding: 10px;
 }
 
+
 div.eventList {
 	margin: 30px;
 }
@@ -222,10 +244,12 @@ div.eventList > .event {
 	padding: 5px 0;
 }
 
+
 /* Weekly page */
 
 div.day_selector {
-	margin: 20px;
+	margin: 10px 0;
+	padding: 0 0 20px;
 }
 ul.days {
 	list-style: none;
@@ -235,11 +259,20 @@ ul.days > li {
 	float: left;
 	position: relative;
 	padding-right: 10px;
-
 }
 
 div.weeklyEvent, div.specialEvent {
 	padding: 10px;
+}
+
+h2.sectionTitle {
+	border-bottom: 1px solid #777;
+	padding-bottom: 4px;
+}
+
+h2.eventTitle {
+	border-bottom: 1px solid #777;
+	padding-bottom: 4px;
 }
 .eventTime {
 	font-size: 12pt;
@@ -258,7 +291,40 @@ div.weeklyEvent, div.specialEvent {
 	font-weight: bold;
 }
 
+.createLink {
+	font-size: 10pt;
+	padding: 3px;
+	text-transform: uppercase;
+}
 
+.backLink {
+	float: right;
+	display: inline-block;
+	font-size: 10pt;
+	text-transform: uppercase;
+	margin-top: 10px;
+}
 
+#deleteLink {
+	font-size: 10pt;
+	float: left;
+	margin-top: 25px;
+	
+}
 
+.filterLink.selected {
+	font-weight: bold;
+	color: #fff;
+	font-size: 14pt;
+}
+
+span.editEventName {
+	font-weight: 200;
+	
+}
+
+p.description {
+	font-size: 13pt;
+	color: #bbb;
+}
 

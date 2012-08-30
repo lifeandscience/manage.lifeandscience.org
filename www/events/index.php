@@ -15,6 +15,7 @@
 	<meta charset="utf-8" /> 
 	<link rel="stylesheet" href="/events/css/styles.css" type="text/css" />
 	<link rel="stylesheet" href="/events/css/pepper-grinder/jquery-ui-1.8.21.custom.css" type="text/css" />
+	<script src="/events/js/global.js"></script>
 	<script src="/events/js/jquery-1.7.2.min.js"></script>
 	<script src="/events/js/jquery-ui-1.8.21.custom.min.js"></script>
 	<script src="/events/js/jquery-ui.multidatespicker.js"></script>	
@@ -33,8 +34,8 @@
 			<nav>
 				<ul class="topnav"> 
 					<li><a href="/events"<?php if(!$page) echo " class='selected' "; ?>>Home</a></li>				
-					<li><a href="/events/weekly"<?php if($page == "weekly") echo " class='selected' "; ?>>Weekly Events</a></li>
-					<li><a href="/events/special"<?php if($page == "special") echo " class='selected' "; ?>>Special Events</a></li>
+					<li><a href="/events/weekly"<?php if(strpos($page,"weekly") !== FALSE) echo " class='selected' "; ?>>Weekly Events</a></li>
+					<li><a href="/events/special"<?php if(strpos($page,"special") !== FALSE) echo " class='selected' "; ?>>Special Events</a></li>
 					<li><a href="/events/settings"<?php if($page == "settings") echo " class='selected' "; ?>>Settings</a></li>			
 
 		        </ul>

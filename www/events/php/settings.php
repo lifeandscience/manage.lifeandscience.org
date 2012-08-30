@@ -1,4 +1,6 @@
 
+<h2 class="sectionTitle">Event Settings</h3>
+
 <div id="errordiv" style="margin-top:8px;" class="noDisplay error">An error occurred.</div>
 <div id="successdiv" style="margin-top:8px;" class="noDisplay success">Settings saved.</div>
 

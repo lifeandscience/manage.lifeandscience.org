@@ -1,4 +1,3 @@
-	
 <?php
 	
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/events/api/1/events/getEventsByDate.php");
@@ -32,7 +31,7 @@
 			
 		}
 		if(!$html) {
-			$html = "<div>No scheduled events.</div>";
+			$html = "<div class=\"noEvents\">No scheduled events.</div>";
 		}
 		return $html;
 	}

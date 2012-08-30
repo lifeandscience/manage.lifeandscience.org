@@ -25,12 +25,12 @@
 	//Need to show unique labels if we are in Edit vs. Create mode
 	if($event) {
 		echo "<div id=\"successdiv\" style=\"margin-top:8px;\" class=\"noDisplay success\">Event changes have been saved.</div>";
-		echo "<h2>Edit " . $event->name . "</h2>";
-		echo "<a href=\"javascript:cancel();\" title=\"Back to events\">Back to event list</a>";
+		echo "<h2 class=\"eventTitle\"><span class=\"editEventName\">" . $event->name . "</span>" ;
+		echo "<a class=\"backLink\" href=\"javascript:cancel();\" title=\"Back to events\">Back to event list</a></h2>";
 	} else {
 		echo "<div id=\"successdiv\" style=\"margin-top:8px;\" class=\"noDisplay success\">Event created successfully.</div>";
-		echo "<h2>Create Special Event</h2>";
-		echo "<p>These events occur on a specific date(s). (ex. Dec 25, 2012 at 7 AM, Sundays in April)</p>";
+		echo "<h2 class=\"eventTitle\">Create Special Event</h2>";
+		echo "<p class=\"description\">These events occur on a specific date(s). (ex. Dec 25, 2012 at 7 AM, Sundays in April)</p>";
 	}
 ?>
 
@@ -133,21 +133,22 @@
 	            <td><input type="text" name="fb_link" id="fb_link" class="inputfield" value="<?= ($event) ? $event->fb_link : "" ?>" /></td>
 	        </tr>
 	        <tr>
-	            <td colspan="2" align="center"><input type="button" onclick="validate()" class="button" value="<?= ($event) ? "Edit" : "Create" ?> Event" />
-				<span class="tiny">or</span> <a class="tiny" href="#" onclick="cancel();">Cancel</a></td></td>
+	            <td colspan="2" align="center">
+		            <?php
+					
+						//Show a delete link if we are in edit mode
+						if($event) {
+							echo "<a href=\"#\" id=\"deleteLink\">Delete event</a>";
+						}	
+						
+					?>
+		            <input type="button" onclick="validate()" class="button" value="<?= ($event) ? "Edit" : "Create" ?> Event" />
+					<span class="tiny">or</span> <a class="tiny" href="#" onclick="cancel();">Cancel</a>
+				</td>
 			</tr> 
 		</tbody>
     </table>
 </form>
-
-<?php
-
-	//Show a delete link if we are in edit mode
-	if($event) {
-		echo "<div class=\"delete\"><a href=\"#\" id=\"deleteLink\">Delete this event</a></div>";
-	}	
-	
-?>
 
 <div id="delete-confirm" title="You're deleting an event." style="display:none;">
 	<p>Do you want to delete this and all occurrences of this event, or only the selected occurrence?</p>
@@ -157,8 +158,6 @@
 </div>
 
 <script type="text/javascript">
-	
-	
 
 	function validate() {
 		var name = $('#name').val();

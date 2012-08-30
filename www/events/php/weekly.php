@@ -1,7 +1,7 @@
-<h2>Weekly Events</h2>
+<h2 class="sectionTitle">Weekly Events <a class="createLink" href="/events/weekly/add">Add New</a> </h2>
 
 
-<a href="/events/weekly/add">Create Weekly Event</a>
+
 
 
 <div class="day_selector">
@@ -10,8 +10,8 @@
 			//Generate list of days
 			$timestamp = strtotime('next Monday');
 			for ($x = 0; $x < 7; $x++) {
-				$dispTime = strftime('%A', $timestamp);
-				echo "<li><a class=\"daylink\" href=\"#" . $dispTime . "\">" . $dispTime . "</a></li>";
+				$dayName = strftime('%A', $timestamp);
+				echo "<li><a class=\"filterLink " . $dayName ."\" href=\"#" . $dayName . "\">" . $dayName . "</a></li>";
 				$timestamp = strtotime('+1 day', $timestamp);
 			}
 		?>
@@ -22,8 +22,7 @@
 
 <script type="text/javascript">
 
-
-	$("a.daylink").click(function(e) {
+	$("a.filterLink").click(function(e) {
 		if(e.target) {
 			var day = e.target.innerHTML;
 			showEvents(day);
@@ -31,30 +30,29 @@
 	});
 	
 	function showEvents(day) {
+		if(!day){
+			var d = new Date();
+			day = dayNames[d.getDay()];
+		}		
 		$.getJSON("/events/api/1/events/getEventsByDay.php", { "day": day },
 			function(data){
 				$("#list").empty();
-				if(data && data.length > 0) {
+				
+				//Show the selected state
+				$("a.filterLink").removeClass("selected");
+				$("a." + day).addClass("selected");
+
+				if(data && data.length > 0) {					
 					$.each(data, function(index, event) {	
-						var displayTime;
 						var html = "<div class=\"weeklyEvent\">";
-						
-						if(event.all_day === "1") {
-							displayTime = "All Day";	
-						} else {
-							displayTime = event.start_time;
-							if(event.end_time) {
-								displayTime += " - " + event.end_time;
-							}
-						}
-						html += "<span class=\"eventTime\">" + displayTime + "</span>";
+						html += "<span class=\"eventTime\">" + getDisplayTime(event) + "</span>";
 						html += "<span class=\"eventName\"><a href=\"/events/weekly/edit/" + event.id + "\" title=\"Click to Edit\">" + event.name + "</a></span>";						
 						$("#list").append(html);
 						
 					});
 				} else {
 					//show no events message
-					$("#list").append("<div>No events scheduled</div>");
+					$("#list").append("<div class=\"noEvents\">No events scheduled</div>");
 				}
 			}
 		);
@@ -64,6 +62,9 @@
 	if(window.location.hash) {
 		var hash = window.location.hash;
 		showEvents(hash.substring(1));
+	} else {
+		//Show the events for the current day on the first load
+		showEvents();
 	}
 
 </script>

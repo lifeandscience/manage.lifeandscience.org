@@ -30,12 +30,12 @@
 	//Need to show unique labels if we are in Edit vs. Create mode
 	if($event) {
 		echo "<div id=\"successdiv\" style=\"margin-top:8px;\" class=\"noDisplay success\">Event changes have been saved.</div>";
-		echo "<h2>Edit " . $event->name . "</h2>";
-		echo "<a href=\"/events/weekly#" . $event->day_of_week  . "\" title=\"Back to events\">Back to event list</a>";
+		echo "<h2 class=\"eventTitle\"><span class=\"editEventName\">" . $event->name . "</span>";
+		echo "<a class=\"backLink\" href=\"/events/weekly#" . $event->day_of_week  . "\" title=\"Back to events\">Back to event list</a></h2>";
 	} else {
 		echo "<div id=\"successdiv\" style=\"margin-top:8px;\" class=\"noDisplay success\">Event created successfully.</div>";
-		echo "<h2>Create Weekly Event</h2>";
-		echo "<p>These events occur every week on a specific day and time. (ex: Monday at 3pm, Friday at 11am)</p>";
+		echo "<h2 class=\"eventTitle\">Create Weekly Event</h2>";
+		echo "<p class=\"description\">These events occur every week on a specific day and time. (ex: Monday at 3pm, Friday at 11am)</p>";
 	}
 ?>
 
@@ -118,21 +118,24 @@
 	            </td>
 	        </tr>
 	        <tr>
-	            <td colspan="2" align="center"><input type="button" onclick="validate()" class="button" value="<?= ($event) ? "Edit" : "Create" ?> Event" />
-				<span class="tiny">or</span> <a class="tiny" href="#" onclick="cancel();">Cancel</a></td></td>
+	            <td colspan="2" align="center">
+		            <?php
+					
+						//Show a delete link if we are in edit mode
+						if($event) {
+							echo "<a href=\"#\" id=\"deleteLink\">Delete event</a>";
+						}	
+						
+					?>
+		            <input type="button" onclick="validate()" class="button" value="<?= ($event) ? "Edit" : "Create" ?> Event" />
+					<span class="tiny">or</span> <a class="tiny" href="#" onclick="cancel();">Cancel</a>
+				</td>
 			</tr> 
 		</tbody>
     </table>
 </form>
 
-<?php
 
-	//Show a delete link if we are in edit mode
-	if($event) {
-		echo "<div class=\"delete\"><a href=\"#\" id=\"deleteLink\">Delete this event</a></div>";
-	}	
-	
-?>
 
 <script type="text/javascript">
 
