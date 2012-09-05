@@ -14,10 +14,10 @@
 	<title>Events Management</title>
 	<meta charset="utf-8" /> 
 	<link rel="stylesheet" href="/events/css/styles.css" type="text/css" />
-	<link rel="stylesheet" href="/events/css/pepper-grinder/jquery-ui-1.8.21.custom.css" type="text/css" />
+	<link rel="stylesheet" href="/events/css/cupertino/jquery-ui-1.8.23.custom.css" type="text/css" />
 	<script src="/events/js/global.js"></script>
-	<script src="/events/js/jquery-1.7.2.min.js"></script>
-	<script src="/events/js/jquery-ui-1.8.21.custom.min.js"></script>
+	<script src="/events/js/jquery-1.8.0.min.js"></script>
+	<script src="/events/js/jquery-ui-1.8.23.custom.min.js"></script>
 	<script src="/events/js/jquery-ui.multidatespicker.js"></script>	
 
 	<!--[if IE]>

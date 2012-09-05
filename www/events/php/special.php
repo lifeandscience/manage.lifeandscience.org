@@ -37,6 +37,10 @@
 				args.start_date = <?= date("Ymd", strtotime("-1 year")) ?>;
 				args.end_date = <?= date("Ymd"); ?>;
 				break;
+			case "#showall":
+				args.start_date = null;
+				args.end_date = null;
+				break;
 			default:
 				hash = "#thisweek";
 				args.end_date = <?= date("Ymd", strtotime("+1 week")) ?>;
