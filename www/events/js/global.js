@@ -4,6 +4,19 @@
 var dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
 
+
+function initToolbarBootstrapBindings() {
+  $('a[title]').tooltip({container:'body'});
+	$('.dropdown-menu input').click(function() {return false;})
+	    .change(function () {$(this).parent('.dropdown-menu').siblings('.dropdown-toggle').dropdown('toggle');})
+    .keydown('esc', function () {this.value='';$(this).change();});
+
+  $('[data-role=magic-overlay]').each(function () { 
+    var overlay = $(this), target = $(overlay.data('target')); 
+    overlay.css('opacity', 0).css('position', 'absolute').offset(target.offset()).width(target.outerWidth()).height(target.outerHeight());
+  });
+};
+	
 function formatTime(time) {
 	if(!time) return;
 	var parts = time.split(":");
@@ -44,3 +57,25 @@ function getDisplayDate(event) {
 	}
 }
 
+
+var SITE = SITE || {};
+SITE.fileInputs = function() {
+  var $this = $(this),
+      $val = $this.val(),
+      valArray = $val.split('\\'),
+      newVal = valArray[valArray.length-1],
+      $button = $this.siblings('.button'),
+      $fakeFile = $this.siblings('.file-holder');
+  if(newVal !== '') {
+    $button.text('Photo Chosen');
+    if($fakeFile.length === 0) {
+      $button.after('<span class="file-holder">' + newVal + '</span>');
+    } else {
+      $fakeFile.text(newVal);
+    }
+  }
+};
+
+$(document).ready(function() {
+  $('.file-wrapper input[type=file]').bind('change focus click', SITE.fileInputs);
+});

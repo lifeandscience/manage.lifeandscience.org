@@ -101,7 +101,6 @@
 							
 							if(this.multiDatesPicker.maxDate && (max_date > this.multiDatesPicker.maxDate))
 								max_date = this.multiDatesPicker.maxDate;
-							
 							$this
 								.datepicker("option", "minDate", min_date)
 								.datepicker("option", "maxDate", max_date);
@@ -110,6 +109,20 @@
 								.datepicker("option", "minDate", this.multiDatesPicker.minDate)
 								.datepicker("option", "maxDate", this.multiDatesPicker.maxDate);
 						}
+						/* Commenting this section out until it can be tested more
+							// issue #23
+							if(methods.compareDates($this.datepicker("option", "minDate"), min_date) !== 0) 
+								$this.datepicker("option", "minDate", min_date)
+							if(methods.compareDates($this.datepicker("option", "maxDate"), max_date) !== 0) 
+								$this.datepicker("option", "maxDate", max_date)
+						} else {
+							// issue #23
+							if(methods.compareDates($this.datepicker("option", "minDate"), this.multiDatesPicker.minDate) !== 0)
+								$this.datepicker("option", "minDate", this.multiDatesPicker.minDate);
+							if(methods.compareDates($this.datepicker("option", "maxDate"), this.multiDatesPicker.maxDate) !== 0)
+								$this.datepicker("option", "maxDate", this.multiDatesPicker.maxDate);
+						}
+						*/
 						
 						if(this.tagName == 'INPUT') { // for inputs
 							$this.val(
@@ -120,12 +133,20 @@
 						if(this.multiDatesPicker.originalOnSelect && dateText)
 							this.multiDatesPicker.originalOnSelect.call(this, dateText, inst);
 						
-						// thanks to bibendus83 -> http://sourceforge.net/tracker/?func=detail&atid=1495384&aid=3403159&group_id=358205
-						if ($this.datepicker('option', 'altField') != undefined && $this.datepicker('option', 'altField') != "") {
-							$($this.datepicker('option', 'altField')).val(
-								$this.multiDatesPicker('getDates', 'string')
-							);
+						// START aqisnotliquid
+						// Allows for the following tags to act as altField - input, textarea, p, span, div
+						var altFieldId = $this.datepicker('option', 'altField');
+						var dateString = $this.multiDatesPicker('getDates', 'string');
+						
+						if (altFieldId != undefined && altFieldId != "") {
+							if($('*').find(altFieldId).is('input, textarea')) {
+								$(altFieldId).val(dateString);
+							} else {
+								//$(altFieldId).empty().text(dateString); Original
+								$(altFieldId).text(dateString); // May not work in <IE8
+							}
 						}
+						// END aqisnotliquid
 					},
 					beforeShowDay : function(date) {
 						var $this = $(this),

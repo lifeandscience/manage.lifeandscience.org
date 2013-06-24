@@ -13,22 +13,27 @@
 		require_once($_SERVER['DOCUMENT_ROOT'] . "/events/api/1/events/getEventById.php");
 		$event = getEventById($event_id);
 		if(!$event) {
-			echo "An error occurred trying to fetch this event. Check the error log.";
+			echo "<div class=\"alert alert-error\">An error occurred trying to fetch this event. Check the error log.</div>";
 		}
 	}
 ?>
 
-<div id="errordiv" style="margin-top:8px;" class="noDisplay error">An error occurred.</div>
-<div id="validationdiv" style="margin-top:8px;" class="noDisplay error">Please correct the errors below and try again.</div>
+<div id="errordiv" class="noDisplay alert alert-error">
+	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	<span>An error occurred.</span>
+</div>
+<div id="validationdiv" style="margin-top:8px;" class="noDisplay alert alert-error">Please correct the errors below and try again.</div>
 
 <?php
 	//Need to show unique labels if we are in Edit vs. Create mode
 	if($event) {
-		echo "<div id=\"successdiv\" style=\"margin-top:8px;\" class=\"noDisplay success\">Event changes have been saved.</div>";
+		echo "<div id=\"successdiv\" class=\"noDisplay alert alert-success\">";
+		echo "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>Event changes have been saved.</div>";
 		echo "<h2 class=\"eventTitle\"><span class=\"editEventName\">" . $event->name . "</span>" ;
-		echo "<a class=\"backLink\" href=\"javascript:cancel();\" title=\"Back to events\">Back to event list</a></h2>";
+		echo "<a class=\"backLink\" href=\"/events/special/\">Back to event list</a></h2>";
 	} else {
-		echo "<div id=\"successdiv\" style=\"margin-top:8px;\" class=\"noDisplay success\">Event created successfully.</div>";
+		echo "<div id=\"successdiv\" class=\"noDisplay alert alert-success\">";
+		echo "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>Event created successfully.</div>";
 		echo "<h2 class=\"eventTitle\">Create Special Event</h2>";
 		echo "<p class=\"description\">These events occur on a specific date(s). (ex. Dec 25, 2012 at 7 AM, Sundays in April)</p>";
 	}
@@ -50,20 +55,19 @@
 		</thead>
 		<tbody>
 	        <tr>
-	            <td>Event Name: </td>
-	            <td><input type="text" name="name" id="name" class="inputfield" value="<?= ($event) ? $event->name : "" ?>" /><span class="required">*</span>
+	            <td>Event Name: <span class="required">*</span></td>
+	            <td><input type="text" name="name" id="name" class="inputfield" required value="<?= ($event) ? $event->name : "" ?>" />
 		            <span class="inlineError" id="nameError">Enter an event name</span></td>
 	        </tr>
 			<tr>
-	            <td>Date(s): </td>
+	            <td>Date(s): <span class="required">*</span></td>
 	            <td><div id="ui-datepicker-div"></div>
-	            <input id="date" name="date" type="text" class="inputfield" placeholder="Select a date for this event">
-	            <span class="required">*</span>
-	            <?php if(!$event) echo "<span class=\"tiny\">You can select multiple dates.</span>"; ?><span class="inlineError" id="dateError">Pick a date</span></td>
+	            <input id="date" name="date" type="text" class="inputfield" placeholder="Select a date for this event" required>
+	            <?php if(!$event) echo "<span class=\"tiny formHelp\">You can select multiple dates.</span>"; ?><span class="inlineError" id="dateError">Select a date</span></td>
 	        </tr>
 			<tr>
-	            <td>Start time: </td>
-	            <td><select name="start_time" style="width: 120px" id="start_time" <?= ($event && $event->all_day === "1") ? "disabled" : "" ?>>
+	            <td>Start time: <span class="required">*</span></td>
+	            <td><select name="start_time" style="width: 120px;margin-right:15px;" id="start_time" <?= ($event && $event->all_day === "1") ? "disabled" : "" ?>>
 	            	<option selected="selected"></option>
 		            <?php
 			            $begin = strtotime($START_TIME);
@@ -73,9 +77,10 @@
 							echo "<option value='". date('H:i', $i) . "' {$sel} >" . date('g:i A', $i) . "</option>";
 						}
 		            ?>
-	        </select><span class="required">*</span>
-	        <input type="checkbox" name="all_day" id="all_day" style="vertical-align:middle;" <?= ($event && $event->all_day === "1") ? "checked=checked" : "" ?> />
-	        <label for="all_day">All-day event</label><span class="inlineError" id="startError">Select a start time or all-day event.</span></td>
+					</select>
+					<label class="checkbox inline"><input type="checkbox" name="all_day" id="all_day" <?= ($event && $event->all_day === "1") ? "checked=checked" : "" ?> /> All-day event</label>
+	        		<span class="inlineError" id="startError">Select a start time or all-day event.</span>
+				</td>
 	        </tr>
 	        <tr>
 	            <td>End time: </td>
@@ -93,18 +98,57 @@
 	        </tr>
 	        <tr>
 	            <td>Description: </td>
-	            <td><textarea name="description" id="description"><?= ($event) ? $event->description : "" ?></textarea></td>
+	            <td>
+		            <div data-target="#editor" data-role="editor-toolbar" class="btn-toolbar">
+				      <div class="btn-group">
+				        <a title="" data-edit="bold" class="btn" data-original-title="Bold"><i class="icon-bold"></i></a>
+				        <a title="" data-edit="italic" class="btn" data-original-title="Italic"><i class="icon-italic"></i></a>
+				        <a title="" data-edit="strikethrough" class="btn" data-original-title="Strikethrough"><i class="icon-strikethrough"></i></a>
+				        <a title="" data-edit="underline" class="btn" data-original-title="Underline"><i class="icon-underline"></i></a>
+				      </div>
+				      <div class="btn-group">
+				        <a title="" data-edit="insertunorderedlist" class="btn" data-original-title="Bullet list"><i class="icon-list-ul"></i></a>
+				        <a title="" data-edit="insertorderedlist" class="btn" data-original-title="Number list"><i class="icon-list-ol"></i></a>
+				        <a title="" data-edit="outdent" class="btn" data-original-title="Reduce indent"><i class="icon-indent-left"></i></a>
+				        <a title="" data-edit="indent" class="btn" data-original-title="Indent"><i class="icon-indent-right"></i></a>
+				      </div>
+				      <div class="btn-group">
+				        <a title="" data-edit="justifyleft" class="btn" data-original-title="Align Left"><i class="icon-align-left"></i></a>
+				        <a title="" data-edit="justifycenter" class="btn" data-original-title="Center"><i class="icon-align-center"></i></a>
+				        <a title="" data-edit="justifyright" class="btn" data-original-title="Align Right"><i class="icon-align-right"></i></a>
+				        <a title="" data-edit="justifyfull" class="btn" data-original-title="Justify"><i class="icon-align-justify"></i></a>
+				      </div>
+				      <div class="btn-group">
+						<a title="" data-toggle="dropdown" class="btn dropdown-toggle" data-original-title="Hyperlink"><i class="icon-link"></i></a>
+					    <div class="dropdown-menu input-append">
+						    <input type="text" data-edit="createLink" placeholder="URL" class="span2" />
+						    <button type="button" class="btn">Add</button>
+						</div>
+				        <a title="" data-edit="unlink" class="btn" data-original-title="Remove Hyperlink"><i class="icon-cut"></i></a>
+				      </div>
+				      <div class="btn-group">
+				        <a id="pictureBtn" title="" class="btn" data-original-title="Insert picture (or just drag &amp; drop)"><i class="icon-picture"></i></a>
+				        <input type="file" data-edit="insertImage" data-target="#pictureBtn" data-role="magic-overlay" style="opacity: 0; position: absolute; top: 0px; left: 0px; width: 39px; height: 30px;">
+				      </div>
+				      <div class="btn-group">
+				        <a title="" data-edit="undo" class="btn" data-original-title="Undo"><i class="icon-undo"></i></a>
+				        <a title="" data-edit="redo" class="btn" data-original-title="Redo"><i class="icon-repeat"></i></a>
+				      </div>
+				    </div>
+					
+					<div id="editor" class="editor"><?= ($event) ? $event->description : "" ?></div></td>
+					<textarea id="description" name="description" style="display: none;"></textarea>
+					<textarea id="original_description" name="original_description" style="display: none;"><?= ($event) ? $event->description : "" ?></textarea>
 	        </tr>
 	        <tr>
 	            <td>Custom Field: </td>
 	            <td><input type="text" name="custom_1" id="custom_1" class="inputfield" value="<?= ($event) ? $event->custom_1 : "" ?>" />
-	            <span class="tiny">Specify age limitations, or other special requirements.</span></td>
+	            <span class="tiny formHelp" >Specify age limitations, or other special requirements.</span></td>
 	        </tr>
 	        <tr>
 	            <td>Cost (Members): </td>
-	            <td><input type="text" name="cost_members" id="cost_members" class="inputfield short" value="<?= ($event) ? $event->cost_members : "" ?>" />
-		            <input type="checkbox" name="members_only" id="members_only" style="vertical-align:middle;" <?= ($event && $event->members_only === "1") ? "checked=checked" : "" ?> />
-		            <label for="members_only">This event is for members only</label>
+	            <td><input type="text" name="cost_members" id="cost_members" class="inputfield short" value="<?= ($event) ? $event->cost_members : "" ?>" style="margin-right:15px;" />
+					<label class="checkbox inline"><input type="checkbox" name="members_only" id="members_only" <?= ($event && $event->members_only === "1") ? "checked=checked" : "" ?> /> This event is for members only</label>
 	            </td>
 	        </tr>
 	        <tr>
@@ -114,7 +158,11 @@
 	        </tr>
 	        <tr>
 	            <td>Image: </td>
-	            <td><input type="file" name="thumbnail" id="thumbnail" />
+	            <td>
+	            	<span class="file-wrapper">
+					  <input type="file" name="thumbnail" id="thumbnail" />
+					  <span class="button">Choose a <?= ($event && $event->image) ? " different " : "" ?> photo</span>
+					</span>
 		            <?php
 		            	if($event && $event->image) {
 		            		$path = "/events/uploads/" . $event->image;
@@ -126,7 +174,7 @@
 	        <tr>
 	            <td>Special Note: </td>
 	            <td><textarea name="special_note" id="special_note" class="short"><?= ($event) ? $event->special_note : "" ?></textarea>
-	            <span class="tiny">This message will be displayed under the image.</span></td>
+	            <span class="tiny formHelp">This message will be displayed under the image.</span></td>
 	        </tr>
 	        <tr>
 	            <td>Facebook URL: </td>
@@ -138,11 +186,11 @@
 					
 						//Show a delete link if we are in edit mode
 						if($event) {
-							echo "<a href=\"#\" id=\"deleteLink\">Delete event</a>";
+							echo "<button class=\"btn btn-small btn-danger\" href=\"#\" id=\"deleteLink\">Delete</button>";
 						}	
 						
 					?>
-		            <input type="button" onclick="validate()" class="button" value="<?= ($event) ? "Edit" : "Create" ?> Event" />
+		            <input type="button" onclick="validate()" class="btn" value="<?= ($event) ? "Save" : "Create Event" ?>" />
 					<span class="tiny">or</span> <a class="tiny" href="#" onclick="cancel();">Cancel</a>
 				</td>
 			</tr> 
@@ -158,6 +206,26 @@
 </div>
 
 <script type="text/javascript">
+
+	initToolbarBootstrapBindings();
+	$('#editor').wysiwyg({
+	  hotKeys: {
+	  	'shift+tab': 'outdent',
+	  	'tab' : 'indent',
+	    'ctrl+b meta+b': 'bold',
+	    'ctrl+i meta+i': 'italic',
+	    'ctrl+u meta+u': 'underline',
+	    'ctrl+z meta+z': 'undo',
+	    'ctrl+y meta+y meta+shift+z': 'redo'
+	  }
+	});
+	
+	function submitForm() {
+		$('#editor').cleanHtml();
+		//Copy editor content into textarea before submitting.
+		$('#description').val($('#editor').html());
+		$('#addEvent').submit();
+	}
 
 	function validate() {
 		var name = $('#name').val();
@@ -199,20 +267,20 @@
 							"Only This Event": function() {
 								$("#edit_all").val("false");
 								$(this).dialog( "close" );
-								$('#addEvent').submit();
+								submitForm()
 							},
 							"All Events": function() {
 								$("#edit_all").val("true");
 								$(this).dialog( "close" );
-								$('#addEvent').submit();
+								submitForm()
 							}	
 						}
 					});
 				} else {
-					$('#addEvent').submit();
+					submitForm()
 				}
 			} else {
-				$('#addEvent').submit();				
+				submitForm()				
 			}
 		}
 	}
@@ -254,7 +322,7 @@
 		//only called when we are editing a group event
 		function hasEventChanged() {
 			if($('#name').val() != "<?= $event->name ?>") return true;
-			if($('#description').val() != "<?= $event->description ?>") return true;
+			if($('#editor').html() != $('#original_description').val()) return true;
 			if($('#start_time').val() != "<?= $event->start_time ?>") return true;
 			if($('#end_time').val() != "<?= $event->end_time ?>") return true;
 			if($('#fb_link').val() != "<?= $event->fb_link ?>") return true;

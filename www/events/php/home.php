@@ -7,7 +7,7 @@
 		$events = getEventsByDate($date);
 		foreach($events as $event) {
 		
-			$isWeekly = isset($event->day_of_week);
+			$isWeekly = isset($event->mon);
 			
 			if($event->all_day === "1") {				
 				$displayTime = "All Day";

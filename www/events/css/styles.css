@@ -132,6 +132,32 @@ input.inputfield.short {
 	width: 110px;
 }
 
+div.editor {
+	background-color: #ededed;
+	color: #555;
+    border: 1px solid #CCCCCC;
+    border-collapse: separate;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.075) inset;
+    height: 250px;
+    max-height: 250px;
+    width: 670px;
+    outline: medium none;
+    overflow: scroll;
+    padding: 4px;
+}
+
+.dropdown-menu a {
+  cursor: pointer;
+}
+
+
+.btn-toolbar {
+    font-size: 0;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
 textarea {
 	font-family: Helvetica, Arial;
 	height: 200px;
@@ -150,9 +176,12 @@ textarea.short {
 	padding: 0 3px;
 }
 
+.checkbox.inline {
+	line-height: 22px;
+}
 
-.button {
-	margin: 20px 5px;
+input[type="button"].btn {
+	margin: 10px 5px;
 }
 
 #ui-datepicker-div { 
@@ -188,15 +217,14 @@ table.ui-datepicker-calendar {border-collapse: separate;}
 .tiny {
 	font-size: 10pt;
 }
-.error {
-	font-size: 11pt;
-	padding: 10px 0;
-	color: #ee4343;
+
+.formHelp {
+	margin-left: 10px;
+	color: #bbb;
 }
-.success {
-	padding: 10px 0;
-	color: #618b55;
-	font-size: 11pt;
+
+#errordiv, #successdiv {
+	margin-top: 8px;
 }
 
 /* Table Styling */
@@ -216,10 +244,6 @@ span.inlineError {
 	padding: 0 10px;
 	color: #EE4343;
 	display: none;
-}
-
-.invalid {
-
 }
 
 .noEvents {
@@ -308,10 +332,8 @@ h2.eventTitle {
 }
 
 #deleteLink {
-	font-size: 10pt;
 	float: left;
 	margin-top: 25px;
-	
 }
 
 .filterLink.selected {
@@ -328,5 +350,42 @@ span.editEventName {
 p.description {
 	font-size: 13pt;
 	color: #bbb;
+}
+
+
+/* Pretty browse button */
+
+.file-wrapper {
+	cursor: pointer;
+	display: inline-block;
+	overflow: hidden;
+	position: relative;
+}
+.file-wrapper input {
+	cursor: pointer;
+	font-size: 100px;
+	height: 100%;
+	filter: alpha(opacity=1);
+	-moz-opacity: 0.01;
+	opacity: 0.01;
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+.file-wrapper .button {
+	margin: 5px;
+	background: #75cbd1;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	color: #333;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 11px;
+	font-weight: bold;
+	margin-right: 5px;
+	padding: 4px 18px;
+	text-transform: uppercase;
+	text-shadow: 1px 0px 0px rgba(255,255,255,0.13);
 }
 
