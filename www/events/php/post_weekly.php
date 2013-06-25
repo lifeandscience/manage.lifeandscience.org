@@ -54,6 +54,7 @@
 			}
 	
 			$success = $db->insert('events_weekly', $insert_params);	
+			$new_event_id = $db->insert_id;
 		} 
 		//EDITING EVENT - UPDATE
 		else {
@@ -66,6 +67,8 @@
 			//Only update the filename if the user uploaded a new one.
 			if($filename != "") {
 				$params["icon"] = $filename;
+			} else if($_POST["removeicon"] === "true") {
+				$params["icon"] = "";
 			}
 			
 			//Update selected days, but first make sure to clear previously selected days
@@ -87,7 +90,7 @@
 	if($success === 1) {	
 			
 		if($wasAdding == 1) {
-			echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/weekly/add/?success=true';</script>";
+			echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/weekly/add/?success=true&eid={$new_event_id}';</script>";
 		} else {
 			echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/weekly/edit/{$event_id}/?success=true';</script>";
 		}

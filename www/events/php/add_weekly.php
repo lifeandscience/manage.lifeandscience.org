@@ -37,7 +37,7 @@
 		echo "<a class=\"backLink\" href=\"/events/weekly\">Back to event list</a></h2>";
 	} else {
 		echo "<div id=\"successdiv\" class=\"noDisplay alert alert-success\">";
-		echo "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>Event created successfully.</div>";
+		echo "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>Event created successfully. {$eventlink}</div>";
 		echo "<h2 class=\"eventTitle\">Create Weekly Event</h2>";
 		echo "<p class=\"description\">These events occur every week on a specific day and time. (ex: Monday at 3pm, Friday at 11am)</p>";
 	}
@@ -81,9 +81,19 @@
 		            <?php
 			            $begin = strtotime($START_TIME);
 			            $end = strtotime($END_TIME);
+			            $matchFound = false;
 						for ($i = $begin; $i <= $end; $i += 60 * $INTERVAL) {
-							$sel = ($event && $event->start_time === date('H:i', $i)) ? "selected='selected'" : "";
+							$sel = "";
+							if($event && $event->start_time === date('H:i', $i)) {
+								$sel = "selected='selected'";
+								$matchFound = true;
+							}
 							echo "<option value='". date('H:i', $i) . "' {$sel} >" . date('g:i A', $i) . "</option>";
+						}
+						if($event && !$matchFound) {
+							//Time did not match any possible values. It's likely that the default interval was changed since this event was created.
+							//Just add it into the select box anyway, since the user wants to see the current value.
+							echo "<option value='". date('H:i', strtotime($event->start_time)) . "' selected='selected' >" . date('g:i A', strtotime($event->start_time)) . "</option>";
 						}
 		            ?>
 					</select>
@@ -98,9 +108,19 @@
 		            <?php
 			            $begin = strtotime($START_TIME);
 			            $end = strtotime($END_TIME);
+			            $matchFound = false;
 						for ($i = $begin; $i <= $end; $i += 60 * $INTERVAL) {
-							$sel = ($event && $event->end_time === date('H:i', $i)) ? "selected='selected'" : "";
+							$sel = "";
+							if($event && $event->end_time === date('H:i', $i)) {
+								$sel = "selected='selected'";
+								$matchFound = true;
+							}
 							echo "<option value='". date('H:i', $i) . "' {$sel} >" . date('g:i A', $i) . "</option>";
+						}
+						if($event && !$matchFound) {
+							//Time did not match any possible values. It's likely that the default interval was changed since this event was created.
+							//Just add it into the select box anyway, since the user wants to see the current value.
+							echo "<option value='". date('H:i', strtotime($event->end_time)) . "' selected='selected' >" . date('g:i A', strtotime($event->end_time)) . "</option>";
 						}
 		            ?>
 	        </select></td>
@@ -154,12 +174,14 @@
 	            <td>
 	            	<span class="file-wrapper">
 					  <input type="file" name="thumbnail" id="thumbnail" />
+					  <input type="hidden" name="removeicon" id="removeicon" value="false" />
 					  <span class="button">Choose a <?= ($event && $event->icon) ? " different " : "" ?> photo</span>
 					</span>
 		            <?php
 		            	if($event && $event->icon) {
 		            		$path = "/events/uploads/" . $event->icon;
-		            		echo "<img src=\"" . $path . "\" height='50' width='50' />";
+		            		echo "<img src=\"" . $path . "\" height='50' width='50' id=\"theicon\" />";
+		            		echo "<button id=\"clearicon\" title=\"Remove icon\">&times;</button>";
 		            	}
 		            ?>
 	            </td>
@@ -197,6 +219,13 @@
 	    'ctrl+z meta+z': 'undo',
 	    'ctrl+y meta+y meta+shift+z': 'redo'
 	  }
+	});
+	
+	$('#clearicon').click(function(e) {
+		e.preventDefault();
+		$('#theicon').hide();
+		$('#clearicon').hide();
+		$('#removeicon').val(true);
 	});
 
 	function validate() {		
@@ -274,7 +303,9 @@
 		$("#errordiv").show();
 	}
 	
-	if(window.location.search.indexOf("success") != -1) {
+	if(window.location.search.indexOf("success") != -1) {		
+		var event_id = getQueryParam("eid");
+		if(event_id) $('<a>',{ text: 'View your new event.', href: '/events/weekly/edit/' + event_id }).appendTo("#successdiv");
 		$("#successdiv").show();
 	}
 

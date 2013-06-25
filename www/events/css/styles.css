@@ -189,6 +189,19 @@ input[type="button"].btn {
 	padding: 10px;
 }
 
+#clearicon {
+	color: #bbb;
+	background: none repeat scroll 0 0 transparent;
+    border: 0 none;
+    cursor: pointer;
+    padding: 0;
+    margin: 2px 8px;
+    vertical-align: top;
+    font-size: 16pt;
+}
+#clearicon:hover {
+	color: #888;
+}
 
 /* jQuery UI Datepicker moving pixels fix */
 table.ui-datepicker-calendar {border-collapse: separate;}
@@ -350,6 +363,15 @@ span.editEventName {
 p.description {
 	font-size: 13pt;
 	color: #bbb;
+}
+
+/* Fix links inside of alert boxes */
+
+.alert a {	
+	color: #777;
+}
+.alert a:hover {
+	color: #555;
 }
 
 

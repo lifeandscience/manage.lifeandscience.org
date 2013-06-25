@@ -72,9 +72,19 @@
 		            <?php
 			            $begin = strtotime($START_TIME);
 			            $end = strtotime($END_TIME);
+			            $matchFound = false;
 						for ($i = $begin; $i <= $end; $i += 60 * $INTERVAL) {
-							$sel = ($event && $event->start_time === date('H:i', $i)) ? "selected='selected'" : "";
+							$sel = "";
+							if($event && $event->start_time === date('H:i', $i)) {
+								$sel = "selected='selected'";
+								$matchFound = true;
+							}
 							echo "<option value='". date('H:i', $i) . "' {$sel} >" . date('g:i A', $i) . "</option>";
+						}
+						if($event && !$matchFound) {
+							//Time did not match any possible values. It's likely that the default interval was changed since this event was created.
+							//Just add it into the select box anyway, since the user wants to see the current value.
+							echo "<option value='". date('H:i', strtotime($event->start_time)) . "' selected='selected' >" . date('g:i A', strtotime($event->start_time)) . "</option>";
 						}
 		            ?>
 					</select>
@@ -89,9 +99,19 @@
 		            <?php
 			            $begin = strtotime($START_TIME);
 			            $end = strtotime($END_TIME);
+			            $matchFound = false;
 						for ($i = $begin; $i <= $end; $i += 60 * $INTERVAL) {
-							$sel = ($event && $event->end_time === date('H:i', $i)) ? "selected='selected'" : "";
+							$sel = "";
+							if($event && $event->end_time === date('H:i', $i)) {
+								$sel = "selected='selected'";
+								$matchFound = true;
+							}
 							echo "<option value='". date('H:i', $i) . "' {$sel} >" . date('g:i A', $i) . "</option>";
+						}
+						if($event && !$matchFound) {
+							//Time did not match any possible values. It's likely that the default interval was changed since this event was created.
+							//Just add it into the select box anyway, since the user wants to see the current value.
+							echo "<option value='". date('H:i', strtotime($event->end_time)) . "' selected='selected' >" . date('g:i A', strtotime($event->end_time)) . "</option>";
 						}
 		            ?>
 	        </select></td>
@@ -161,12 +181,14 @@
 	            <td>
 	            	<span class="file-wrapper">
 					  <input type="file" name="thumbnail" id="thumbnail" />
+					  <input type="hidden" name="removeicon" id="removeicon" value="false" />
 					  <span class="button">Choose a <?= ($event && $event->image) ? " different " : "" ?> photo</span>
 					</span>
 		            <?php
 		            	if($event && $event->image) {
 		            		$path = "/events/uploads/" . $event->image;
-		            		echo "<img src=\"" . $path . "\" height='50' width='50' />";
+		            		echo "<img src=\"" . $path . "\" height='50' width='50' id=\"theicon\" />";
+		            		echo "<button id=\"clearicon\" title=\"Remove image\">&times;</button>";
 		            	}
 		            ?>
 	            </td>
@@ -218,6 +240,13 @@
 	    'ctrl+z meta+z': 'undo',
 	    'ctrl+y meta+y meta+shift+z': 'redo'
 	  }
+	});
+	
+	$('#clearicon').click(function(e) {
+		e.preventDefault();
+		$('#theicon').hide();
+		$('#clearicon').hide();
+		$('#removeicon').val(true);
 	});
 	
 	function submitForm() {
@@ -333,6 +362,7 @@
 			if($('#cost_public').val() != "<?= $event->cost_public ?>") return true;	
 			if($('#members_only').is(':checked') != <?= ($event->members_only === "1") ? 1 : 0 ?>) return true;
 			if($('#all_day').is(':checked') != <?= ($event->all_day === "1") ? 1 : 0 ?>) return true;
+			if($('#removeicon').val() === "true") return true;
 			return false; //only date changed, or nothing changed at all
 		}
 	
