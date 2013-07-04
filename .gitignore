@@ -1,5 +1,5 @@
 .htpasswd
 logs
-config.inc.php
+/config.inc.php
 
 www/events/uploads/*
