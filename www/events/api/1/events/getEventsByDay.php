@@ -7,14 +7,20 @@
 		
 		PARAMETERS:
 		
-			day (string)			(required)		ex. Monday
+			day (string)			(required)		ex. Monday (or Mon)
 					
 		EXAMPLE RESPONSE:
 		
 			[{
 				"id":"3",
 				"name":"Monkey Monday",
-				"day_of_week": "Monday",
+				"mon": "1",
+				"tue": "0",
+				"wed": "0",
+				"thu": "1",
+				"fri": "0",
+				"sat": "0",
+				"sun": "1",
 				"start_time":"11:00:00",
 				"end_time":"15:00:00",		
 				"all_day":"0",
@@ -47,7 +53,14 @@
 			return $error;
 		}
 		
-		$events = $db->get_results($db->prepare("SELECT * FROM `events_weekly` WHERE `active` = 1 AND `day_of_week` = %s ORDER BY `start_time` ASC", $day));			
+		$p_day = strtolower(substr($day, 0, 3));
+
+		
+		//Since we can't use prepare and %s for column names, ensure that the value exists in the whitelist for security.
+		$whitelisted_col_names = array("mon","tue","wed","thu","fri","sat","sun");
+		if(in_array($p_day, $whitelisted_col_names)) {
+			$events = $db->get_results("SELECT * FROM `events_weekly` WHERE `active` = 1 AND `{$p_day}` = 1 ORDER BY `start_time` ASC");
+		}
 
 		if(!$events) {
 			$events = array(); //return an empty array instead of null if no events are found matching the specified month

@@ -110,6 +110,8 @@
 			//Only update the filename if the user uploaded a new one.
 			if($filename != "") {
 				$params["image"] = $filename;
+			} else if($_POST["removeicon"] === "true") {
+				$params["image"] = "";
 			}
 			//Only update this event (not the entire group). so, we should orphan this event from the group.
 			if($group_id > 0 && $edit_all === "false") {

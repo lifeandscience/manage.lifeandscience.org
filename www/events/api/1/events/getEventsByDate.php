@@ -13,8 +13,7 @@
 		
 			[{
 				"id":"28",
-				"name":"A feb event",
-				"day_of_week":"Saturday",
+				"name":"A feb event",		
 				"date":"2013-02-16",
 				"start_time":"11:00:00",
 				"end_time":"15:00:00",		
@@ -30,6 +29,13 @@
 				"custom_1":"Ages 12-18",
 				"active":"1",
 				"added":"2012-06-24 23:46:04",
+				"mon": "1",
+				"tue": "0",
+				"wed": "0",
+				"thu": "1",
+				"fri": "0",
+				"sat": "1",
+				"sun": "0",
 				"group_id":"28"
 			},
 			{
@@ -41,7 +47,7 @@
 		
 			This API returns two different types of events: weekly reoccurring, and special events. These two event types
 			have different data models, so not all of the properties will appear in every result object. You should check
-			the property to make sure it's set before attempting to use it. The 'day_of_week' property can be used to
+			the property to make sure it's set before attempting to use it. The 'mon' (short for Monday) property can be used to
 			determine the event type for a given result object.
 	
 	*/
@@ -63,10 +69,15 @@
 			return $error;
 		}
 		
-		$day_of_week = date('l', strtotime($date));
-		
 		$events = $db->get_results($db->prepare("SELECT * FROM `events_special` WHERE `active` = 1 AND `date` = %d ORDER BY `start_time` ASC", $date));
-		$events2 = $db->get_results($db->prepare("SELECT * FROM `events_weekly` WHERE `active` = 1 AND `day_of_week` = %s ORDER BY `start_time` ASC", $day_of_week));
+		
+		$p_day = strtolower(date('D', strtotime($date)));
+		//Since we can't use prepare and %s for column names, ensure that the value exists in the whitelist for security.
+		$whitelisted_col_names = array("mon","tue","wed","thu","fri","sat","sun");
+		$events2 = array();
+		if(in_array($p_day, $whitelisted_col_names)) {
+			$events2 = $db->get_results("SELECT * FROM `events_weekly` WHERE `active` = 1 AND `{$p_day}` = 1 ORDER BY `start_time` ASC");
+		}
 		
 		$events_combined = array_merge($events, $events2);
 	
