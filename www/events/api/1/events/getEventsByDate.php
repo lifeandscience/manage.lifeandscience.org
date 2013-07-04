@@ -75,9 +75,11 @@
 		}
 		
 		//Sort the array by start_time
-		usort($events_combined, function($a, $b) {
-			return strcmp($a->start_time, $b->start_time);
-		});
+		$func = create_function('$a,$b', 'return strcmp($a->start_time, $b->start_time);');
+		usort($events_combined, $func);
+//		usort($events_combined, function($a, $b) {
+//			return strcmp($a->start_time, $b->start_time);
+//		});
 		
 		return $events_combined;
 	}

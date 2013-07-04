@@ -1,3 +1,9 @@
+AuthType Basic
+AuthName "MLS: Manage"
+AuthUserFile /srv/www/manage.lifeandscience.org/.htpasswd
+Require valid-user
+
+
 RewriteEngine On
 
 
