@@ -93,7 +93,10 @@
 						if($event && !$matchFound) {
 							//Time did not match any possible values. It's likely that the default interval was changed since this event was created.
 							//Just add it into the select box anyway, since the user wants to see the current value.
-							echo "<option value='". date('H:i', strtotime($event->start_time)) . "' selected='selected' >" . date('g:i A', strtotime($event->start_time)) . "</option>";
+							$event_startTime = strtotime($event->start_time);
+							if($event_startTime !== FALSE) {
+								echo "<option value='". date('H:i', $event_startTime) . "' selected='selected' >" . date('g:i A', $event_startTime) . "</option>";
+							}
 						}
 		            ?>
 					</select>
@@ -120,7 +123,11 @@
 						if($event && !$matchFound) {
 							//Time did not match any possible values. It's likely that the default interval was changed since this event was created.
 							//Just add it into the select box anyway, since the user wants to see the current value.
-							echo "<option value='". date('H:i', strtotime($event->end_time)) . "' selected='selected' >" . date('g:i A', strtotime($event->end_time)) . "</option>";
+							$event_endtime = strtotime($event->end_time);
+							if($event_endtime !== FALSE) {
+								echo "<option value='". date('H:i', $event_endtime) . "' selected='selected' >" . date('g:i A', $event_endtime) . "</option>";	
+							}
+							
 						}
 		            ?>
 	        </select></td>
