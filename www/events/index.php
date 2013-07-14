@@ -14,6 +14,7 @@
 	<title>Events Management</title>
 	<meta charset="utf-8" /> 
 	<link rel="stylesheet" href="/events/css/bootstrap-noicons.min.css" type="text/css" />
+	<link rel="stylesheet" href="/events/css/bootstrap-timepicker.min.css" type="text/css" />
 	<link rel="stylesheet" href="/events/css/cupertino/jquery-ui-1.10.3.custom.min.css" type="text/css" />
 	<link rel="stylesheet" href="/events/css/styles.css" type="text/css" />
 	<link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
@@ -23,6 +24,7 @@
 	<script src="/events/js/jquery.hotkeys.js"></script>
 	<script src="/events/js/bootstrap-noicons.min.js"></script>
 	<script src="/events/js/bootstrap-wysiwyg.js"></script>
+	<script src="/events/js/bootstrap-timepicker.min.js"></script>
 	<script src="/events/js/jquery-ui.multidatespicker.js"></script>
 	<script src="/events/js/global.js"></script>
 
@@ -42,7 +44,6 @@
 					<li><a href="/events"<?php if(!$page) echo " class='selected' "; ?>>Home</a></li>				
 					<li><a href="/events/weekly"<?php if(strpos($page,"weekly") !== FALSE) echo " class='selected' "; ?>>Weekly Events</a></li>
 					<li><a href="/events/special"<?php if(strpos($page,"special") !== FALSE) echo " class='selected' "; ?>>Special Events</a></li>
-					<li><a href="/events/settings"<?php if($page == "settings") echo " class='selected' "; ?>>Settings</a></li>			
 		        </ul>
 			</nav>
 		</header>

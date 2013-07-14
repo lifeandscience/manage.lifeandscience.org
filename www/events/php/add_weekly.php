@@ -1,10 +1,4 @@
 <?php
-
-	//Get the time settings from the database
-	$settings = $db->get_results($db->prepare("SELECT * FROM `settings`"), "OBJECT_K");
-	$START_TIME = $settings["start_time"]->value;
-	$END_TIME = $settings["end_time"]->value;
-	$INTERVAL = $settings["time_interval"]->value;
 	
 	//Check to see if we are editing an existing event
 	$event = null;
@@ -74,63 +68,26 @@
 		        	<span class="inlineError" id="dayError">Select a day</div>
 	        	</td>
 	        </tr>
-			<tr>
+	        <tr>
 	            <td>Start time: <span class="required">*</span></td>
-	            <td><select name="start_time" style="width: 120px;margin-right:15px;" id="start_time">
-	            	<option></option>
-		            <?php
-			            $begin = strtotime($START_TIME);
-			            $end = strtotime($END_TIME);
-			            $matchFound = false;
-						for ($i = $begin; $i <= $end; $i += 60 * $INTERVAL) {
-							$sel = "";
-							if($event && $event->start_time === date('H:i', $i)) {
-								$sel = "selected='selected'";
-								$matchFound = true;
-							}
-							echo "<option value='". date('H:i', $i) . "' {$sel} >" . date('g:i A', $i) . "</option>";
-						}
-						if($event && !$matchFound) {
-							//Time did not match any possible values. It's likely that the default interval was changed since this event was created.
-							//Just add it into the select box anyway, since the user wants to see the current value.
-							$event_startTime = strtotime($event->start_time);
-							if($event_startTime !== FALSE) {
-								echo "<option value='". date('H:i', $event_startTime) . "' selected='selected' >" . date('g:i A', $event_startTime) . "</option>";
-							}
-						}
-		            ?>
-					</select>
+	            <td>
+	            	<div class="input-append bootstrap-timepicker">
+			            <input name="start_time" id="start_time" type="text" class="input-small" data-default-time="false" <?= ($event && $event->all_day === "1") ? "disabled" : "" ?> />
+			            <span class="add-on"><i class="icon-time"></i></span>
+			        </div>
 					<label class="checkbox inline"><input type="checkbox" name="all_day" id="all_day" <?= ($event && $event->all_day === "1") ? "checked=checked" : "" ?> /> All-day event</label>
-					<span class="inlineError" id="startError">Select a start time or all-day event.</span>
+	        		<span class="inlineError" id="startError">Select a start time or all-day event.</span>
 				</td>
 	        </tr>
 	        <tr>
 	            <td>End time: </td>
-	            <td><select name="end_time" style="width: 120px" id="end_time">
-	            	<option></option>
-		            <?php
-			            $begin = strtotime($START_TIME);
-			            $end = strtotime($END_TIME);
-			            $matchFound = false;
-						for ($i = $begin; $i <= $end; $i += 60 * $INTERVAL) {
-							$sel = "";
-							if($event && $event->end_time === date('H:i', $i)) {
-								$sel = "selected='selected'";
-								$matchFound = true;
-							}
-							echo "<option value='". date('H:i', $i) . "' {$sel} >" . date('g:i A', $i) . "</option>";
-						}
-						if($event && !$matchFound) {
-							//Time did not match any possible values. It's likely that the default interval was changed since this event was created.
-							//Just add it into the select box anyway, since the user wants to see the current value.
-							$event_endtime = strtotime($event->end_time);
-							if($event_endtime !== FALSE) {
-								echo "<option value='". date('H:i', $event_endtime) . "' selected='selected' >" . date('g:i A', $event_endtime) . "</option>";	
-							}
-							
-						}
-		            ?>
-	        </select></td>
+	            <td>
+	            	<div class="input-append bootstrap-timepicker">
+			            <input name="end_time" id="end_time" type="text" class="input-small" data-default-time="false" />
+			            <span class="add-on"><i class="icon-time"></i></span>
+			        </div>
+			        <span class="inlineError" id="endError">End time must be later than Start time.</span>
+	            </td>
 	        </tr>
 	        <tr>
 	            <td>Description: </td>
@@ -228,6 +185,9 @@
 	  }
 	});
 	
+	$('#start_time').timepicker();
+	$('#end_time').timepicker();
+	
 	$('#clearicon').click(function(e) {
 		e.preventDefault();
 		$('#theicon').hide();
@@ -238,7 +198,21 @@
 	function validate() {		
 		var name = $('#name').val();
 		var start_time = $('#start_time').val();
+		var end_time = $('#end_time').val();
 		var all_day = $('#all_day').is(':checked');
+		
+		//Make sure the end time is not earlier than start time
+		var end_time_error = false;
+		if(end_time && start_time) {
+			var sTime = new Date("1/1/2013 " + start_time);
+			var eTime = new Date("1/1/2013 " + end_time);
+			if(eTime < sTime) {
+				end_time_error = true;
+				$('#endError').show();
+			} else {
+				$('#endError').hide();
+			}
+		}
 		
 		if(!start_time && !all_day) {
 			$('#startError').show();
@@ -256,7 +230,7 @@
 		
 		$('#nameError').toggle(name == "");
 		
-		if(!days.length || !name || (!start_time && !all_day) ) {
+		if(!days.length || !name || (!start_time && !all_day) || end_time_error ) {
 			$("#validationdiv").show();
 		}
 		else {
@@ -292,6 +266,15 @@
 				});
 			}
 		}
+		
+		<?php
+			if($event->start_time != FALSE) {
+				echo "$('#start_time').timepicker('setTime', '" . date("h:i A", strtotime($event->start_time)) . "');";		
+			}
+			if($event->end_time != FALSE) {
+				echo "$('#end_time').timepicker('setTime', '" . date("h:i A", strtotime($event->end_time)) . "');";		
+			}
+		?>
 		
 		$("#deleteLink").click(function(e) {
 			deleteEvent(e);		

@@ -184,6 +184,11 @@ input[type="button"].btn {
 	margin: 10px 5px;
 }
 
+/* Timepicker */
+.icon-time {
+	color: #333;
+}
+
 #ui-datepicker-div { 
 	font-size: 12px;
 	padding: 10px;
