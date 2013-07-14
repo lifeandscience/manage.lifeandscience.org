@@ -8,7 +8,7 @@
 	date_default_timezone_set('EST5EDT');
 	ini_set('memory_limit', '3M');
 	
-	$dir = "../uploads";
+	$dir = "../../uploads";
 	$all_day = ($_POST['all_day'] == "on") ? 1 : 0;
 	$days = $_POST["days"];
 	
