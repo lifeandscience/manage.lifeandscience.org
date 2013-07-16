@@ -113,6 +113,7 @@
 				      <div class="btn-group">
 				        <a id="pictureBtn" title="" class="btn" data-original-title="Insert picture (or just drag &amp; drop)"><i class="icon-picture"></i></a>
 				        <input type="file" data-edit="insertImage" data-target="#pictureBtn" data-role="magic-overlay" style="opacity: 0; position: absolute; top: 0px; left: 0px; width: 39px; height: 30px;">
+				        <a title="" onclick="viewHTML(this)" class="btn" data-original-title="View HTML"><i class="icon-code"></i></a>
 				      </div>
 				      <div class="btn-group">
 				        <a title="" data-edit="undo" class="btn" data-original-title="Undo"><i class="icon-undo"></i></a>
@@ -215,6 +216,22 @@
 		$('#clearicon').hide();
 		$('#removeicon').val(true);
 	});
+	
+	//Create a custom button for toggling HTML view on/off
+	var viewMode = "text";
+	function viewHTML(btn) {
+		if(viewMode == "text") {
+			var html = $('#editor').html();
+			$('#editor').text(html);
+			viewMode = "html";
+			if(btn) $(btn).attr("data-original-title", "Switch to WYSIWYG Editor");
+		} else {
+			var text = $('#editor').text();
+			$('#editor').html(text);
+			viewMode = "text";
+			if(btn) $(btn).attr("data-original-title", "View HTML");
+		}
+	}
 	
 	function submitForm() {
 		$('#editor').cleanHtml();
