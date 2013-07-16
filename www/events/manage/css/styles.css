@@ -147,6 +147,10 @@ div.editor {
     padding: 4px;
 }
 
+div.editor ul {
+	list-style: disc outside none !important;
+}
+
 .dropdown-menu a {
   cursor: pointer;
 }
