@@ -55,8 +55,6 @@
 			for($x = 0; $x < $num_dates; $x++) {
 				$insert_params = array("name" => $_POST['name'],
 									"date" => date("Y-m-d",strtotime($dates[$x])),
-									"start_time" => $_POST['start_time'],
-									"end_time" => $_POST['end_time'],
 									"image" => $filename,
 									"fb_link" => $_POST['fb_link'],
 									"description" => $_POST['description'],
@@ -70,6 +68,14 @@
 									"group_id" => $group_id
 									);
 	
+				if($_POST['start_time']) {
+					$insert_params["start_time"] = date("H:i", strtotime($_POST['start_time']));
+				}
+				
+				if($_POST['end_time']) {
+					$insert_params["end_time"] = date("H:i", strtotime($_POST['end_time']));
+				}
+			
 				$success = $db->insert('events_special', $insert_params);
 				if($success === 1) {
 					$rows_inserted++;	
@@ -97,8 +103,6 @@
 					
 			$params = array("name" => $_POST['name'],
 									"date" => date("Y-m-d",strtotime($_POST['date'])),
-									"start_time" => $_POST['start_time'],
-									"end_time" => $_POST['end_time'],
 									"fb_link" => $_POST['fb_link'],
 									"description" => $_POST['description'],
 									"special_note" => $_POST['special_note'],
@@ -113,6 +117,21 @@
 			} else if($_POST["removeicon"] === "true") {
 				$params["image"] = "";
 			}
+			
+			if($_POST['start_time']) {
+				$params["start_time"] = date("H:i", strtotime($_POST['start_time']));
+			} else {
+				//WPDB does not handle NULL well, so just run a separate query to clear the time. :/
+				$db->query($db->prepare("UPDATE `events_special` SET `start_time` = NULL WHERE `id` = %d", $event_id));
+			}
+			
+			if($_POST['end_time']) {
+				$params["end_time"] = date("H:i", strtotime($_POST['end_time']));
+			} else {
+				//WPDB does not handle NULL well, so just run a separate query to clear the time. :/
+				$db->query($db->prepare("UPDATE `events_special` SET `end_time` = NULL WHERE `id` = %d", $event_id));
+			}
+			
 			//Only update this event (not the entire group). so, we should orphan this event from the group.
 			if($group_id > 0 && $edit_all === "false") {
 				$params["group_id"] = 0;

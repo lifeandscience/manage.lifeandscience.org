@@ -285,10 +285,10 @@
 		}
 		
 		<?php
-			if($event->start_time != FALSE) {
+			if($event->start_time) {
 				echo "$('#start_time').timepicker('setTime', '" . date("h:i A", strtotime($event->start_time)) . "');";		
 			}
-			if($event->end_time != FALSE) {
+			if($event->end_time) {
 				echo "$('#end_time').timepicker('setTime', '" . date("h:i A", strtotime($event->end_time)) . "');";		
 			}
 		?>
