@@ -141,10 +141,14 @@ div.editor {
     box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.075) inset;
     height: 250px;
     max-height: 250px;
-    width: 670px;
+    width: 710px;
     outline: medium none;
     overflow: scroll;
     padding: 4px;
+}
+
+div.editor ul {
+	list-style: disc outside none !important;
 }
 
 .dropdown-menu a {
@@ -182,6 +186,11 @@ textarea.short {
 
 input[type="button"].btn {
 	margin: 10px 5px;
+}
+
+/* Timepicker */
+.icon-time {
+	color: #333;
 }
 
 #ui-datepicker-div { 

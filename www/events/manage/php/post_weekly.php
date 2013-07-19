@@ -8,7 +8,7 @@
 	date_default_timezone_set('EST5EDT');
 	ini_set('memory_limit', '3M');
 	
-	$dir = "../uploads";
+	$dir = "../../uploads";
 	$all_day = ($_POST['all_day'] == "on") ? 1 : 0;
 	$days = $_POST["days"];
 	
@@ -41,12 +41,18 @@
 			$wasAdding = 1;
 			$insert_params = array("name" => $_POST['name'],
 									"description" => $_POST['description'],
-									"start_time" => $_POST['start_time'],
-									"end_time" => $_POST['end_time'],
 									"all_day" => $all_day,
 									"added" => date("Y-m-d H:i:s"),
 									"icon" => $filename
 									);
+			
+			if($_POST['start_time']) {
+				$insert_params["start_time"] = date("H:i", strtotime($_POST['start_time']));
+			}
+				
+			if($_POST['end_time']) {
+				$insert_params["end_time"] = date("H:i", strtotime($_POST['end_time']));
+			}
 			
 			//Add all of the selected days
 			foreach($days as $i => $day) {
@@ -61,14 +67,26 @@
 		
 			$params = array("name" => $_POST['name'],
 							"description" => $_POST['description'],
-							"start_time" => $_POST['start_time'],
-							"end_time" => $_POST['end_time'],
 							"all_day" => $all_day );
 			//Only update the filename if the user uploaded a new one.
 			if($filename != "") {
 				$params["icon"] = $filename;
 			} else if($_POST["removeicon"] === "true") {
 				$params["icon"] = "";
+			}
+			
+			if($_POST['start_time']) {
+				$params["start_time"] = date("H:i", strtotime($_POST['start_time']));
+			} else {
+				//WPDB does not handle NULL well, so just run a separate query to clear the time. :/
+				$db->query($db->prepare("UPDATE `events_weekly` SET `start_time` = NULL WHERE `id` = %d", $event_id));
+			}
+			
+			if($_POST['end_time']) {
+				$params["end_time"] = date("H:i", strtotime($_POST['end_time']));
+			} else {
+				//WPDB does not handle NULL well, so just run a separate query to clear the time. :/
+				$db->query($db->prepare("UPDATE `events_weekly` SET `end_time` = NULL WHERE `id` = %d", $event_id));
 			}
 			
 			//Update selected days, but first make sure to clear previously selected days

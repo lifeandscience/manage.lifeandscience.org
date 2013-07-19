@@ -1,10 +1,4 @@
 <?php
-
-	//Get the time settings from the database
-	$settings = $db->get_results($db->prepare("SELECT * FROM `settings`"), "OBJECT_K");
-	$START_TIME = $settings["start_time"]->value;
-	$END_TIME = $settings["end_time"]->value;
-	$INTERVAL = $settings["time_interval"]->value;
 	
 	//Check to see if we are editing an existing event
 	$event = null;
@@ -43,7 +37,7 @@
 	}
 ?>
 
-<form id="addEvent" enctype="multipart/form-data" action="/events/php/post_weekly.php" method="post">
+<form id="addEvent" enctype="multipart/form-data" action="/events/manage/php/post_weekly.php" method="post">
 	<?php
 		//We should send the event_id so the posting script knows to do an update instead of an insert
 		if($event_id) {
@@ -74,56 +68,26 @@
 		        	<span class="inlineError" id="dayError">Select a day</div>
 	        	</td>
 	        </tr>
-			<tr>
+	        <tr>
 	            <td>Start time: <span class="required">*</span></td>
-	            <td><select name="start_time" style="width: 120px;margin-right:15px;" id="start_time">
-	            	<option></option>
-		            <?php
-			            $begin = strtotime($START_TIME);
-			            $end = strtotime($END_TIME);
-			            $matchFound = false;
-						for ($i = $begin; $i <= $end; $i += 60 * $INTERVAL) {
-							$sel = "";
-							if($event && $event->start_time === date('H:i', $i)) {
-								$sel = "selected='selected'";
-								$matchFound = true;
-							}
-							echo "<option value='". date('H:i', $i) . "' {$sel} >" . date('g:i A', $i) . "</option>";
-						}
-						if($event && !$matchFound) {
-							//Time did not match any possible values. It's likely that the default interval was changed since this event was created.
-							//Just add it into the select box anyway, since the user wants to see the current value.
-							echo "<option value='". date('H:i', strtotime($event->start_time)) . "' selected='selected' >" . date('g:i A', strtotime($event->start_time)) . "</option>";
-						}
-		            ?>
-					</select>
+	            <td>
+	            	<div class="input-append bootstrap-timepicker">
+			            <input name="start_time" id="start_time" type="text" class="input-small" data-default-time="false" <?= ($event && $event->all_day === "1") ? "disabled" : "" ?> />
+			            <span class="add-on"><i class="icon-time"></i></span>
+			        </div>
 					<label class="checkbox inline"><input type="checkbox" name="all_day" id="all_day" <?= ($event && $event->all_day === "1") ? "checked=checked" : "" ?> /> All-day event</label>
-					<span class="inlineError" id="startError">Select a start time or all-day event.</span>
+	        		<span class="inlineError" id="startError">Select a start time or all-day event.</span>
 				</td>
 	        </tr>
 	        <tr>
 	            <td>End time: </td>
-	            <td><select name="end_time" style="width: 120px" id="end_time">
-	            	<option></option>
-		            <?php
-			            $begin = strtotime($START_TIME);
-			            $end = strtotime($END_TIME);
-			            $matchFound = false;
-						for ($i = $begin; $i <= $end; $i += 60 * $INTERVAL) {
-							$sel = "";
-							if($event && $event->end_time === date('H:i', $i)) {
-								$sel = "selected='selected'";
-								$matchFound = true;
-							}
-							echo "<option value='". date('H:i', $i) . "' {$sel} >" . date('g:i A', $i) . "</option>";
-						}
-						if($event && !$matchFound) {
-							//Time did not match any possible values. It's likely that the default interval was changed since this event was created.
-							//Just add it into the select box anyway, since the user wants to see the current value.
-							echo "<option value='". date('H:i', strtotime($event->end_time)) . "' selected='selected' >" . date('g:i A', strtotime($event->end_time)) . "</option>";
-						}
-		            ?>
-	        </select></td>
+	            <td>
+	            	<div class="input-append bootstrap-timepicker">
+			            <input name="end_time" id="end_time" type="text" class="input-small" data-default-time="false" />
+			            <span class="add-on"><i class="icon-time"></i></span>
+			        </div>
+			        <span class="inlineError" id="endError">End time must be later than Start time.</span>
+	            </td>
 	        </tr>
 	        <tr>
 	            <td>Description: </td>
@@ -159,6 +123,7 @@
 				      <div class="btn-group">
 				        <a id="pictureBtn" title="" class="btn" data-original-title="Insert picture (or just drag &amp; drop)"><i class="icon-picture"></i></a>
 				        <input type="file" data-edit="insertImage" data-target="#pictureBtn" data-role="magic-overlay" style="opacity: 0; position: absolute; top: 0px; left: 0px; width: 39px; height: 30px;">
+				        <a title="" onclick="viewHTML(this)" class="btn" data-original-title="View HTML"><i class="icon-code"></i></a>
 				      </div>
 				      <div class="btn-group">
 				        <a title="" data-edit="undo" class="btn" data-original-title="Undo"><i class="icon-undo"></i></a>
@@ -221,17 +186,50 @@
 	  }
 	});
 	
+	$('#start_time').timepicker();
+	$('#end_time').timepicker();
+	
 	$('#clearicon').click(function(e) {
 		e.preventDefault();
 		$('#theicon').hide();
 		$('#clearicon').hide();
 		$('#removeicon').val(true);
 	});
+	
+	//Create a custom button for toggling HTML view on/off
+	var viewMode = "text";
+	function viewHTML(btn) {
+		if(viewMode == "text") {
+			var html = $('#editor').html();
+			$('#editor').text(html);
+			viewMode = "html";
+			if(btn) $(btn).attr("data-original-title", "Switch to WYSIWYG Editor");
+		} else {
+			var text = $('#editor').text();
+			$('#editor').html(text);
+			viewMode = "text";
+			if(btn) $(btn).attr("data-original-title", "View HTML");
+		}
+	}
 
 	function validate() {		
 		var name = $('#name').val();
 		var start_time = $('#start_time').val();
+		var end_time = $('#end_time').val();
 		var all_day = $('#all_day').is(':checked');
+		
+		//Make sure the end time is not earlier than start time
+		var end_time_error = false;
+		if(end_time && start_time) {
+			var sTime = new Date("1/1/2013 " + start_time);
+			var eTime = new Date("1/1/2013 " + end_time);
+			if(eTime < sTime) {
+				end_time_error = true;
+				$('#endError').show();
+			} else {
+				$('#endError').hide();
+			}
+		}
 		
 		if(!start_time && !all_day) {
 			$('#startError').show();
@@ -249,7 +247,7 @@
 		
 		$('#nameError').toggle(name == "");
 		
-		if(!days.length || !name || (!start_time && !all_day) ) {
+		if(!days.length || !name || (!start_time && !all_day) || end_time_error ) {
 			$("#validationdiv").show();
 		}
 		else {
@@ -273,7 +271,7 @@
 			if(yesDelete) {
 				$.ajax({
 					type: "POST",
-					url: "/events/php/delete.php",
+					url: "/events/manage/php/delete.php",
 					data: { event_type : "weekly", event_id : event_id },
 					success: function(response){
 				  		if(response.trim() === "OK") {
@@ -285,6 +283,15 @@
 				});
 			}
 		}
+		
+		<?php
+			if($event->start_time) {
+				echo "$('#start_time').timepicker('setTime', '" . date("h:i A", strtotime($event->start_time)) . "');";		
+			}
+			if($event->end_time) {
+				echo "$('#end_time').timepicker('setTime', '" . date("h:i A", strtotime($event->end_time)) . "');";		
+			}
+		?>
 		
 		$("#deleteLink").click(function(e) {
 			deleteEvent(e);		

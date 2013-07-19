@@ -10,7 +10,7 @@
 	<span>Settings saved.</span>
 </div>
 
-<form id="settings" enctype="multipart/form-data" action="/events/php/post_settings.php" method="post">
+<form id="settings" enctype="multipart/form-data" action="/events/manage/php/post_settings.php" method="post">
     <table>
 		<?php
 

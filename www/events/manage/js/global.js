@@ -19,6 +19,17 @@ function initToolbarBootstrapBindings() {
 	
 function formatTime(time) {
 	if(!time) return;
+	
+	//Check to see if the time is already formatted. (Most likely the case.)
+	var _time = time.toLowerCase();
+	if(_time.indexOf("am") != -1 || _time.indexOf("pm") != -1) {
+		//strip leading zeros first
+		if(_time.substring(0,1) === "0") {
+			time = time.substring(1);
+		}
+		return time; //already formatted appropriately
+	}
+	
 	var parts = time.split(":");
 	var hh = parts[0];
 	var m = parts[1];	
