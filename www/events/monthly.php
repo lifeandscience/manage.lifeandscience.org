@@ -1,12 +1,11 @@
 <?php
 
 	$_month = 7;
-	$_year = 2013;
 	
 	// LOCAL
 	
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/events/api/1/events/getEventsByMonth.php");
-	$events = getEventsByMonth($_month, $_year);
+	$events = getEventsByMonth($_month);
 	
 	// OR REMOTE
 	
@@ -89,19 +88,42 @@
 	
 		<?php
 		
-			foreach($events as $event) {
+			function formatDate($event) {
+				if(!$event) return "";
+				$displayString = "";
+				if($event->date) {
+					$_date = strtotime($event->date);
+					$displayString .= date('F j', $_date);
+				}
+				if($event->end_date) {
+					$_endDate = strtotime($event->end_date);
+					//If the end date is in the same month, omit the month name.
+					if(date('F', $_date) == date('F', $_endDate)) {
+						$displayString .= "–" . date('j', $_endDate);	
+					} else {
+						$displayString .= " – " . date('F j', $_endDate);	
+					}
+				}
+				return $displayString;
+			}
 			
+			function formatTime($event) {
 				if($event->all_day === "1") {				
-					$displayTime = "All Day";
+					$displayTime = "";
 				} else {
-					$displayTime = date("g:i A", strtotime($event->start_time));
+					$displayTime = "at " . date("g:i A", strtotime($event->start_time));
 					if($event->end_time) {
 						$displayTime .= " - " . date("g:i A", strtotime($event->end_time));
+						$displayTime = str_replace("at ", "from ", $displayTime);
 					}
 					//Remove :00 from times for a cleaner display
 					$displayTime = str_replace(":00", "", $displayTime);
 				}
-				
+				return $displayTime;
+			}
+		
+			foreach($events as $event) {
+			
 				$iconSrc = $event->image ? "/events/uploads/" . $event->image : ""; //TODO: Set a default image?
 				
 				echo "
@@ -113,7 +135,7 @@
 						</div>
 						<div class=\"right\">
 							<h3>" . $event->name . "</h3>
-							<div class=\"datetime\">" . date('l F jS, Y', strtotime($event->date)) . " @ " . $displayTime . "</div>
+							<div class=\"datetime\">" . formatDate($event) . " " . formatTime($event) . "</div>
 							<div class=\"costs\">";
 							
 							if($event->custom_1) echo "<div>" . $event->custom_1 . "</div><span class=\"separator\"></span>";

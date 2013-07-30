@@ -9,10 +9,20 @@
 	ini_set('memory_limit', '3M');
 	
 	$dir = "../../uploads";
-	$all_day = ($_POST['all_day'] == "on") ? 1 : 0;	
+	$all_day = ($_POST['all_day'] == "on") ? 1 : 0;
+	
+	$dateType = $_POST['dates_radio'];
+	$isDateValid = false;
+	if($dateType == "multidate" && $_POST['date'] != "") {
+		$isDateValid = true;
+	}
+	else if($dateType == "range" && $_POST['daterange_start'] != "" && $_POST['daterange_end'] != "" ) {
+		$isDateValid = true;
+		$isDateRange = true;
+	}
 	
 	//Validation - Check to make sure our required paramaters are not empty
-	if($_POST['name'] == "" || $_POST['date'] == "" || ($_POST['start_time'] == "" && !$all_day)) {
+	if($_POST['name'] == "" || !$isDateValid || ($_POST['start_time'] == "" && !$all_day)) {
 		error_log("An error occurred saving the event because all required fields were not filled out. Try again.");
 		$success = false;
 	}
@@ -35,8 +45,13 @@
 			move_uploaded_file($filetmp, $dir . "/" . $filename);	
 		}
 		
-		//See if we have multiple events
-		$dates = explode(",", $_POST["date"]);
+		if($dateType == "multidate") {
+			//See if we have multiple events
+			$dates = explode(",", $_POST["date"]);
+		} else {
+			//Date range. Just put the start_date into the dates array as the only entry. (Less code changes required further down.)
+			$dates = array($_POST['daterange_start']);
+		}
 		$num_dates = count($dates);
 		if($num_dates == 0) {
 			//TODO: Server-side validation here, please.
@@ -75,6 +90,10 @@
 				if($_POST['end_time']) {
 					$insert_params["end_time"] = date("H:i", strtotime($_POST['end_time']));
 				}
+				
+				if($isDateRange) {
+					$insert_params["end_date"] = date("Y-m-d",strtotime($_POST['daterange_end']));
+				}
 			
 				$success = $db->insert('events_special', $insert_params);
 				if($success === 1) {
@@ -102,7 +121,7 @@
 			$group_id = $_POST["group_id"];
 					
 			$params = array("name" => $_POST['name'],
-									"date" => date("Y-m-d",strtotime($_POST['date'])),
+									"date" => date("Y-m-d",strtotime($isDateRange ? $_POST['daterange_start'] : $_POST['date'])),
 									"fb_link" => $_POST['fb_link'],
 									"description" => $_POST['description'],
 									"special_note" => $_POST['special_note'],
@@ -116,6 +135,15 @@
 				$params["image"] = $filename;
 			} else if($_POST["removeicon"] === "true") {
 				$params["image"] = "";
+			}
+			
+			if($isDateRange) {
+				$params["end_date"] = date("Y-m-d",strtotime($_POST['daterange_end']));
+			} else {
+				//NULL the end_date event in case it was previously set.
+				
+				//WPDB does not handle NULL well, so just run a separate query to clear the end date. :/
+				$db->query($db->prepare("UPDATE `events_special` SET `end_date` = NULL WHERE `id` = %d", $event_id));
 			}
 			
 			if($_POST['start_time']) {

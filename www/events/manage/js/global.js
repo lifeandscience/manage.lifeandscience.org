@@ -22,12 +22,13 @@ function formatTime(time) {
 	
 	//Check to see if the time is already formatted. (Most likely the case.)
 	var _time = time.toLowerCase();
-	if(_time.indexOf("am") != -1 || _time.indexOf("pm") != -1) {
-		//strip leading zeros first
-		if(_time.substring(0,1) === "0") {
-			time = time.substring(1);
-		}
+	if(_time.indexOf("am") != -1 || _time.indexOf("pm") != -1) {		
 		return time; //already formatted appropriately
+	}
+	
+	//strip leading zeros first
+	if(_time.substring(0,1) === "0") {
+		time = time.substring(1);
 	}
 	
 	var parts = time.split(":");
@@ -55,17 +56,33 @@ function getDisplayTime(event) {
 		if(event.end_time) {
 			displayTime += " - " + formatTime(event.end_time);
 		}
+		//Remove :00 for cleaner times
+		displayTime = displayTime.replace(/:00/g, '');
 	}
 	return displayTime;					
 }
 
-//format the date like "August 25"
 function getDisplayDate(event) {
-	if(event && event.date) {
+	if(!event) return "";
+	
+	var displayString = "";
+	if(event.date) {
 		var parts = event.date.match(/(\d+)/g);
 		var displayDate = new Date(parts[0], parts[1]-1, parts[2]); //JS Date month is indexed 0-11
-		return dayNames[displayDate.getDay()] + ", " + monthNames[displayDate.getMonth()] + " " + displayDate.getDate();	
+		displayString += monthNames[displayDate.getMonth()] + " <span title=\"" + dayNames[displayDate.getDay()] + "\">" + displayDate.getDate() + "</span>";	
 	}
+	if(event.end_date) {
+		var parts = event.end_date.match(/(\d+)/g);
+		var displayEndDate = new Date(parts[0], parts[1]-1, parts[2]);
+		//If the end date is in the same month, omit the month name.
+		var dayWithHover = "<span title=\"" + dayNames[displayEndDate.getDay()] + "\">" + displayEndDate.getDate() + "</span>";
+		if(displayDate.getMonth() == displayEndDate.getMonth()) {
+			displayString += "–" + dayWithHover;
+		} else {
+			displayString += " – " + monthNames[displayEndDate.getMonth()] + " " + dayWithHover;
+		}
+	} 
+	return displayString;
 }
 
 function getQueryParam(key) {

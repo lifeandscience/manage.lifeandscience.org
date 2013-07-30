@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 3.3.9.2
+-- version 3.3.7deb5
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 19, 2013 at 12:58 AM
--- Server version: 5.5.9
--- PHP Version: 5.3.6
+-- Generation Time: Jul 29, 2013 at 01:53 AM
+-- Server version: 5.1.49
+-- PHP Version: 5.3.3-7+squeeze1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -16,7 +16,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `ncmls`
+-- Database: `manage`
 --
 
 -- --------------------------------------------------------
@@ -25,10 +25,11 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Table structure for table `events_special`
 --
 
-CREATE TABLE `events_special` (
+CREATE TABLE IF NOT EXISTS `events_special` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` text NOT NULL,
   `date` date NOT NULL,
+  `end_date` date DEFAULT NULL,
   `start_time` time DEFAULT NULL,
   `end_time` time DEFAULT NULL,
   `all_day` tinyint(1) NOT NULL DEFAULT '0',
@@ -45,7 +46,8 @@ CREATE TABLE `events_special` (
   `group_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `date` (`date`),
-  KEY `active` (`active`)
+  KEY `active` (`active`),
+  KEY `end_date` (`end_date`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=97 ;
 
 -- --------------------------------------------------------
@@ -54,7 +56,7 @@ CREATE TABLE `events_special` (
 -- Table structure for table `events_weekly`
 --
 
-CREATE TABLE `events_weekly` (
+CREATE TABLE IF NOT EXISTS `events_weekly` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `mon` tinyint(1) NOT NULL DEFAULT '0',
@@ -82,7 +84,7 @@ CREATE TABLE `events_weekly` (
 -- Table structure for table `settings`
 --
 
-CREATE TABLE `settings` (
+CREATE TABLE IF NOT EXISTS `settings` (
   `property` varchar(255) NOT NULL,
   `value` varchar(255) NOT NULL,
   `default` varchar(255) NOT NULL,

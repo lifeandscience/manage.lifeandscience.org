@@ -45,7 +45,7 @@
 		$db = new wpdb(SITE_DB_USER, SITE_DB_PASSWORD, SITE_DB_NAME, SITE_DB_HOST);
 		
 		//ERROR: No Day specified
-		if(!$day) {
+		if($day == null) {
 			$error = new ErrorObject();
 			$error->code = "ERROR";
 			$error->message = "No day specified.";
@@ -54,7 +54,6 @@
 		}
 		
 		$p_day = strtolower(substr($day, 0, 3));
-
 		
 		//Since we can't use prepare and %s for column names, ensure that the value exists in the whitelist for security.
 		$whitelisted_col_names = array("mon","tue","wed","thu","fri","sat","sun");
@@ -72,7 +71,7 @@
 	$day = isset($_GET["day"]) ? $_GET["day"] : null;
 	
 	//Check to see if this is a direct GET request, or a PHP include from another page.
-	if(stripos($_SERVER["SCRIPT_FILENAME"], "api/") !== FALSE) {
+	if(stripos($_SERVER["SCRIPT_FILENAME"], "api/1/events/getEventsByDay.php") !== FALSE) {
 		//this script was called directly, likely as a GET request from some javascript
 		$events = getEventsByDay($day);
 		echo json_encode($events);

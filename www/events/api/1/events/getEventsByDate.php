@@ -61,15 +61,14 @@
 		$db = new wpdb(SITE_DB_USER, SITE_DB_PASSWORD, SITE_DB_NAME, SITE_DB_HOST);
 		
 		//ERROR: No date specified
-		if(!$date) {
+		if($date == null) {
 			$error = new ErrorObject();
 			$error->code = "ERROR";
 			$error->message = "No date specified.";
 			$error->details = "You must include the `date` parameter. Ex. 20130216";
 			return $error;
 		}
-		
-		$events = $db->get_results($db->prepare("SELECT * FROM `events_special` WHERE `active` = 1 AND `date` = %d ORDER BY `start_time` ASC", $date));
+		$events = $db->get_results($db->prepare("SELECT * FROM `events_special` WHERE `active` = 1 AND (`date` = %d OR (`date` <= %d AND `end_date` >= %d)) ORDER BY `start_time` ASC", $date, $date, $date));
 		
 		$p_day = strtolower(date('D', strtotime($date)));
 		//Since we can't use prepare and %s for column names, ensure that the value exists in the whitelist for security.
@@ -98,7 +97,7 @@
 	$date = isset($_GET["date"]) ? $_GET["date"] : null;
 	
 	//Check to see if this is a direct GET request, or a PHP include from another page.
-	if(stripos($_SERVER["SCRIPT_FILENAME"], "api/") !== FALSE) {
+	if(stripos($_SERVER["SCRIPT_FILENAME"], "api/1/events/getEventsByDate.php") !== FALSE) {
 		//this script was called directly, likely as a GET request from some javascript
 		$events = getEventsByDate($date);
 		echo json_encode($events);

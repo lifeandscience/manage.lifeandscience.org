@@ -15,15 +15,17 @@
 	<meta charset="utf-8" /> 
 	<link rel="stylesheet" href="/events/manage/css/bootstrap-noicons.min.css" type="text/css" />
 	<link rel="stylesheet" href="/events/manage/css/bootstrap-timepicker.min.css" type="text/css" />
-	<link rel="stylesheet" href="/events/manage/css/cupertino/jquery-ui-1.10.3.custom.min.css" type="text/css" />
+	<link rel="stylesheet" href="/events/manage/css/bootstrap-datepicker.css" type="text/css" />
+	<link rel="stylesheet" href="/events/manage/css/jquery-ui.min.css" type="text/css" />
 	<link rel="stylesheet" href="/events/manage/css/styles.css" type="text/css" />
 	<link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 	
 	<script src="/events/manage/js/jquery-2.0.2.min.js"></script>
-	<script src="/events/manage/js/jquery-ui-1.10.3.custom.min.js"></script>
+	<script src="/events/manage/js/jquery-ui.min.js"></script>
 	<script src="/events/manage/js/jquery.hotkeys.js"></script>
 	<script src="/events/manage/js/bootstrap-noicons.min.js"></script>
 	<script src="/events/manage/js/bootstrap-wysiwyg.js"></script>
+	<script src="/events/manage/js/bootstrap-datepicker.js"></script>
 	<script src="/events/manage/js/bootstrap-timepicker.min.js"></script>
 	<script src="/events/manage/js/jquery-ui.multidatespicker.js"></script>
 	<script src="/events/manage/js/global.js"></script>

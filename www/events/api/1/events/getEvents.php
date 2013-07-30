@@ -71,7 +71,7 @@
 		$db = new wpdb(SITE_DB_USER, SITE_DB_PASSWORD, SITE_DB_NAME, SITE_DB_HOST);
 	
 		//ERROR: No Detail Level specified
-		if(!$detail_level) {
+		if($detail_level == null) {
 			$error = new ErrorObject();
 			$error->code = "ERROR";
 			$error->message = "You must specify the level of detail for the response.";
@@ -79,35 +79,53 @@
 			return $error;
 		}
 		
-		$summary_fields = "`id`,`name`,`date`,`start_time`,`end_time`,`all_day`,`image`,`description`,`active`";
+		$summary_fields = "`id`,`name`,`date`,`end_date`,`start_time`,`end_time`,`all_day`,`image`,`description`,`active`";
 		$select_params = (strtolower($detail_level) === "summary") ? $summary_fields : "*";
 
 		if(!$start_date) $start_date = date("Ymd"); //Default value = current date
 		
-		$offset = ($page && $count) ? $page * $count : 0;
+		$offset = ($page != null && $count != null) ? $page * $count : 0;
 		
 		if($end_date) {
 			
 			
-			if($count) {
-			
-				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND `date` BETWEEN %d AND %d ORDER BY `date` ASC LIMIT %d, %d", $start_date, $end_date, $offset, $count));
+			if($count != null) {
+				/*
+					Very complicated query. Any of these cases will yeild a result:
+					
+					1) Single date between START and END
+					2) Date range that begins within START and END
+					3) Date range that ends between START and END
+					4) Date range that starts before START and ends after END.
+				
+				*/
+				
+				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND ( (`date` BETWEEN %d AND %d) OR (`end_date` BETWEEN %d AND %d) OR (`date` <= %d AND `end_date` >= %d) ) ORDER BY `date` ASC  LIMIT %d, %d", $start_date, $end_date, $start_date, $end_date, $start_date, $end_date, $offset, $count));
 				
 			} else {
 				
-				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND `date` BETWEEN %d AND %d ORDER BY `date` ASC", $start_date, $end_date));
+				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND ( (`date` BETWEEN %d AND %d) OR (`end_date` BETWEEN %d AND %d) OR (`date` <= %d AND `end_date` >= %d) ) ORDER BY `date` ASC", $start_date, $end_date, $start_date, $end_date, $start_date, $end_date));
 				
 			}
 			
 		} else {
 
-			if($count) {
+			if($count != null) {
 			
-				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND `date` >= %d ORDER BY `date` ASC LIMIT %d, %d", $start_date, $offset, $count));
+				/* 
+					Any of these cases will yeild a result:
+					
+					1) Single date after START
+					2) Date range that begins after START
+					3) Date range that starts before START but ends after START			
+				
+				*/
+			
+				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND (`date` >= %d OR `end_date` >= %d) ORDER BY `date` ASC LIMIT %d, %d", $start_date, $start_date, $offset, $count));
 				
 			} else {
 				
-				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND `date` >= %d ORDER BY `date` ASC", $start_date));
+				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND (`date` >= %d OR `end_date` >= %d) ORDER BY `date` ASC", $start_date, $start_date));
 				
 			}
 
@@ -121,9 +139,9 @@
 	$start_date = isset($_GET["start_date"]) ? $_GET["start_date"] : null;
 	$end_date = isset($_GET["end_date"]) ? $_GET["end_date"] : null;
 	$detail_level = isset($_GET["detail_level"]) ? $_GET["detail_level"] : null;
-
+	
 	//Check to see if this is a direct GET request, or a PHP include from another page.
-	if(stripos($_SERVER["SCRIPT_FILENAME"], "api/") !== FALSE) {
+	if(stripos($_SERVER["SCRIPT_FILENAME"], "/api/1/events/getEvents.php") !== FALSE) {
 		//this script was called directly, likely as a GET request from some javascript
 		$events = getEvents($count, $page, $start_date, $end_date, $detail_level);
 		echo json_encode($events);

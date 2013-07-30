@@ -45,7 +45,7 @@
 		$db = new wpdb(SITE_DB_USER, SITE_DB_PASSWORD, SITE_DB_NAME, SITE_DB_HOST);
 		
 		//ERROR: No Event ID specified
-		if(!$id) {
+		if($id == null) {
 			$error = new ErrorObject();
 			$error->code = "ERROR";
 			$error->message = "No event id specified.";
@@ -65,7 +65,7 @@
 	$id = isset($_GET["id"]) ? $_GET["id"] : null;
 	
 	//Check to see if this is a direct GET request, or a PHP include from another page.
-	if(stripos($_SERVER["SCRIPT_FILENAME"], "api/") !== FALSE) {
+	if(stripos($_SERVER["SCRIPT_FILENAME"], "api/1/events/getEventById.php") !== FALSE) {
 		//this script was called directly, likely as a GET request from some javascript
 		$event = getEventById($id);
 		echo json_encode($event);

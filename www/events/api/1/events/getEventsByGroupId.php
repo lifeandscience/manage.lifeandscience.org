@@ -46,7 +46,7 @@
 		$db = new wpdb(SITE_DB_USER, SITE_DB_PASSWORD, SITE_DB_NAME, SITE_DB_HOST);
 		
 		//ERROR: No Group Id specified
-		if(!$groupId) {
+		if($groupId == null) {
 			$error = new ErrorObject();
 			$error->code = "ERROR";
 			$error->message = "No groupId specified.";
@@ -66,7 +66,7 @@
 	$groupId = isset($_GET["groupId"]) ? $_GET["groupId"] : null;
 	
 	//Check to see if this is a direct GET request, or a PHP include from another page.
-	if(stripos($_SERVER["SCRIPT_FILENAME"], "api/") !== FALSE) {
+	if(stripos($_SERVER["SCRIPT_FILENAME"], "api/1/events/getEventsByGroupId.php") !== FALSE) {
 		//this script was called directly, likely as a GET request from some javascript
 		$events = getEventsByGroupId($groupId);
 		echo json_encode($events);

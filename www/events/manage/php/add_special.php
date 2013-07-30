@@ -10,6 +10,7 @@
 			echo "<div class=\"alert alert-error\">An error occurred trying to fetch this event. Check the error log.</div>";
 		}
 	}
+	$isDateRange = ($event && $event->end_date);
 ?>
 
 <div id="errordiv" class="noDisplay alert alert-error">
@@ -29,7 +30,7 @@
 		echo "<div id=\"successdiv\" class=\"noDisplay alert alert-success\">";
 		echo "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>Event created successfully.</div>";
 		echo "<h2 class=\"eventTitle\">Create Special Event</h2>";
-		echo "<p class=\"description\">These events occur on a specific date(s). (ex. Dec 25, 2012 at 7 AM, Sundays in April)</p>";
+		echo "<p class=\"description\">These events occur on a specific date(s). (ex. Dec 25 at 7 AM, Sundays in April, July 20-25)</p>";
 	}
 ?>
 
@@ -55,9 +56,21 @@
 	        </tr>
 			<tr>
 	            <td>Date(s): <span class="required">*</span></td>
-	            <td><div id="ui-datepicker-div"></div>
-	            <input id="date" name="date" type="text" class="inputfield" placeholder="Select a date for this event" required>
-	            <?php if(!$event) echo "<span class=\"tiny formHelp\">You can select multiple dates.</span>"; ?><span class="inlineError" id="dateError">Select a date</span></td>
+	            <td>
+					<label class="radio"><input type="radio" name="dates_radio" id="radio_datenormal" value="multidate" <?= ($event && !$isDateRange) ? "checked" : "" ?>>Specify one or more individual dates (ex. July 4, 6, 8)</label>    
+					<label class="radio"><input type="radio" name="dates_radio" id="radio_daterange" value="range" <?= $isDateRange ? "checked" : "" ?>>Specify a date range (ex. July 4-8)</label>
+					<span class="inlineError" id="dateTypeError">Select a date type.</span>
+	            	<div id="date-range-picker" class="<?= $isDateRange ? "" : "noDisplay" ?>">
+	            		<input name="daterange_start" id="daterange_start" type="text" placeholder="Start Date" style="width: 165px" value="<?= $isDateRange ? date('m/d/Y',strtotime($event->date)) : "" ?>" />
+	            		<input name="daterange_end" id="daterange_end" type="text" placeholder="End Date" style="width: 165px" value="<?= $isDateRange ? date('m/d/Y',strtotime($event->end_date)) : "" ?>" />
+	            		<span class="inlineError" id="dateRangeError"></span>
+	            	</div>	            
+		            <div id="normal-date-picker" class="<?= ($event && !$isDateRange) ? "" : "noDisplay" ?>">
+			            <div id="ui-datepicker-div"></div>
+			            <input id="date" name="date" type="text" class="inputfield" placeholder="Select a date for this event">
+			            <?php if(!$event) echo "<span class=\"tiny formHelp\">You can select multiple dates.</span>"; ?><span class="inlineError" id="dateError">Select a date</span>
+		            </div>
+	           </td>
 	        </tr>
 			<tr>
 	            <td>Start time: <span class="required">*</span></td>
@@ -207,14 +220,29 @@
 	  }
 	});
 	
+	var datepicker = $.fn.datepicker.noConflict(); // return $.fn.datepicker to previously assigned value
+	$.fn.bootstrapDP = datepicker;  // give $().bootstrapDP the bootstrap-datepicker functionality
+	
 	$('#start_time').timepicker();
 	$('#end_time').timepicker();
-	
+		
 	$('#clearicon').click(function(e) {
 		e.preventDefault();
 		$('#theicon').hide();
 		$('#clearicon').hide();
 		$('#removeicon').val(true);
+	});
+	
+	//Toggle between the two date formats
+	$('#radio_datenormal').click(function(e) {
+		$('#date-range-picker').hide();
+		$('#normal-date-picker').show();
+		$('#dateTypeError').hide();
+	});
+	$('#radio_daterange').click(function(e) {
+		$('#date-range-picker').show();
+		$('#normal-date-picker').hide();
+		$('#dateTypeError').hide();
 	});
 	
 	//Create a custom button for toggling HTML view on/off
@@ -242,10 +270,36 @@
 
 	function validate() {
 		var name = $('#name').val();
-		var dates = $('#ui-datepicker-div').multiDatesPicker('getDates');
 		var start_time = $('#start_time').val();
 		var end_time = $('#end_time').val();
 		var all_day = $('#all_day').is(':checked');
+		
+		var date_format = $('input:radio[name=dates_radio]:checked').val();
+		var areDatesValid = false;
+		if(date_format === "range") {
+			var start_date = $('#daterange_start').val();
+			var end_date = $('#daterange_end').val();
+			var sDate = new Date(start_date);
+			var eDate = new Date(end_date);
+			if(sDate && eDate && (eDate < sDate)) {
+				$('#dateRangeError').html("End date must be later than start date.");
+			} else if(start_date && end_date) {
+				areDatesValid = true;
+			} else if(start_date) {
+				$('#dateRangeError').html("You must select an end date.");
+			} else {
+				$('#dateRangeError').html("You must select a start date.");	
+			}
+			$('#dateRangeError').toggle(!areDatesValid);
+			
+		} else if(date_format === "multidate") {
+			var dates = $('#ui-datepicker-div').multiDatesPicker('getDates');
+			$('#dateError').toggle(!dates.length);
+			areDatesValid = dates.length > 0;
+		} else {
+			//No date type selected. You must select a date!
+			$('#dateTypeError').show();						
+		}
 		
 		//Make sure the end time is not earlier than start time
 		var end_time_error = false;
@@ -265,16 +319,10 @@
 		} else {
 			$('#startError').hide();
 		}
-		
-		if(dates.length == 0) {
-			$('#dateError').show();
-		} else {
-			$('#dateError').hide();
-		}
-		
+			
 		$('#nameError').toggle(name == "");
 		
-		if(dates.length == 0 || !name || (!start_time && !all_day) || end_time_error ) {
+		if( !areDatesValid || !name || (!start_time && !all_day) || end_time_error ) {
 			$("#validationdiv").show();
 		}
 		else {
@@ -313,10 +361,18 @@
 	}
 
 	$(function() {
+		$('#daterange_start').bootstrapDP().on("changeDate", function() {
+			$('#daterange_start').bootstrapDP("hide");
+			$('#daterange_end').focus();
+		});
+		$('#daterange_end').bootstrapDP().on("changeDate", function() {
+			$('#daterange_end').bootstrapDP("hide");
+		});
+		
 		$("#ui-datepicker-div").multiDatesPicker({
 			altField: '#date'
 			<?php
-				if($event && $event->date) {
+				if($event && $event->date && !$event->end_date) {
 					echo ",maxPicks: 1, defaultDate: \"". date("m/d/y", strtotime($event->date)) . "\", addDates: [ parseDate('" . $event->date . "') ]";
 				}
 			?>

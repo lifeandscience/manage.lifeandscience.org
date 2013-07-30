@@ -1,6 +1,6 @@
 <?php
 
-	$_date = "20130716";
+	$_date = "20130719";
 	
 	// LOCAL
 	
@@ -60,7 +60,7 @@
 
 	<div class="wrapper">
 
-		<h1>Tuesday, July 16, 2013</h1>
+		<h1>Friday, July 19, 2013</h1>
 	
 		<?php
 		
