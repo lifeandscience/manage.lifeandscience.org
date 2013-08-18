@@ -1,7 +1,3 @@
-AuthType Basic
-AuthName "MLS: Manage"
-AuthUserFile /srv/www/manage.lifeandscience.org/.htpasswd
-Require valid-user
 
 
 RewriteEngine On
@@ -12,7 +8,6 @@ RewriteRule ^events/(weekly|special)/add/?$ /events/manage/index.php?page=add_$1
 RewriteRule ^events/(weekly|special)/?$ /events/manage/index.php?page=$1 [L,NC]
 RewriteRule ^events/(settings)/?$ /events/manage/index.php?page=$1 [L,NC]
 
-
-
-
+RewriteRule ^events/?$ /events/manage/index.php [L,NC]
+RewriteRule ^/?$ /events/manage/index.php [L,NC]
 
