@@ -2,7 +2,7 @@
 	
 	//Check to see if we are editing an existing event
 	$event = null;
-	$event_id = $_GET["event_id"];
+	$event_id = isset($_GET["event_id"]) ? $_GET["event_id"] : null;
 	if($event_id) {
 		require_once($_SERVER['DOCUMENT_ROOT'] . "/events/api/1/events/getEventById.php");
 		$event = getEventById($event_id);
@@ -72,8 +72,13 @@
 		            </div>
 	           </td>
 	        </tr>
+	        <tr>
+	            <td>Custom Date Text: </td>
+	            <td><input type="text" name="display_date" id="display_date" class="inputfield" value="<?= ($event) ? $event->display_date : "" ?>" />
+	            <span class="tiny formHelp">Optional. Use this to override the default date description. (e.g. Mondays in May)</span></td>
+	        </tr>
 			<tr>
-	            <td>Start time: <span class="required">*</span></td>
+	            <td>Start Time: <span class="required">*</span></td>
 	            <td>
 	            	<div class="input-append bootstrap-timepicker">
 			            <input name="start_time" id="start_time" type="text" class="input-small" data-default-time="false" <?= ($event && $event->all_day === "1") ? "disabled" : "" ?> />
@@ -84,13 +89,33 @@
 				</td>
 	        </tr>
 	        <tr>
-	            <td>End time: </td>
+	            <td>End Time: </td>
 	            <td>
 	            	<div class="input-append bootstrap-timepicker">
 			            <input name="end_time" id="end_time" type="text" class="input-small" data-default-time="false" />
 			            <span class="add-on"><i class="icon-time"></i></span>
 			        </div>
 			        <span class="inlineError" id="endError">End time must be later than Start time.</span>
+	            </td>
+	        </tr>
+	        <tr>
+	            <td>Sunday Start Time: </td>
+	            <td>
+	            	<div class="input-append bootstrap-timepicker">
+			            <input name="sun_start_time" id="sun_start_time" type="text" class="input-small" data-default-time="false" <?= ($event && $event->all_day === "1") ? "disabled" : "" ?> />
+			            <span class="add-on"><i class="icon-time"></i></span>
+			        </div>
+			        <span class="tiny formHelp">Optional. Specify a special time for Sundays (if applicable).</span>
+				</td>
+	        </tr>
+	        <tr>
+	            <td>Sunday End Time: </td>
+	            <td>
+	            	<div class="input-append bootstrap-timepicker">
+			            <input name="sun_end_time" id="sun_end_time" type="text" class="input-small" data-default-time="false" />
+			            <span class="add-on"><i class="icon-time"></i></span>
+			        </div>
+			        <span class="inlineError" id="sundayEndError">Sunday End time must be later than Sunday Start time.</span>
 	            </td>
 	        </tr>
 	        <tr>
@@ -177,6 +202,12 @@
 	            <span class="tiny formHelp">This message will be displayed under the image.</span></td>
 	        </tr>
 	        <tr>
+	            <td>Adults Only: </td>
+	            <td>
+					<label class="checkbox inline"><input type="checkbox" name="adult_only" id="adult_only" <?= ($event && $event->adult_only === "1") ? "checked=checked" : "" ?> /> This event is for adults only</label>
+				</td>
+	        </tr>
+	        <tr>
 	            <td>Facebook URL: </td>
 	            <td><input type="text" name="fb_link" id="fb_link" class="inputfield" value="<?= ($event) ? $event->fb_link : "" ?>" /></td>
 	        </tr>
@@ -184,9 +215,9 @@
 	            <td colspan="2" align="center">
 		            <?php
 					
-						//Show a delete link if we are in edit mode
+						//Show an archive link if we are in edit mode
 						if($event) {
-							echo "<button class=\"btn btn-small btn-danger\" href=\"#\" id=\"deleteLink\">Delete</button>";
+							echo "<button class=\"btn btn-small btn-danger\" href=\"#\" id=\"deleteLink\">Archive Event</button>";
 						}	
 						
 					?>
@@ -198,8 +229,8 @@
     </table>
 </form>
 
-<div id="delete-confirm" title="You're deleting an event." style="display:none;">
-	<p>Do you want to delete this and all occurrences of this event, or only the selected occurrence?</p>
+<div id="delete-confirm" title="You are archiving an event." style="display:none;">
+	<p>Do you want to archive all occurrences of this event, or only the selected occurrence?</p>
 </div>
 <div id="edit-confirm" title="You're changing a repeating event." style="display:none;">
 	<p>Do you want to change only this occurrence of the event, or this and all occurrences?</p>
@@ -225,6 +256,8 @@
 	
 	$('#start_time').timepicker();
 	$('#end_time').timepicker();
+	$('#sun_start_time').timepicker();
+	$('#sun_end_time').timepicker();	
 		
 	$('#clearicon').click(function(e) {
 		e.preventDefault();
@@ -267,11 +300,26 @@
 		$('#description').val($('#editor').html());
 		$('#addEvent').submit();
 	}
+	
+	function isEndTimeValid(start_time, end_time) {
+		//Make sure the end time is not earlier than start time
+		var end_time_error = false;
+		if(end_time && start_time) {
+			var sTime = new Date("1/1/2013 " + start_time);
+			var eTime = new Date("1/1/2013 " + end_time);
+			if(eTime < sTime) {
+				end_time_error = true;
+			}
+		}
+		return !end_time_error;
+	}
 
 	function validate() {
 		var name = $('#name').val();
 		var start_time = $('#start_time').val();
 		var end_time = $('#end_time').val();
+		var sun_start_time = $('#sun_start_time').val();
+		var sun_end_time = $('#sun_end_time').val();
 		var all_day = $('#all_day').is(':checked');
 		
 		var date_format = $('input:radio[name=dates_radio]:checked').val();
@@ -300,19 +348,12 @@
 			//No date type selected. You must select a date!
 			$('#dateTypeError').show();						
 		}
+
+		var isEndValid = isEndTimeValid(start_time, end_time);
+		$('#endError').toggle(!isEndValid);
 		
-		//Make sure the end time is not earlier than start time
-		var end_time_error = false;
-		if(end_time && start_time) {
-			var sTime = new Date("1/1/2013 " + start_time);
-			var eTime = new Date("1/1/2013 " + end_time);
-			if(eTime < sTime) {
-				end_time_error = true;
-				$('#endError').show();
-			} else {
-				$('#endError').hide();
-			}
-		}
+		var isSundayEndValid = isEndTimeValid(sun_start_time, sun_end_time);
+		$('#sundayEndError').toggle(!isSundayEndValid);
 		
 		if(!start_time && !all_day) {
 			$('#startError').show();
@@ -322,7 +363,7 @@
 			
 		$('#nameError').toggle(name == "");
 		
-		if( !areDatesValid || !name || (!start_time && !all_day) || end_time_error ) {
+		if( !areDatesValid || !name || (!start_time && !all_day) || !isEndValid || !isSundayEndValid) {
 			$("#validationdiv").show();
 		}
 		else {
@@ -393,6 +434,8 @@
 	$("#all_day").change(function() {
 		$("#end_time").prop("disabled", this.checked);
 		$("#start_time").prop("disabled", this.checked);
+		$("#sun_start_time").prop("disabled", this.checked);
+		$("#sun_end_time").prop("disabled", this.checked);
 	});
 	
 	function cancel() {
@@ -408,6 +451,8 @@
 			if($('#editor').html() != $('#original_description').val()) return true;
 			if($('#start_time').val() != "<?= $event->start_time ?>") return true;
 			if($('#end_time').val() != "<?= $event->end_time ?>") return true;
+			if($('#sun_start_time').val() != "<?= $event->sun_start_time ?>") return true;
+			if($('#sun_end_time').val() != "<?= $event->sun_end_time ?>") return true;			
 			if($('#fb_link').val() != "<?= $event->fb_link ?>") return true;
 			if($('#thumbnail').val() != "") return true;
 			if($('#special_note').val() != "<?= $event->special_note ?>") return true;
@@ -432,18 +477,18 @@
 					modal: true,
 					width: 500,
 					buttons: {
-						"Delete only this event": function() {
+						"Archive only this event": function() {
 							postDelete({ event_type : "special", event_id : event_id });
 							$(this).dialog( "close" );
 						},
-						"Delete all events": function() {
+						"Archive all events": function() {
 							postDelete({ event_type : "special", event_id : event_id, group_id: group_id });
 							$(this).dialog( "close" );
 						}
 					}
 				});
 			} else {
-				var yes = confirm("Are you sure you want to delete \"<?= $event->name ?>\"?");	
+				var yes = confirm("Are you sure you want to archive \"<?= $event->name ?>\"?");	
 				if(yes) postDelete({ event_type : "special", event_id : event_id });
 			}
 		}
@@ -469,6 +514,12 @@
 			}
 			if($event->end_time) {
 				echo "$('#end_time').timepicker('setTime', '" . date("h:i A", strtotime($event->end_time)) . "');";		
+			}
+			if($event->sun_start_time) {
+				echo "$('#sun_start_time').timepicker('setTime', '" . date("h:i A", strtotime($event->sun_start_time)) . "');";		
+			}
+			if($event->sun_end_time) {
+				echo "$('#sun_end_time').timepicker('setTime', '" . date("h:i A", strtotime($event->sun_end_time)) . "');";		
 			}
 		?>
 		

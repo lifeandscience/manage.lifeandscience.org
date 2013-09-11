@@ -15,8 +15,11 @@
 				"id":"28",
 				"name":"A feb event",		
 				"date":"2013-02-16",
+				"display_date":"16th of February in the afternoon.",		
 				"start_time":"11:00:00",
-				"end_time":"15:00:00",		
+				"end_time":"15:00:00",	
+				"sun_start_time":"13:00:00",		
+				"sun_end_time":"16:00:00",			
 				"all_day":"0",
 				"image":"event28.png",
 				"icon":"icon27.png",
@@ -27,6 +30,7 @@
 				"cost_members":"$24",
 				"cost_public":"$30",
 				"custom_1":"Ages 12-18",
+				"adult_only":"0",
 				"active":"1",
 				"added":"2012-06-24 23:46:04",
 				"mon": "1",
@@ -36,7 +40,7 @@
 				"fri": "0",
 				"sat": "1",
 				"sun": "0",
-				"group_id":"28"
+				"group_id":"28"				
 			},
 			{
 				...
@@ -68,6 +72,7 @@
 			$error->details = "You must include the `date` parameter. Ex. 20130216";
 			return $error;
 		}
+		
 		$events = $db->get_results($db->prepare("SELECT * FROM `events_special` WHERE `active` = 1 AND (`date` = %d OR (`date` <= %d AND `end_date` >= %d)) ORDER BY `start_time` ASC", $date, $date, $date));
 		
 		$p_day = strtolower(date('D', strtotime($date)));
@@ -87,10 +92,7 @@
 		//Sort the array by start_time
 		$func = create_function('$a,$b', 'return strcmp($a->start_time, $b->start_time);');
 		usort($events_combined, $func);
-//		usort($events_combined, function($a, $b) {
-//			return strcmp($a->start_time, $b->start_time);
-//		});
-		
+
 		return $events_combined;
 	}
 	

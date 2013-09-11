@@ -15,8 +15,11 @@
 				"id":"28",
 				"name":"A feb event",
 				"date":"2013-02-16",
+				"display_date":"16th of February in the afternoon.",		
 				"start_time":"11:00:00",
 				"end_time":"15:00:00",		
+				"sun_start_time":"13:00:00",		
+				"sun_end_time":"16:00:00",		
 				"all_day":"0",
 				"image":"event28.png",
 				"fb_link":"http://facebook.com/blah",
@@ -27,8 +30,9 @@
 				"cost_public":"$30",
 				"custom_1":"Ages 12-18",
 				"active":"1",
+				"adult_only":"0",
 				"added":"2012-06-24 23:46:04",
-				"group_id":"28"
+				"group_id":"28"				
 			},
 			{
 				...

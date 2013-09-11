@@ -22,8 +22,11 @@
 				"id":"28",
 				"name":"A feb event",
 				"date":"2013-02-16",
+				"display_date":"16th of February in the afternoon.",		
 				"start_time":"11:00:00",
 				"end_time":"15:00:00",		
+				"sun_start_time":"13:00:00",		
+				"sun_end_time":"16:00:00",		
 				"all_day":"0",
 				"image":"event28.png", 
 				"fb_link":"http://facebook.com/blah",
@@ -34,6 +37,7 @@
 				"cost_public":"$30",
 				"custom_1":"Ages 12-18",
 				"active":"1",
+				"adult_only":"0",
 				"added":"2012-06-24 23:46:04",
 				"group_id":"28"
 			},
@@ -50,9 +54,12 @@
 				"date":"2013-02-16",
 				"start_time":"11:00:00",
 				"end_time":"15:00:00",		
+				"sun_start_time":"13:00:00",		
+				"sun_end_time":"16:00:00",		
 				"all_day":"0",
 				"image":"event28.png",
 				"description":"Two dates in Feb 2012",
+				"adult_only":"0",
 				"active":"1"
 			},
 			{
@@ -79,7 +86,7 @@
 			return $error;
 		}
 		
-		$summary_fields = "`id`,`name`,`date`,`end_date`,`start_time`,`end_time`,`all_day`,`image`,`description`,`active`";
+		$summary_fields = "`id`,`name`,`date`,`end_date`,`start_time`,`end_time`,`sun_start_time`,`sun_end_time`,`all_day`,`image`,`description`,`active`,`adult_only`";
 		$select_params = (strtolower($detail_level) === "summary") ? $summary_fields : "*";
 
 		if(!$start_date) $start_date = date("Ymd"); //Default value = current date

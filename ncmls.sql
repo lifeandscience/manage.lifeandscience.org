@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 29, 2013 at 01:53 AM
+-- Generation Time: Sep 11, 2013 at 02:23 AM
 -- Server version: 5.1.49
 -- PHP Version: 5.3.3-7+squeeze1
 
@@ -29,9 +29,12 @@ CREATE TABLE IF NOT EXISTS `events_special` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` text NOT NULL,
   `date` date NOT NULL,
+  `display_date` text NOT NULL,
   `end_date` date DEFAULT NULL,
   `start_time` time DEFAULT NULL,
   `end_time` time DEFAULT NULL,
+  `sun_start_time` time DEFAULT NULL,
+  `sun_end_time` time DEFAULT NULL,
   `all_day` tinyint(1) NOT NULL DEFAULT '0',
   `image` varchar(255) NOT NULL,
   `fb_link` text NOT NULL,
@@ -44,11 +47,12 @@ CREATE TABLE IF NOT EXISTS `events_special` (
   `active` tinyint(1) NOT NULL DEFAULT '1',
   `added` datetime NOT NULL,
   `group_id` int(11) NOT NULL,
+  `adult_only` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `date` (`date`),
   KEY `active` (`active`),
   KEY `end_date` (`end_date`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=97 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=101 ;
 
 -- --------------------------------------------------------
 
@@ -76,7 +80,7 @@ CREATE TABLE IF NOT EXISTS `events_weekly` (
   PRIMARY KEY (`id`),
   KEY `active` (`active`),
   KEY `mon` (`mon`,`tue`,`wed`,`thu`,`fri`,`sat`,`sun`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=54 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=55 ;
 
 -- --------------------------------------------------------
 
@@ -93,3 +97,15 @@ CREATE TABLE IF NOT EXISTS `settings` (
   `sort_id` int(5) NOT NULL,
   UNIQUE KEY `property_2` (`property`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `special_notes`
+--
+
+CREATE TABLE IF NOT EXISTS `special_notes` (
+  `date` date NOT NULL,
+  `notes` text NOT NULL,
+  UNIQUE KEY `date` (`date`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;

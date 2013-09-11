@@ -10,6 +10,9 @@
 	
 	$dir = "../../uploads";
 	$all_day = ($_POST['all_day'] == "on") ? 1 : 0;
+	$adult_only = ($_POST['adult_only'] == "on") ? 1 : 0;
+	
+	$timeFields = array("start_time","end_time","sun_start_time","sun_end_time");
 	
 	$dateType = $_POST['dates_radio'];
 	$isDateValid = false;
@@ -78,17 +81,17 @@
 									"all_day" => $all_day,
 									"cost_members" => $_POST['cost_members'],
 									"cost_public" => $_POST['cost_public'],
-									"custom_1" => $_POST['custom_1'],																
+									"display_date" => $_POST['display_date'],
+									"custom_1" => $_POST['custom_1'],
 									"added" => date("Y-m-d H:i:s"),
+									"adult_only" => $adult_only,
 									"group_id" => $group_id
 									);
-	
-				if($_POST['start_time']) {
-					$insert_params["start_time"] = date("H:i", strtotime($_POST['start_time']));
-				}
 				
-				if($_POST['end_time']) {
-					$insert_params["end_time"] = date("H:i", strtotime($_POST['end_time']));
+				foreach($timeFields as $field) {
+					if($_POST[$field]) {
+						$insert_params[$field] = date("H:i", strtotime($_POST[$field]));
+					}
 				}
 				
 				if($isDateRange) {
@@ -129,6 +132,8 @@
 									"all_day" => $all_day,
 									"cost_members" => $_POST['cost_members'],
 									"cost_public" => $_POST['cost_public'],
+									"display_date" => $_POST['display_date'],
+									"adult_only" => $adult_only,
 									"custom_1" => $_POST['custom_1'] );
 			//Only update the filename if the user uploaded a new one.
 			if($filename != "") {
@@ -146,18 +151,13 @@
 				$db->query($db->prepare("UPDATE `events_special` SET `end_date` = NULL WHERE `id` = %d", $event_id));
 			}
 			
-			if($_POST['start_time']) {
-				$params["start_time"] = date("H:i", strtotime($_POST['start_time']));
-			} else {
-				//WPDB does not handle NULL well, so just run a separate query to clear the time. :/
-				$db->query($db->prepare("UPDATE `events_special` SET `start_time` = NULL WHERE `id` = %d", $event_id));
-			}
-			
-			if($_POST['end_time']) {
-				$params["end_time"] = date("H:i", strtotime($_POST['end_time']));
-			} else {
-				//WPDB does not handle NULL well, so just run a separate query to clear the time. :/
-				$db->query($db->prepare("UPDATE `events_special` SET `end_time` = NULL WHERE `id` = %d", $event_id));
+			foreach($timeFields as $field) {				
+				if($_POST[$field]) {
+					$params[$field] = date("H:i", strtotime($_POST[$field]));
+				} else {
+					//WPDB does not handle NULL well, so just run a separate query to clear the time. :/
+					$db->query($db->prepare("UPDATE `events_special` SET `{$field}` = NULL WHERE `id` = %d", $event_id));
+				}
 			}
 			
 			//Only update this event (not the entire group). so, we should orphan this event from the group.
