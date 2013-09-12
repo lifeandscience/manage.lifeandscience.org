@@ -11,4 +11,3 @@ if(file_exists($_SERVER['DOCUMENT_ROOT'] . '/../config.inc.php')){
 	define('DB_COLLATE', '');
 }
 ?>
-
