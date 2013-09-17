@@ -2,6 +2,7 @@
 	
 	//Check to see if we are editing an existing event
 	$event = null;
+	$isArchived = 0;
 	$event_id = $_GET["event_id"];
 	if($event_id) {
 		//Get the event (No API exists to do this, so we must query)
@@ -11,6 +12,11 @@
 		$event = $db->get_row($db->prepare("SELECT * FROM `events_weekly` WHERE `id` = %d", $event_id));
 		if(!$event) {
 			echo "<div class=\"alert alert-error\">An error occurred trying to fetch this event. Check the error log.</div>";
+		}
+		else if($event->active === "0") {
+			//This event is archived
+			$isArchived = 1;
+			echo "<div class=\"alert alert-error\">This event has been archived. <a id=\"restoreLink\" href=\"#\">Restore it.</a></div>";
 		}
 	}
 
@@ -28,7 +34,11 @@
 		echo "<div id=\"successdiv\" class=\"noDisplay alert alert-success\">";
 		echo "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>Event changes have been saved.</div>";
 		echo "<h2 class=\"eventTitle\"><span class=\"editEventName\">" . $event->name . "</span>";
-		echo "<a class=\"backLink\" href=\"/events/weekly\">Back to event list</a></h2>";
+		if(!$isArchived) {
+			echo "<a class=\"backLink\" href=\"/events/weekly/\">Back to event list</a></h2>";	
+		} else {
+			echo "<a class=\"backLink\" href=\"/events/archive/\">Back to Archive</a></h2>";
+		}
 	} else {
 		echo "<div id=\"successdiv\" class=\"noDisplay alert alert-success\">";
 		echo "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>Event created successfully. {$eventlink}</div>";
@@ -155,9 +165,13 @@
 	            <td colspan="2" align="center">
 		            <?php
 					
-						//Show a delete link if we are in edit mode
+						//Show an archive or delete link if we are in edit mode
 						if($event) {
-							echo "<button class=\"btn btn-small btn-danger\" href=\"#\" id=\"deleteLink\">Delete</button>";
+							if($isArchived) {
+								echo "<button class=\"btn btn-small btn-danger\" href=\"#\" id=\"deleteLink\">Delete Permanently</button>";
+							} else {
+								echo "<button class=\"btn btn-small btn-danger\" href=\"#\" id=\"deleteLink\">Archive</button>";
+							}
 						}	
 						
 					?>
@@ -267,12 +281,18 @@
 		function deleteEvent(e) {
 			e.preventDefault();
 			var event_id = <?= $event->id ?>;
-			var yesDelete = confirm("Are you sure you want to delete \"<?= $event->name ?>\"?");
+			var delete_permanent = <?= $isArchived ?>;
+			if(delete_permanent) {
+				var yesDelete = confirm("Are you sure you want to permanently delete \"<?= $event->name ?>\"? This action cannot be reversed.");
+			} else {
+				var yesDelete = confirm("Are you sure you want to archive \"<?= $event->name ?>\"?");	
+			}
+			
 			if(yesDelete) {
 				$.ajax({
 					type: "POST",
 					url: "/events/manage/php/delete.php",
-					data: { event_type : "weekly", event_id : event_id },
+					data: { event_type : "weekly", event_id : event_id, delete_permanent: delete_permanent },
 					success: function(response){
 				  		if(response.trim() === "OK") {
 					  		window.location.href = "/events/weekly";
@@ -284,6 +304,23 @@
 			}
 		}
 		
+		function restoreEvent(e) {
+			e.preventDefault();
+			var event_id = <?= $event->id ?>;
+			$.ajax({
+				type: "POST",
+				url: "/events/manage/php/restore.php",
+				data: { event_type : "weekly", event_id : event_id },
+				success: function(response){
+			  		if(response.trim() === "OK") {
+				  		window.location.href = "/events/weekly";
+			  		} else {
+				  		$("#errordiv").show();
+			  		}
+			  	}
+			});
+		}
+		
 		<?php
 			if($event->start_time) {
 				echo "$('#start_time').timepicker('setTime', '" . date("h:i A", strtotime($event->start_time)) . "');";		
@@ -292,6 +329,10 @@
 				echo "$('#end_time').timepicker('setTime', '" . date("h:i A", strtotime($event->end_time)) . "');";		
 			}
 		?>
+		
+		$("#restoreLink").click(function(e) {
+			restoreEvent(e);		
+		});
 		
 		$("#deleteLink").click(function(e) {
 			deleteEvent(e);		

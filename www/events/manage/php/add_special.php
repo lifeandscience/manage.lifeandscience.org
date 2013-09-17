@@ -2,12 +2,18 @@
 	
 	//Check to see if we are editing an existing event
 	$event = null;
+	$isArchived = 0;
 	$event_id = isset($_GET["event_id"]) ? $_GET["event_id"] : null;
 	if($event_id) {
 		require_once($_SERVER['DOCUMENT_ROOT'] . "/events/api/1/events/getEventById.php");
 		$event = getEventById($event_id);
 		if(!$event) {
 			echo "<div class=\"alert alert-error\">An error occurred trying to fetch this event. Check the error log.</div>";
+		}
+		else if($event->active === "0") {
+			//This event is archived
+			$isArchived = 1;
+			echo "<div class=\"alert alert-error\">This event has been archived. <a id=\"restoreLink\" href=\"#\">Restore it.</a></div>";
 		}
 	}
 	$isDateRange = ($event && $event->end_date);
@@ -25,7 +31,12 @@
 		echo "<div id=\"successdiv\" class=\"noDisplay alert alert-success\">";
 		echo "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>Event changes have been saved.</div>";
 		echo "<h2 class=\"eventTitle\"><span class=\"editEventName\">" . $event->name . "</span>" ;
-		echo "<a class=\"backLink\" href=\"/events/special/\">Back to event list</a></h2>";
+		if(!$isArchived) {
+			echo "<a class=\"backLink\" href=\"/events/special/\">Back to event list</a></h2>";	
+		} else {
+			echo "<a class=\"backLink\" href=\"/events/archive/\">Back to Archive</a></h2>";
+		}
+		
 	} else {
 		echo "<div id=\"successdiv\" class=\"noDisplay alert alert-success\">";
 		echo "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>Event created successfully.</div>";
@@ -215,10 +226,14 @@
 	            <td colspan="2" align="center">
 		            <?php
 					
-						//Show an archive link if we are in edit mode
+						//Show an archive or delete link if we are in edit mode
 						if($event) {
-							echo "<button class=\"btn btn-small btn-danger\" href=\"#\" id=\"deleteLink\">Archive Event</button>";
-						}	
+							if($isArchived) {
+								echo "<button class=\"btn btn-small btn-danger\" href=\"#\" id=\"deleteLink\">Delete Permanently</button>";
+							} else {
+								echo "<button class=\"btn btn-small btn-danger\" href=\"#\" id=\"deleteLink\">Archive</button>";
+							}
+						}
 						
 					?>
 		            <input type="button" onclick="validate()" class="btn" value="<?= ($event) ? "Save" : "Create Event" ?>" />
@@ -229,7 +244,10 @@
     </table>
 </form>
 
-<div id="delete-confirm" title="You are archiving an event." style="display:none;">
+<div id="delete-confirm" title="You are deleting an event." style="display:none;">
+	<p>Do you want to <b>permanently delete</b> all occurrences of this event, or only the selected occurrence?</p>
+</div>
+<div id="archive-confirm" title="You are archiving an event." style="display:none;">
 	<p>Do you want to archive all occurrences of this event, or only the selected occurrence?</p>
 </div>
 <div id="edit-confirm" title="You're changing a repeating event." style="display:none;">
@@ -469,42 +487,90 @@
 			e.preventDefault();
 			var event_id = <?= $event->id ?>;
 			var group_id = <?= $event->group_id ?>;
-			
+			var delete_permanent = <?= $isArchived ?>;
+
 			//If this event is part of a group, we must ask what the user wants to do.
 			if(group_id != "0") {
-				$("#delete-confirm").dialog({
-					resizable: false,
-					modal: true,
-					width: 500,
-					buttons: {
-						"Archive only this event": function() {
-							postDelete({ event_type : "special", event_id : event_id });
-							$(this).dialog( "close" );
-						},
-						"Archive all events": function() {
-							postDelete({ event_type : "special", event_id : event_id, group_id: group_id });
-							$(this).dialog( "close" );
+				if(delete_permanent) {
+					$("#delete-confirm").dialog({
+						resizable: false,
+						modal: true,
+						width: 500,
+						buttons: {
+							"Delete only this event": function() {
+								postDelete({ event_type : "special", event_id : event_id, delete_permanent: delete_permanent });
+								$(this).dialog( "close" );
+							},
+							"Delete all events": function() {
+								postDelete({ event_type : "special", event_id : event_id, group_id: group_id, delete_permanent: delete_permanent });
+								$(this).dialog( "close" );
+							}
 						}
-					}
-				});
+					});
+				} else {
+					//Archive!
+					$("#archive-confirm").dialog({
+						resizable: false,
+						modal: true,
+						width: 500,
+						buttons: {
+							"Archive only this event": function() {
+								postDelete({ event_type : "special", event_id : event_id });
+								$(this).dialog( "close" );
+							},
+							"Archive all events": function() {
+								postDelete({ event_type : "special", event_id : event_id, group_id: group_id });
+								$(this).dialog( "close" );
+							}
+						}
+					});
+				}
+				
 			} else {
-				var yes = confirm("Are you sure you want to archive \"<?= $event->name ?>\"?");	
-				if(yes) postDelete({ event_type : "special", event_id : event_id });
+				if(delete_permanent) {
+					var yes = confirm("Are you sure you want to permanently delete \"<?= $event->name ?>\"? This action cannot be reversed.");
+				} else {
+					var yes = confirm("Are you sure you want to archive \"<?= $event->name ?>\"?");	
+				}
+				if(yes) postDelete({ event_type : "special", event_id : event_id, delete_permanent: delete_permanent });
 			}
 		}
 		
 		function postDelete(postArgs) {
+			var isArchived = <?= $isArchived ?>;
 			$.ajax({
 				type: "POST",
 				url: "/events/manage/php/delete.php",
 				data: postArgs,
 				success: function(response){
 			  		if(response.trim() === "OK") {
-				  		window.location.href = "/events/special/";
+			  			if(isArchived) {
+				  			window.location.href = "/events/archive/";
+			  			} else {
+				  			window.location.href = "/events/special/";	
+			  			}
+				  		
 			  		} else {
 				  		$("#errordiv").show();
 			  		}
 			  }
+			});
+		}
+		
+		function restoreEvent(e) {
+			e.preventDefault();
+			var event_id = <?= $event->id ?>;
+			$.ajax({
+				type: "POST",
+				url: "/events/manage/php/restore.php",
+				data: { event_type : "special", event_id : event_id },
+				success: function(response){
+			  		if(response.trim() === "OK") {
+				  		window.location.href = "/events/special";
+			  		} else {
+				  		$("#errordiv").show();
+			  		}
+			  	}
 			});
 		}
 		
@@ -522,6 +588,10 @@
 				echo "$('#sun_end_time').timepicker('setTime', '" . date("h:i A", strtotime($event->sun_end_time)) . "');";		
 			}
 		?>
+		
+		$("#restoreLink").click(function(e) {
+			restoreEvent(e);		
+		});
 		
 		$("#deleteLink").click(function(e) {
 			deleteEvent(e);		
