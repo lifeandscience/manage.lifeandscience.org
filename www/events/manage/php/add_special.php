@@ -203,6 +203,7 @@
 		            		$path = "/events/uploads/" . $event->image;
 		            		echo "<img src=\"" . $path . "\" height='50' width='50' id=\"theicon\" />";
 		            		echo "<button id=\"clearicon\" title=\"Remove image\">&times;</button>";
+							echo "<input type=\"hidden\" name=\"originalImage\" id=\"originalImage\" value=\"" . $event->image . "\" />";
 		            	}
 		            ?>
 	            </td>
@@ -432,7 +433,7 @@
 			altField: '#date'
 			<?php
 				if($event && $event->date && !$event->end_date) {
-					echo ",maxPicks: 1, defaultDate: \"". date("m/d/y", strtotime($event->date)) . "\", addDates: [ parseDate('" . $event->date . "') ]";
+					echo ", defaultDate: \"". date("m/d/y", strtotime($event->date)) . "\", addDates: [ parseDate('" . $event->date . "') ]";
 				}
 			?>
 		});

@@ -122,9 +122,9 @@
 			//Edit only this event, or all future events?
 			$edit_all = $_POST["edit_all"];
 			$group_id = $_POST["group_id"];
-					
+
 			$params = array("name" => $_POST['name'],
-									"date" => date("Y-m-d",strtotime($isDateRange ? $_POST['daterange_start'] : $_POST['date'])),
+									"date" => date("Y-m-d",strtotime($dates[0])), //just use the first date for this edit. We'll address the other dates later.
 									"fb_link" => $_POST['fb_link'],
 									"description" => $_POST['description'],
 									"special_note" => $_POST['special_note'],
@@ -174,6 +174,43 @@
 				
 				$updated2 = $db->update('events_special', $params, array("group_id" => $group_id));
 				if($updated2 !== false && $success == 1) $success = 1;
+			}
+			
+			//If multiple dates were selected during the edit, we need to create these additional events (rows)
+			if($dateType == "multidate" && $num_dates > 1) {
+				$rows_inserted = 0;
+				for($x = 1; $x < $num_dates; $x++) { //start at index 1 since we already used the 1st date when saving the initial edit.
+					$params["date"] = date("Y-m-d",strtotime($dates[$x]));
+					$params["added"] = date("Y-m-d H:i:s");
+					if(!empty($filename)) {
+						$params["image"] = $filename;
+					} else {
+						$params["image"] = $_POST["originalImage"];
+					}
+					//Check to see if this event has a group_id intact, if so, use it on these new events as well. If not, we should still set a group_id for the new rows to the id of the initial edit event.
+					if($group_id === "0") {
+						$params["group_id"] = $event_id;
+					} else {
+						$params["group_id"] = $group_id;
+					}
+					//Create the new events and add them to the group
+					$success2 = $db->insert('events_special', $params);
+					if($success2 === 1) {
+						$rows_inserted++;	
+					} else {
+						error_log("Unable to insert event '". $_POST["name"] . "' on " . $dates[$x]);
+					}	
+				}
+				//If the original event was not a member of the group, but it is now (the group leader, in fact). We need to update its groupId, too
+				if($group_id === "0" && $rows_inserted > 0) {
+					$db->update('events_special', array("group_id" => $event_id), array("id" => $event_id));
+				}
+				
+				if($rows_inserted == ($num_dates - 1) ) {
+					$success = 1; //only claim success if we inserted all of the rows
+				} else {
+					$success = 0;
+				}
 			}
 		}
 
