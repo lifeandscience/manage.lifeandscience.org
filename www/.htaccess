@@ -6,7 +6,7 @@ RewriteEngine On
 RewriteRule ^events/(weekly|special)/edit/(.*)/?$ /events/manage/index.php?page=add_$1&event_id=$2 [L,NC]
 RewriteRule ^events/(weekly|special)/add/?$ /events/manage/index.php?page=add_$1 [L,NC]
 RewriteRule ^events/(weekly|special)/?$ /events/manage/index.php?page=$1 [L,NC]
-RewriteRule ^events/(settings|archive)/?$ /events/manage/index.php?page=$1 [L,NC]
+RewriteRule ^events/(settings|archive|notes)/?$ /events/manage/index.php?page=$1 [L,NC]
 
 RewriteRule ^events/?$ /events/manage/index.php [L,NC]
 RewriteRule ^/?$ /events/manage/index.php [L,NC]
