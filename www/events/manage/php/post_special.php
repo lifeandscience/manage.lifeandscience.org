@@ -81,6 +81,7 @@
 									"all_day" => $all_day,
 									"cost_members" => $_POST['cost_members'],
 									"cost_public" => $_POST['cost_public'],
+									"url" => $_POST['url'],
 									"display_date" => $_POST['display_date'],
 									"custom_1" => $_POST['custom_1'],
 									"added" => date("Y-m-d H:i:s"),
@@ -132,6 +133,7 @@
 									"all_day" => $all_day,
 									"cost_members" => $_POST['cost_members'],
 									"cost_public" => $_POST['cost_public'],
+									"url" => $_POST['url'],
 									"display_date" => $_POST['display_date'],
 									"adult_only" => $adult_only,
 									"custom_1" => $_POST['custom_1'] );

@@ -175,19 +175,24 @@
 					<textarea id="original_description" name="original_description" style="display: none;"><?= ($event) ? $event->description : "" ?></textarea>
 	        </tr>
 	        <tr>
+	            <td>Event URL: </td>
+	            <td><input type="text" name="url" id="url" class="inputfield" placeholder="http://" value="<?= ($event) ? $event->url : "" ?>" />
+	            <span class="tiny formHelp">Optional. Enter an existing URL that you would like this event to link to.</span></td>
+	        </tr>
+	        <tr>
 	            <td>Custom Field: </td>
 	            <td><input type="text" name="custom_1" id="custom_1" class="inputfield" value="<?= ($event) ? $event->custom_1 : "" ?>" />
 	            <span class="tiny formHelp" >Specify age limitations, or other special requirements.</span></td>
 	        </tr>
 	        <tr>
 	            <td>Cost (Members): </td>
-	            <td><input type="text" name="cost_members" id="cost_members" class="inputfield short" value="<?= ($event) ? $event->cost_members : "" ?>" style="margin-right:15px;" />
+	            <td><input type="text" name="cost_members" placeholder="$" id="cost_members" class="inputfield short" value="<?= ($event) ? $event->cost_members : "" ?>" style="margin-right:15px;" />
 					<label class="checkbox inline"><input type="checkbox" name="members_only" id="members_only" <?= ($event && $event->members_only === "1") ? "checked=checked" : "" ?> /> This event is for members only</label>
 	            </td>
 	        </tr>
 	        <tr>
 	            <td>Cost (Public): </td>
-	            <td><input type="text" name="cost_public" id="cost_public" class="inputfield short" value="<?= ($event) ? $event->cost_public : "" ?>" 
+	            <td><input type="text" name="cost_public" placeholder="$" id="cost_public" class="inputfield short" value="<?= ($event) ? $event->cost_public : "" ?>" 
 	            		<?= ($event && $event->members_only === "1") ? "disabled" : "" ?> /></td>
 	        </tr>
 	        <tr>
@@ -221,7 +226,7 @@
 	        </tr>
 	        <tr>
 	            <td>Facebook URL: </td>
-	            <td><input type="text" name="fb_link" id="fb_link" class="inputfield" value="<?= ($event) ? $event->fb_link : "" ?>" /></td>
+	            <td><input type="text" name="fb_link" id="fb_link" placeholder="http://" class="inputfield" value="<?= ($event) ? $event->fb_link : "" ?>" /></td>
 	        </tr>
 	        <tr>
 	            <td colspan="2" align="center">

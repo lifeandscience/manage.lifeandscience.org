@@ -26,6 +26,7 @@
 				"fb_link":"http://facebook.com/blah",
 				"description":"Two dates in Feb 2012",
 				"special_note":"This goes under the image",
+				"url":"http://lifeandscience.org/event/123",
 				"members_only":"0",
 				"cost_members":"$24",
 				"cost_public":"$30",

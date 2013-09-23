@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 11, 2013 at 02:23 AM
+-- Generation Time: Sep 22, 2013 at 11:27 PM
 -- Server version: 5.1.49
 -- PHP Version: 5.3.3-7+squeeze1
 
@@ -48,11 +48,12 @@ CREATE TABLE IF NOT EXISTS `events_special` (
   `added` datetime NOT NULL,
   `group_id` int(11) NOT NULL,
   `adult_only` int(1) NOT NULL DEFAULT '0',
+  `url` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `date` (`date`),
   KEY `active` (`active`),
   KEY `end_date` (`end_date`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=101 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=105 ;
 
 -- --------------------------------------------------------
 
