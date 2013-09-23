@@ -89,11 +89,27 @@
 			$events_combined = array(); //return an empty array instead of null if no events are found matching the specified month
 		}
 		
-		//Sort the array by start_time
-		$func = create_function('$a,$b', 'return strcmp($a->start_time, $b->start_time);');
-		usort($events_combined, $func);
-
+		//Sort the array by start_time (sunday gets a custom sort due to potential sun_start_time)
+		if(date('D',strtotime($date)) === "Sun") {
+			usort($events_combined, "sorter");
+		} else {
+			$func = create_function('$a,$b', 'return strcmp($a->start_time, $b->start_time);');
+			usort($events_combined, $func);	
+		}
 		return $events_combined;
+	}
+	
+	//Only called on Sundays
+	function sorter($a,$b) {
+		$timeA = $a->start_time;
+		if(!empty($a->sun_start_time)) {
+			$timeA = $a->sun_start_time;	
+		}
+		$timeB = $b->start_time;
+		if(!empty($b->sun_start_time)) {
+			$timeB = $b->sun_start_time;	
+		}
+		return strcmp($timeA, $timeB);
 	}
 	
 	$date = isset($_GET["date"]) ? $_GET["date"] : null;

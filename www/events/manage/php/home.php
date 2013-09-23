@@ -12,9 +12,20 @@
 			if($event->all_day === "1") {				
 				$displayTime = "All Day";
 			} else {
-				$displayTime = date("g:i A", strtotime($event->start_time));
-				if($event->end_time) {
-					$displayTime .= " - " . date("g:i A", strtotime($event->end_time));
+			
+				$start_time = $event->start_time;
+				$end_time = $event->end_time;
+				if(date("D",strtotime($date)) == "Sun") {
+					if(!empty($event->sun_start_time)) {
+						$start_time = $event->sun_start_time;		
+					}
+					if(!empty($event->sun_end_time)) {
+						$end_time = $event->sun_end_time;		
+					}
+				}
+				$displayTime = date("g:i A", strtotime($start_time));
+				if($end_time) {
+					$displayTime .= " - " . date("g:i A", strtotime($end_time));
 				}
 			}	
 	
