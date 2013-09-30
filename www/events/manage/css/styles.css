@@ -348,6 +348,7 @@ h2.eventTitle {
 .createLink {
 	font-size: 10pt;
 	padding: 3px;
+	margin-left: 5px;
 	text-transform: uppercase;
 }
 

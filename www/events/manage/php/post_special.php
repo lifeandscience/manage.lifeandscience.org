@@ -106,6 +106,10 @@
 					error_log("Unable to insert event '". $_POST["name"] . "' on " . $dates[$x]);
 				}
 				
+				if($x == 0) {
+					$event_id = $db->insert_id;	
+				}
+				
 				//if this is the first date we are saving, and there are multiple dates.. use the insert_id of the first as the group_id for all events.
 				if($x == 0 && $num_dates > 1) {
 					$group_id = $db->insert_id;
@@ -219,13 +223,7 @@
 	} //end validation block
 	
 	if($success === 1) {	
-			
-		if($wasAdding == 1) {
-			echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/special/add/?success=true';</script>";
-		} else {
-			echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/special/edit/{$event_id}/?success=true';</script>";
-		}
-		
+		echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/special/edit/{$event_id}/?success=true';</script>";
 	} else {
 		//An error occurred while adding the row. Could be validation related, but the client-side validation should have caught it.
 		echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/special/add/?error';</script>";

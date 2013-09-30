@@ -60,7 +60,7 @@
 			}
 	
 			$success = $db->insert('events_weekly', $insert_params);	
-			$new_event_id = $db->insert_id;
+			$event_id = $db->insert_id;
 		} 
 		//EDITING EVENT - UPDATE
 		else {
@@ -106,13 +106,7 @@
 	} //end validation block
 	
 	if($success === 1) {	
-			
-		if($wasAdding == 1) {
-			echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/weekly/add/?success=true&eid={$new_event_id}';</script>";
-		} else {
-			echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/weekly/edit/{$event_id}/?success=true';</script>";
-		}
-		
+		echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/weekly/edit/{$event_id}/?success=true';</script>";
 	} else {
 		//An error occurred while adding the row. Could be validation related, but the client-side validation should have caught it.
 		echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/weekly/add/?error';</script>";

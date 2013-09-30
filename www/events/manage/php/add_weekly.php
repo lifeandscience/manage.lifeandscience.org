@@ -31,17 +31,32 @@
 <?php
 	//Need to show unique labels if we are in Edit vs. Create mode
 	if($event) {
+	
+		//Create the "View" link
+		$viewLink = "<a class=\"createLink\" href=\"";
+		$viewLink .= NCMLS_DAILY_EVENTS_ENDPOINT;
+		
+		//Determine the first day that this event occurs on
+		if($event->mon) $_dayName = "Monday";
+		else if($event->tue) $_dayName = "Tuesday";
+		else if($event->wed) $_dayName = "Wednesday";
+		else if($event->thu) $_dayName = "Thursday";
+		else if($event->fri) $_dayName = "Friday";
+		else if($event->sat) $_dayName = "Saturday";
+		else if($event->sun) $_dayName = "Sunday";
+		
+		$viewLink .= "?date=" . date('Ymd', strtotime("this " . $_dayName));
+		$viewLink .= "\">View Event</a>";
+		
 		echo "<div id=\"successdiv\" class=\"noDisplay alert alert-success\">";
-		echo "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>Event changes have been saved.</div>";
-		echo "<h2 class=\"eventTitle\"><span class=\"editEventName\">" . $event->name . "</span>";
+		echo "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>Event has been saved.</div>";
+		echo "<h2 class=\"eventTitle\"><span class=\"editEventName\">" . $event->name . $viewLink . "</span>";
 		if(!$isArchived) {
 			echo "<a class=\"backLink\" href=\"/events/weekly/\">Back to event list</a></h2>";	
 		} else {
 			echo "<a class=\"backLink\" href=\"/events/archive/\">Back to Archive</a></h2>";
 		}
 	} else {
-		echo "<div id=\"successdiv\" class=\"noDisplay alert alert-success\">";
-		echo "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>Event created successfully. {$eventlink}</div>";
 		echo "<h2 class=\"eventTitle\">Create Weekly Event</h2>";
 		echo "<p class=\"description\">These events occur every week on a specific day and time. (ex: Monday at 3pm, Friday at 11am)</p>";
 	}

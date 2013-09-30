@@ -28,9 +28,21 @@
 <?php
 	//Need to show unique labels if we are in Edit vs. Create mode
 	if($event) {
+	
+		//Create the "View" link
+		$viewLink = "<a class=\"createLink\" href=\"";
+		if($event->adult_only === "1") {
+			$viewLink .= NCMLS_AFTER_HOURS_EVENTS_ENDPOINT;
+		} else {
+			$viewLink .= NCMLS_MONTHLY_EVENTS_ENDPOINT;
+		}
+		$_d = strtotime($event->date);
+		$viewLink .= "?month=" . date('m', $_d) . "&year=" . date('Y', $_d);
+		$viewLink .= "\">View Event</a>";
+		
 		echo "<div id=\"successdiv\" class=\"noDisplay alert alert-success\">";
-		echo "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>Event changes have been saved.</div>";
-		echo "<h2 class=\"eventTitle\"><span class=\"editEventName\">" . $event->name . "</span>" ;
+		echo "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>Event has been saved.</div>";
+		echo "<h2 class=\"eventTitle\"><span class=\"editEventName\">" . $event->name . $viewLink . "</span>" ;
 		if(!$isArchived) {
 			echo "<a class=\"backLink\" href=\"/events/special/\">Back to event list</a></h2>";	
 		} else {
@@ -38,8 +50,6 @@
 		}
 		
 	} else {
-		echo "<div id=\"successdiv\" class=\"noDisplay alert alert-success\">";
-		echo "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>Event created successfully.</div>";
 		echo "<h2 class=\"eventTitle\">Create Special Event</h2>";
 		echo "<p class=\"description\">These events occur on a specific date(s). (ex. Dec 25 at 7 AM, Sundays in April, July 20-25)</p>";
 	}
