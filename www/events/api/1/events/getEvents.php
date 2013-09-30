@@ -88,7 +88,7 @@
 			return $error;
 		}
 		
-		$summary_fields = "`id`,`name`,`date`,`end_date`,`start_time`,`end_time`,`sun_start_time`,`sun_end_time`,`all_day`,`image`,`description`,`active`,`adult_only`,`url`";
+		$summary_fields = "`id`,`name`,`date`,`end_date`,`start_time`,`end_time`,`sun_start_time`,`sun_end_time`,`all_day`,`image`,`description`,`active`,`adult_only`,`url`,`group_id`";
 		$select_params = (strtolower($detail_level) === "summary") ? $summary_fields : "*";
 
 		if(!$start_date) $start_date = date("Ymd"); //Default value = current date

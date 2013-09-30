@@ -1,4 +1,7 @@
 <?php
+
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/events/bin/config.inc.php");
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/events/bin/wp-db.php");
 	
 	//Check to see if we are editing an existing event
 	$event = null;
@@ -8,12 +11,29 @@
 		require_once($_SERVER['DOCUMENT_ROOT'] . "/events/api/1/events/getEventById.php");
 		$event = getEventById($event_id);
 		if(!$event) {
-			echo "<div class=\"alert alert-error\">An error occurred trying to fetch this event. Check the error log.</div>";
+			echo "<div class=\"alert alert-error\">An error occurred trying to fetch this event. This can occur if you removed one or more dates from an existing event. <a href=\"/events/special\">Go back.</a></div>";
 		}
 		else if($event->active === "0") {
 			//This event is archived
 			$isArchived = 1;
 			echo "<div class=\"alert alert-error\">This event has been archived. <a id=\"restoreLink\" href=\"#\">Restore it.</a></div>";
+		}
+		//Get a list of all the other event dates that exist with the same group_id
+		$all_dates = array();
+		$formatted_dates = array();
+		if($event && $event->group_id && $event->group_id !== "0" ) {
+			$db = new wpdb(SITE_DB_USER, SITE_DB_PASSWORD, SITE_DB_NAME, SITE_DB_HOST);
+			$events = $db->get_results($db->prepare("SELECT `date`, `end_date`, `id` FROM `events_special` WHERE `group_id` = %d", $event->group_id));
+			foreach($events as $ev) {
+				array_push($all_dates, date("m/d/Y", strtotime($ev->date)));
+				array_push($formatted_dates, strtotime($ev->date) * 1000); //needed for Multi-Date Picker
+				
+				//TODO: What should we do here if the event also has an end_date (meaning it's a range... Not supported?)
+			}
+			$all_dates_string = implode(",", $all_dates);
+			$all_dates_formatted_string = implode(",", $formatted_dates);			
+		} else {
+			$all_dates_string = date("m/d/Y", strtotime($event->date));
 		}
 	}
 	$isDateRange = ($event && $event->end_date);
@@ -61,6 +81,7 @@
 		if($event_id) {
 			echo "<input id='event_id' name='event_id' type='hidden' value='" . $event_id ."' />";
 			echo "<input id='group_id' name='group_id' type='hidden' value='" . $event->group_id ."' />";
+			echo "<input id='original_dates' name='original_dates' type='hidden' value='" . $all_dates_string ."' />";
 			echo "<input id='edit_all' name='edit_all' type='hidden' value='' />";
 		}
 	?>
@@ -402,7 +423,9 @@
 		}
 		else {
 			$("#validationdiv").hide();
-						
+			submitForm();
+			
+			/*			
 			//check to see if we are editing a multi-day event
 			var group_id = <?= ($event) ? $event->group_id : "null" ?>;
 			if(group_id > 0) {
@@ -432,6 +455,7 @@
 			} else {
 				submitForm()				
 			}
+			*/
 		}
 	}
 
@@ -448,7 +472,8 @@
 			altField: '#date'
 			<?php
 				if($event && $event->date && !$event->end_date) {
-					echo ", defaultDate: \"". date("m/d/y", strtotime($event->date)) . "\", addDates: [ parseDate('" . $event->date . "') ]";
+					$dateString = $all_dates_formatted_string ? $all_dates_formatted_string : "parseDate('" . $event->date . "')";
+					echo ", defaultDate: \"". date("m/d/y", strtotime($event->date)) . "\", addDates: [ " . $dateString . " ]";
 				}
 			?>
 		});

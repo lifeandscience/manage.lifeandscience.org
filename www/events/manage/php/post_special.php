@@ -124,12 +124,37 @@
 		//EDITING EVENT - UPDATE
 		else {
 		
-			//Edit only this event, or all future events?
-			$edit_all = $_POST["edit_all"];
 			$group_id = $_POST["group_id"];
-
+			
+			//Since the user could add/remove dates during the Edit, we need to be able to detect what changed from the pre-edit state.
+			if($dateType == "multidate") {
+				$original_dates_str = $_POST["original_dates"];
+				$original_dates = explode(',', $original_dates_str);
+				//See if any of the original dates have been deleted
+				$removed_dates = array();
+				foreach($original_dates as $y) {
+					if(!in_array($y, $dates)) {
+						array_push($removed_dates, $y);
+					}
+				}
+				//Now, see if there are any new dates that were added
+				$added_dates = array();
+				foreach($dates as $z) {
+					if(!in_array($z, $original_dates)) {
+						array_push($added_dates, $z);
+					}
+				}
+				
+				//Delete the rows corresponding to removed events.
+				foreach($removed_dates as $removed) {
+					$db->query($db->prepare("DELETE FROM `events_special` WHERE `group_id` = %d AND `date` = %s", $group_id, date("Y-m-d",strtotime($removed)) ));
+				}
+				
+				//We will add the new dates later.
+			}
+			
 			$params = array("name" => $_POST['name'],
-									"date" => date("Y-m-d",strtotime($dates[0])), //just use the first date for this edit. We'll address the other dates later.
+							//		"date" => date("Y-m-d",strtotime($dates[0])), //just use the first date for this edit. We'll address the other dates later.
 									"fb_link" => $_POST['fb_link'],
 									"description" => $_POST['description'],
 									"special_note" => $_POST['special_note'],
@@ -149,12 +174,14 @@
 			}
 			
 			if($isDateRange) {
+				$params["date"] = date("Y-m-d",strtotime($_POST['daterange_start']));
 				$params["end_date"] = date("Y-m-d",strtotime($_POST['daterange_end']));
+				$params["group_id"] = 0;
 			} else {
 				//NULL the end_date event in case it was previously set.
 				
 				//WPDB does not handle NULL well, so just run a separate query to clear the end date. :/
-				$db->query($db->prepare("UPDATE `events_special` SET `end_date` = NULL WHERE `id` = %d", $event_id));
+				$db->query($db->prepare("UPDATE `events_special` SET `end_date` = NULL WHERE `group_id` = %d", $group_id));
 			}
 			
 			foreach($timeFields as $field) {				
@@ -162,31 +189,29 @@
 					$params[$field] = date("H:i", strtotime($_POST[$field]));
 				} else {
 					//WPDB does not handle NULL well, so just run a separate query to clear the time. :/
-					$db->query($db->prepare("UPDATE `events_special` SET `{$field}` = NULL WHERE `id` = %d", $event_id));
+					$db->query($db->prepare("UPDATE `events_special` SET `{$field}` = NULL WHERE `group_id` = %d", $group_id));
+				}
+			}
+
+			if($group_id && $group_id !== "0" && !$isDateRange) {
+				$updated = $db->update('events_special', $params, array("group_id" => $group_id));
+				if($updated !== false) $success = 1;	
+			} else {
+				$updated = $db->update('events_special', $params, array("id" => $event_id));
+				if($updated !== false) $success = 1;
+				
+				//If this is a range AND a group_id was previously set, that means it was converted from multi-date to range.
+				//We should delete the other rows with that group_id .
+				if($isDateRange && $group_id && $group_id !== "0" ) {
+					$db->query($db->prepare("DELETE FROM `events_special` WHERE `group_id` = %d", $group_id));	
 				}
 			}
 			
-			//Only update this event (not the entire group). so, we should orphan this event from the group.
-			if($group_id > 0 && $edit_all === "false") {
-				$params["group_id"] = 0;
-			}
-			$updated = $db->update('events_special', $params, array("id" => $event_id));
-			if($updated !== false) $success = 1; //since a no-op update should not return an error. query actually returns # of rows updated		
-			
-			// If edit 'All future events' was selected. Update all properties *except the date* in all linked events.
-			if($group_id > 0 && $edit_all === "true") {
-				//Don't change all of the events in the group to the same date!
-				unset($params["date"]);
-				
-				$updated2 = $db->update('events_special', $params, array("group_id" => $group_id));
-				if($updated2 !== false && $success == 1) $success = 1;
-			}
-			
 			//If multiple dates were selected during the edit, we need to create these additional events (rows)
-			if($dateType == "multidate" && $num_dates > 1) {
+			if($dateType == "multidate" && count($added_dates) > 0) {
 				$rows_inserted = 0;
-				for($x = 1; $x < $num_dates; $x++) { //start at index 1 since we already used the 1st date when saving the initial edit.
-					$params["date"] = date("Y-m-d",strtotime($dates[$x]));
+				for($x = 0; $x < count($added_dates); $x++) {
+					$params["date"] = date("Y-m-d",strtotime($added_dates[$x]));
 					$params["added"] = date("Y-m-d H:i:s");
 					if(!empty($filename)) {
 						$params["image"] = $filename;
@@ -212,7 +237,7 @@
 					$db->update('events_special', array("group_id" => $event_id), array("id" => $event_id));
 				}
 				
-				if($rows_inserted == ($num_dates - 1) ) {
+				if($rows_inserted == count($added_dates)) {
 					$success = 1; //only claim success if we inserted all of the rows
 				} else {
 					$success = 0;

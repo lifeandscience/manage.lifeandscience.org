@@ -46,6 +46,8 @@
 				args.end_date = <?= date("Ymd", strtotime("+1 week")) ?>;
 		}
 		
+		var uniqueGroupIds = [];
+		
 		//Show the selected state
 		$("a.filterLink").removeClass("selected");
 		$("a." + hash.substring(1)).addClass("selected");
@@ -54,7 +56,14 @@
 			function(data){
 				$("#list").empty();
 				if(data && data.length > 0) {
-					$.each(data, function(index, event) {	
+					$.each(data, function(index, event) {
+						if(event && event.group_id && event.group_id != "0") {
+							if($.inArray(event.group_id, uniqueGroupIds) != -1) {
+								return; //continue
+							} else {
+								uniqueGroupIds.push(event.group_id);	
+							}
+						}
 						var html = "<div class=\"specialEvent\">";
 						html += "<span class=\"eventDate\">" + getDisplayDate(event) + "</span>";
 						html += "<span class=\"eventTime\">" + getDisplayTime(event) + "</span>";

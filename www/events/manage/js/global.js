@@ -48,11 +48,13 @@ function formatTime(time) {
 
 function getDisplayTime(event) {
 	if(!event) return;
-	var displayTime;
+	var displayTime = "";
 	if(event.all_day === "1") {
 		displayTime = "All Day";	
 	} else {
-		displayTime = formatTime(event.start_time);
+		if(event.start_time) {
+			displayTime = formatTime(event.start_time);	
+		}
 		if(event.end_time) {
 			displayTime += " - " + formatTime(event.end_time);
 		}
