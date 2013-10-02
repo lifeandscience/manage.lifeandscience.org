@@ -64,6 +64,14 @@ function getDisplayTime(event) {
 	return displayTime;					
 }
 
+// input example: "2013-01-30"
+function getShortDate(dateString) {
+	var parts = dateString.match(/(\d+)/g);
+	var displayDate = new Date(parts[0], parts[1]-1, parts[2]); //JS Date month is indexed 0-11
+	var month = displayDate.getMonth() + 1; //JS date month indexed 0-11
+	return month + "/" + displayDate.getDate();
+}
+
 function getDisplayDate(event) {
 	if(!event) return "";
 	

@@ -299,7 +299,7 @@ div.eventList > .event {
 }
 
 
-/* Weekly page */
+/* Weekly/Special pages */
 
 div.day_selector {
 	margin: 10px 0;
@@ -358,6 +358,11 @@ h2.eventTitle {
 	font-size: 10pt;
 	text-transform: uppercase;
 	margin-top: 10px;
+}
+
+.additionalDates {
+	font-size: 10pt;
+	color: #999;
 }
 
 #deleteLink {
