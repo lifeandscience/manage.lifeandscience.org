@@ -11,7 +11,7 @@
 		require_once($_SERVER['DOCUMENT_ROOT'] . "/events/api/1/events/getEventById.php");
 		$event = getEventById($event_id);
 		if(!$event) {
-			echo "<div class=\"alert alert-error\">An error occurred trying to fetch this event. This can occur if you removed one or more dates from an existing event. <a href=\"/events/special\">Go back.</a></div>";
+			echo "<div class=\"alert alert-warning\">Unable to load event. This can occur if you just removed one or more dates from an existing event. <a href=\"/events/special\">Go back.</a></div>";
 		}
 		else if($event->active === "0") {
 			//This event is archived
@@ -109,7 +109,7 @@
 	            	</div>	            
 		            <div id="normal-date-picker" class="<?= ($event && !$isDateRange) ? "" : "noDisplay" ?>">
 			            <div id="ui-datepicker-div"></div>
-			            <input id="date" name="date" type="text" class="inputfield" placeholder="Select a date for this event">
+			            <textarea id="date" name="date" type="text" class="inputfield" placeholder="Select a date for this event" style="height:100px;"></textarea>
 			            <?php if(!$event) echo "<span class=\"tiny formHelp\">You can select multiple dates.</span>"; ?><span class="inlineError" id="dateError">Select a date</span>
 		            </div>
 	           </td>
@@ -503,6 +503,7 @@
 	
 	<?php if($event) { ?>
 	
+		/*
 		//checks to see if at least 1 *non-date* field has changed
 		//only called when we are editing a group event
 		function hasEventChanged() {
@@ -523,6 +524,7 @@
 			if($('#removeicon').val() === "true") return true;
 			return false; //only date changed, or nothing changed at all
 		}
+		*/
 	
 		function deleteEvent(e) {
 			e.preventDefault();
