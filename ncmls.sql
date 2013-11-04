@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 22, 2013 at 11:27 PM
+-- Generation Time: Nov 04, 2013 at 01:13 AM
 -- Server version: 5.1.49
 -- PHP Version: 5.3.3-7+squeeze1
 
@@ -49,11 +49,13 @@ CREATE TABLE IF NOT EXISTS `events_special` (
   `group_id` int(11) NOT NULL,
   `adult_only` int(1) NOT NULL DEFAULT '0',
   `url` text NOT NULL,
+  `tags` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `date` (`date`),
   KEY `active` (`active`),
-  KEY `end_date` (`end_date`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=105 ;
+  KEY `end_date` (`end_date`),
+  KEY `tags` (`tags`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=132 ;
 
 -- --------------------------------------------------------
 
@@ -81,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `events_weekly` (
   PRIMARY KEY (`id`),
   KEY `active` (`active`),
   KEY `mon` (`mon`,`tue`,`wed`,`thu`,`fri`,`sat`,`sun`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=55 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=56 ;
 
 -- --------------------------------------------------------
 
@@ -110,3 +112,15 @@ CREATE TABLE IF NOT EXISTS `special_notes` (
   `notes` text NOT NULL,
   UNIQUE KEY `date` (`date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tags`
+--
+
+CREATE TABLE IF NOT EXISTS `tags` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tag` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;

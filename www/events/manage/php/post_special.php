@@ -11,6 +11,13 @@
 	$dir = "../../uploads";
 	$all_day = ($_POST['all_day'] == "on") ? 1 : 0;
 	$adult_only = ($_POST['adult_only'] == "on") ? 1 : 0;
+	$tags_array = $_POST["tags"];
+	if(count($tags_array)) {
+		$tags = implode(",", $tags_array);	
+	} else {
+		$tags = "";
+	}
+	
 	
 	$timeFields = array("start_time","end_time","sun_start_time","sun_end_time");
 	
@@ -86,7 +93,8 @@
 									"custom_1" => $_POST['custom_1'],
 									"added" => date("Y-m-d H:i:s"),
 									"adult_only" => $adult_only,
-									"group_id" => $group_id
+									"group_id" => $group_id,
+									"tags" => $tags
 									);
 				
 				foreach($timeFields as $field) {
@@ -165,6 +173,7 @@
 									"url" => $_POST['url'],
 									"display_date" => $_POST['display_date'],
 									"adult_only" => $adult_only,
+									"tags" => $tags,
 									"custom_1" => $_POST['custom_1'] );
 			//Only update the filename if the user uploaded a new one.
 			if($filename != "") {

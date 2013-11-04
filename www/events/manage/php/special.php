@@ -1,4 +1,4 @@
-<h2 class="sectionTitle">Special Events <a class="createLink" href="/events/special/add">Add New</a> </h2>
+<h2 class="sectionTitle">Monthly Events <a class="createLink" href="/events/special/add">Add New</a> </h2>
 
 
 

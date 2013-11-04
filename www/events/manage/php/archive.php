@@ -30,7 +30,7 @@
 		}
 ?>
 
-<h2 class="sectionTitle">Archived Special Events</h2>
+<h2 class="sectionTitle">Archived Monthly Events</h2>
 
 <?php
 		
@@ -46,7 +46,7 @@
 		
 		//There are no archived events
 		if(!$events) {
-			echo "<p>There are no archived special events.</p>";
+			echo "<p>There are no archived monthly events.</p>";
 		}
 ?>
 

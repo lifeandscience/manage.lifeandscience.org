@@ -52,7 +52,7 @@
 <div class="eventActions" style="float:right">
 	<h3>Create Events</h3>
 	<div><a href="/events/weekly/add">Create Weekly Event</a></div>
-	<div><a href="/events/special/add">Create Special Event</a></div>
+	<div><a href="/events/special/add">Create Monthly Event</a></div>
 </div>
 
 

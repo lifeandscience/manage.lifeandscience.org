@@ -37,6 +37,10 @@
 		}
 	}
 	$isDateRange = ($event && $event->end_date);
+	
+	//Get the list of all tags
+	require_once($_SERVER['DOCUMENT_ROOT'] . "/events/api/1/events/getTags.php");
+	$tags = getTags();
 ?>
 
 <div id="errordiv" class="noDisplay alert alert-error">
@@ -70,7 +74,7 @@
 		}
 		
 	} else {
-		echo "<h2 class=\"eventTitle\">Create Special Event</h2>";
+		echo "<h2 class=\"eventTitle\">Create Monthly Event</h2>";
 		echo "<p class=\"description\">These events occur on a specific date(s). (ex. Dec 25 at 7 AM, Sundays in April, July 20-25)</p>";
 	}
 ?>
@@ -161,6 +165,25 @@
 	            </td>
 	        </tr>
 	        <tr>
+	        	<td>Tag(s): <span class="required">*</span></td>
+	        	<td>
+	        		<?php
+	        			if($event) {
+		        			$existing_tags = explode(",", $event->tags);
+	        			}
+	        			foreach($tags as $tag) {
+							$tagId = $tag->id;
+							$selected = "";
+							if($existing_tags && in_array($tagId, $existing_tags)) {
+								$selected = "checked";
+							}
+		        			echo "<label class=\"checkbox inline\"><input type=\"checkbox\" name=\"tags[]\" id=\"tag_" . $tagId . "\" value=\"" . $tagId . "\" " . $selected. " /> " . $tag->tag . "</label>";		
+	        			}
+	        		?>
+		        	<span class="inlineError" id="dayError">Select a tag</div>
+	        	</td>
+	        </tr>
+	        <tr>
 	            <td>Description: </td>
 	            <td>
 		            <div data-target="#editor" data-role="editor-toolbar" class="btn-toolbar">
@@ -245,7 +268,7 @@
 	            </td>
 	        </tr>
 	        <tr>
-	            <td>Special Note: </td>
+	            <td>Caption: </td>
 	            <td><textarea name="special_note" id="special_note" class="short"><?= ($event) ? $event->special_note : "" ?></textarea>
 	            <span class="tiny formHelp">This message will be displayed under the image.</span></td>
 	        </tr>

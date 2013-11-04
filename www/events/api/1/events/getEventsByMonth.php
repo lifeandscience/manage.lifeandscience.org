@@ -34,7 +34,8 @@
 				"adult_only":"0",
 				"active":"1",
 				"added":"2012-06-24 23:46:04",
-				"group_id":"28"
+				"group_id":"28",
+				"tags":"1,3"
 			},
 			{
 				...
