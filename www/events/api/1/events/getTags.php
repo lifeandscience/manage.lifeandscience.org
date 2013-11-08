@@ -29,7 +29,7 @@
 	}
 	
 	//Check to see if this is a direct GET request, or a PHP include from another page.
-	if(stripos($_SERVER["SCRIPT_FILENAME"], "api/1/events/getTag.php") !== FALSE) {
+	if(stripos($_SERVER["SCRIPT_FILENAME"], "api/1/events/getTags.php") !== FALSE) {
 		//this script was called directly, likely as a GET request from some javascript
 		$tags = getTags();
 		echo json_encode($tags);
