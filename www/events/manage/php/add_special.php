@@ -55,11 +55,8 @@
 	
 		//Create the "View" link
 		$viewLink = "<a class=\"createLink\" href=\"";
-		if($event->adult_only === "1") {
-			$viewLink .= NCMLS_AFTER_HOURS_EVENTS_ENDPOINT;
-		} else {
-			$viewLink .= NCMLS_MONTHLY_EVENTS_ENDPOINT;
-		}
+		$viewLink .= NCMLS_MONTHLY_EVENTS_ENDPOINT;	//TODO: This won't work for certain tags (like adults, etc)
+		
 		$_d = strtotime($event->date);
 		$viewLink .= "?month=" . date('m', $_d) . "&year=" . date('Y', $_d);
 		$viewLink .= "\">View Event</a>";
@@ -91,7 +88,7 @@
 	?>
     <table>
 		<thead>
-			<th style="width:150px;">&nbsp;</th>
+			<th style="width:170px;">&nbsp;</th>
 			<th>&nbsp;</th>
 		</thead>
 		<tbody>
@@ -165,7 +162,7 @@
 	            </td>
 	        </tr>
 	        <tr>
-	        	<td>Tag(s): <span class="required">*</span></td>
+	        	<td>Tag(s):</td>
 	        	<td>
 	        		<?php
 	        			if($event) {
@@ -234,20 +231,9 @@
 	            <span class="tiny formHelp">Optional. Enter an existing URL that you would like this event to link to.</span></td>
 	        </tr>
 	        <tr>
-	            <td>Custom Field: </td>
-	            <td><input type="text" name="custom_1" id="custom_1" class="inputfield" value="<?= ($event) ? $event->custom_1 : "" ?>" />
-	            <span class="tiny formHelp" >Specify age limitations, or other special requirements.</span></td>
-	        </tr>
-	        <tr>
-	            <td>Cost (Members): </td>
-	            <td><input type="text" name="cost_members" placeholder="$" id="cost_members" class="inputfield short" value="<?= ($event) ? $event->cost_members : "" ?>" style="margin-right:15px;" />
-					<label class="checkbox inline"><input type="checkbox" name="members_only" id="members_only" <?= ($event && $event->members_only === "1") ? "checked=checked" : "" ?> /> This event is for members only</label>
-	            </td>
-	        </tr>
-	        <tr>
-	            <td>Cost (Public): </td>
-	            <td><input type="text" name="cost_public" placeholder="$" id="cost_public" class="inputfield short" value="<?= ($event) ? $event->cost_public : "" ?>" 
-	            		<?= ($event && $event->members_only === "1") ? "disabled" : "" ?> /></td>
+	            <td>Cost/Requirements: </td>
+	            <td><textarea name="custom_1" id="custom_1" class="short"><?= ($event) ? $event->custom_1 : "" ?></textarea>
+	            <span class="tiny formHelp" >Specify cost, age limitations, or other special requirements.</span></td>
 	        </tr>
 	        <tr>
 	            <td>Image: </td>
@@ -271,12 +257,6 @@
 	            <td>Caption: </td>
 	            <td><textarea name="special_note" id="special_note" class="short"><?= ($event) ? $event->special_note : "" ?></textarea>
 	            <span class="tiny formHelp">This message will be displayed under the image.</span></td>
-	        </tr>
-	        <tr>
-	            <td>Adults Only: </td>
-	            <td>
-					<label class="checkbox inline"><input type="checkbox" name="adult_only" id="adult_only" <?= ($event && $event->adult_only === "1") ? "checked=checked" : "" ?> /> This event is for adults only</label>
-				</td>
 	        </tr>
 	        <tr>
 	            <td>Facebook URL: </td>
@@ -508,10 +488,6 @@
 		return new Date(parts[0], parts[1]-1, parts[2]); //JS Date month is indexed 0-11
 	}
 	
-	$("#members_only").change(function() {
-		$("#cost_public").prop("disabled", this.checked);
-	});
-	
 	//Disable start/end times for all-day events
 	$("#all_day").change(function() {
 		$("#end_time").prop("disabled", this.checked);
@@ -525,29 +501,6 @@
 	}
 	
 	<?php if($event) { ?>
-	
-		/*
-		//checks to see if at least 1 *non-date* field has changed
-		//only called when we are editing a group event
-		function hasEventChanged() {
-			if($('#name').val() != "<?= $event->name ?>") return true;
-			if($('#editor').html() != $('#original_description').val()) return true;
-			if($('#start_time').val() != "<?= $event->start_time ?>") return true;
-			if($('#end_time').val() != "<?= $event->end_time ?>") return true;
-			if($('#sun_start_time').val() != "<?= $event->sun_start_time ?>") return true;
-			if($('#sun_end_time').val() != "<?= $event->sun_end_time ?>") return true;			
-			if($('#fb_link').val() != "<?= $event->fb_link ?>") return true;
-			if($('#thumbnail').val() != "") return true;
-			if($('#special_note').val() != "<?= $event->special_note ?>") return true;
-			if($('#custom_1').val() != "<?= $event->custom_1 ?>") return true;	
-			if($('#cost_members').val() != "<?= $event->cost_members ?>") return true;
-			if($('#cost_public').val() != "<?= $event->cost_public ?>") return true;	
-			if($('#members_only').is(':checked') != <?= ($event->members_only === "1") ? 1 : 0 ?>) return true;
-			if($('#all_day').is(':checked') != <?= ($event->all_day === "1") ? 1 : 0 ?>) return true;
-			if($('#removeicon').val() === "true") return true;
-			return false; //only date changed, or nothing changed at all
-		}
-		*/
 	
 		function deleteEvent(e) {
 			e.preventDefault();

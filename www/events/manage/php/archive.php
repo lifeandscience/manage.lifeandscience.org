@@ -50,7 +50,7 @@
 		}
 ?>
 
-<h2 class="sectionTitle" style="margin-top: 70px;">Archived Weekly Events</h2>
+<h2 class="sectionTitle" style="margin-top: 70px;">Archived Daily Events</h2>
 
 <?php
 		
@@ -75,6 +75,6 @@
 		
 		//There are no archived events
 		if(!$events) {
-			echo "<p>There are no archived weekly events.</p>";
+			echo "<p>There are no archived daily events.</p>";
 		}
 ?>

@@ -57,7 +57,7 @@
 			echo "<a class=\"backLink\" href=\"/events/archive/\">Back to Archive</a></h2>";
 		}
 	} else {
-		echo "<h2 class=\"eventTitle\">Create Weekly Event</h2>";
+		echo "<h2 class=\"eventTitle\">Create Daily Event</h2>";
 		echo "<p class=\"description\">These events occur every week on a specific day and time. (ex: Monday at 3pm, Friday at 11am)</p>";
 	}
 ?>

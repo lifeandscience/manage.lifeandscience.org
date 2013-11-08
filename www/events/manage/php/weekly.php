@@ -1,8 +1,4 @@
-<h2 class="sectionTitle">Weekly Events <a class="createLink" href="/events/weekly/add">Add New</a> </h2>
-
-
-
-
+<h2 class="sectionTitle">Daily Events <a class="createLink" href="/events/weekly/add">Add New</a> </h2>
 
 <div class="day_selector">
 	<ul class="days">

@@ -10,7 +10,6 @@
 	
 	$dir = "../../uploads";
 	$all_day = ($_POST['all_day'] == "on") ? 1 : 0;
-	$adult_only = ($_POST['adult_only'] == "on") ? 1 : 0;
 	$tags_array = $_POST["tags"];
 	if(count($tags_array)) {
 		$tags = implode(",", $tags_array);	
@@ -68,9 +67,7 @@
 			error_log("no date selected");
 		}
 	
-		$group_id = 0;	
-		$members_only = ($_POST['members_only'] == "on") ? 1 : 0;
-			
+		$group_id = 0;		
 	
 		//NEW EVENT - INSERT
 		if($event_id == "") {
@@ -84,15 +81,11 @@
 									"fb_link" => $_POST['fb_link'],
 									"description" => $_POST['description'],
 									"special_note" => $_POST['special_note'],
-									"members_only" => $members_only,
 									"all_day" => $all_day,
-									"cost_members" => $_POST['cost_members'],
-									"cost_public" => $_POST['cost_public'],
 									"url" => $_POST['url'],
 									"display_date" => $_POST['display_date'],
 									"custom_1" => $_POST['custom_1'],
 									"added" => date("Y-m-d H:i:s"),
-									"adult_only" => $adult_only,
 									"group_id" => $group_id,
 									"tags" => $tags
 									);
@@ -166,13 +159,9 @@
 									"fb_link" => $_POST['fb_link'],
 									"description" => $_POST['description'],
 									"special_note" => $_POST['special_note'],
-									"members_only" => $members_only,
 									"all_day" => $all_day,
-									"cost_members" => $_POST['cost_members'],
-									"cost_public" => $_POST['cost_public'],
 									"url" => $_POST['url'],
 									"display_date" => $_POST['display_date'],
-									"adult_only" => $adult_only,
 									"tags" => $tags,
 									"custom_1" => $_POST['custom_1'] );
 			//Only update the filename if the user uploaded a new one.

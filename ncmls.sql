@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 04, 2013 at 01:13 AM
+-- Generation Time: Nov 08, 2013 at 12:01 AM
 -- Server version: 5.1.49
 -- PHP Version: 5.3.3-7+squeeze1
 
@@ -40,14 +40,10 @@ CREATE TABLE IF NOT EXISTS `events_special` (
   `fb_link` text NOT NULL,
   `description` text NOT NULL,
   `special_note` text NOT NULL,
-  `members_only` tinyint(1) NOT NULL,
-  `cost_members` varchar(255) NOT NULL,
-  `cost_public` varchar(255) NOT NULL,
-  `custom_1` varchar(255) NOT NULL,
+  `custom_1` text NOT NULL,
   `active` tinyint(1) NOT NULL DEFAULT '1',
   `added` datetime NOT NULL,
   `group_id` int(11) NOT NULL,
-  `adult_only` int(1) NOT NULL DEFAULT '0',
   `url` text NOT NULL,
   `tags` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
@@ -55,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `events_special` (
   KEY `active` (`active`),
   KEY `end_date` (`end_date`),
   KEY `tags` (`tags`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=132 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=133 ;
 
 -- --------------------------------------------------------
 
@@ -85,6 +81,7 @@ CREATE TABLE IF NOT EXISTS `events_weekly` (
   KEY `mon` (`mon`,`tue`,`wed`,`thu`,`fri`,`sat`,`sun`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=56 ;
 
+
 -- --------------------------------------------------------
 
 --
@@ -101,6 +98,7 @@ CREATE TABLE IF NOT EXISTS `settings` (
   UNIQUE KEY `property_2` (`property`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+
 -- --------------------------------------------------------
 
 --
@@ -113,6 +111,7 @@ CREATE TABLE IF NOT EXISTS `special_notes` (
   UNIQUE KEY `date` (`date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+
 -- --------------------------------------------------------
 
 --
@@ -123,4 +122,15 @@ CREATE TABLE IF NOT EXISTS `tags` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tag` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+
+--
+-- Dumping data for table `tags`
+--
+
+INSERT INTO `tags` (`id`, `tag`) VALUES
+(1, 'Featured'),
+(2, 'Camps & Classes'),
+(3, 'The Lab'),
+(4, 'Members Only'),
+(5, 'Adult Events');

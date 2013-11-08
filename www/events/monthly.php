@@ -55,11 +55,11 @@
 			margin-bottom: 6px;
 		}
 		
-		.right > .costs {
+		.right > .custom_1 {
 			margin: 0 0 20px;
 			font-size: 0.9em;
 		}
-		.right > .costs div {
+		.right > .custom_1 div {
 			width: 25%;
 			padding: 0 5px;
 			display: inline-block;
@@ -136,11 +136,9 @@
 						<div class=\"right\">
 							<h3>" . $event->name . "</h3>
 							<div class=\"datetime\">" . formatDate($event) . " " . formatTime($event) . "</div>
-							<div class=\"costs\">";
+							<div class=\"custom_1\">";
 							
 							if($event->custom_1) echo "<div>" . $event->custom_1 . "</div><span class=\"separator\"></span>";
-							if($event->cost_members) echo "<div>" . $event->cost_members . " Museum Members</div><span class=\"separator\"></span>";
-							if($event->cost_public) echo "<div>" . $event->cost_public . " General Public</div><span class=\"separator\"></span>";
 							
 							echo "							
 								<div style='width:75px;'><a href=\"". $moreLink . "\">MORE</a></div>

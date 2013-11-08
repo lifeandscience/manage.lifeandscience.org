@@ -26,12 +26,8 @@
 				"description":"Two dates in Feb 2012",
 				"special_note":"This goes under the image",
 				"url":"http://lifeandscience.org/event/123",
-				"members_only":"0",
-				"cost_members":"$24",
-				"cost_public":"$30",
-				"custom_1":"Ages 12-18",
+				"custom_1":"Cost $30, Ages 12-18",
 				"active":"1",
-				"adult_only":"0",
 				"added":"2012-06-24 23:46:04",
 				"group_id":"28",
 				"tags":"1,3"		

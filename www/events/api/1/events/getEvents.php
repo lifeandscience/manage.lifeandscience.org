@@ -33,12 +33,8 @@
 				"description":"Two dates in Feb 2012",
 				"special_note":"This goes under the image"
 				"url":"http://lifeandscience.org/event/123",
-				"members_only":"0",
-				"cost_members":"$24",
-				"cost_public":"$30",
-				"custom_1":"Ages 12-18",
+				"custom_1":"Cost $30, Ages 12-18",
 				"active":"1",
-				"adult_only":"0",
 				"added":"2012-06-24 23:46:04",
 				"group_id":"28",
 				"tags":"1,3"
@@ -62,7 +58,6 @@
 				"image":"event28.png",
 				"url":"http://lifeandscience.org/event/123",
 				"description":"Two dates in Feb 2012",
-				"adult_only":"0",
 				"active":"1"
 			},
 			{
@@ -89,7 +84,7 @@
 			return $error;
 		}
 		
-		$summary_fields = "`id`,`name`,`date`,`end_date`,`start_time`,`end_time`,`sun_start_time`,`sun_end_time`,`all_day`,`image`,`description`,`active`,`adult_only`,`url`,`group_id`";
+		$summary_fields = "`id`,`name`,`date`,`end_date`,`start_time`,`end_time`,`sun_start_time`,`sun_end_time`,`all_day`,`image`,`description`,`active`,`tags`,`url`,`group_id`";
 		$select_params = (strtolower($detail_level) === "summary") ? $summary_fields : "*";
 
 		if(!$start_date) $start_date = date("Ymd"); //Default value = current date
