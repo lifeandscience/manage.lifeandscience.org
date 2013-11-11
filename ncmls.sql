@@ -121,16 +121,18 @@ CREATE TABLE IF NOT EXISTS `special_notes` (
 CREATE TABLE IF NOT EXISTS `tags` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tag` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
+  `sort_id` int(2) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `sort_id` (`sort_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
 
 --
 -- Dumping data for table `tags`
 --
 
-INSERT INTO `tags` (`id`, `tag`) VALUES
-(1, 'Featured'),
-(2, 'Camps & Classes'),
-(3, 'The Lab'),
-(4, 'Members Only'),
-(5, 'Adult Events');
+INSERT INTO `tags` (`id`, `tag`, `sort_id`) VALUES
+(1, 'Featured', 1),
+(2, 'Camps & Classes', 2),
+(3, 'The Lab', 3),
+(4, 'Members Only', 4),
+(5, 'Adult Events', 5);

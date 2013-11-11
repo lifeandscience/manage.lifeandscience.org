@@ -25,7 +25,7 @@
 		require_once($_SERVER['DOCUMENT_ROOT'] . "/events/bin/api.php");
 	
 		$db = new wpdb(SITE_DB_USER, SITE_DB_PASSWORD, SITE_DB_NAME, SITE_DB_HOST);
-		return $db->get_results($db->prepare("SELECT * FROM `tags`"));
+		return $db->get_results($db->prepare("SELECT * FROM `tags` ORDER BY `sort_id` ASC"));
 	}
 	
 	//Check to see if this is a direct GET request, or a PHP include from another page.
