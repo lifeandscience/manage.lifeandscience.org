@@ -139,14 +139,16 @@ div.editor {
     border-collapse: separate;
     border-radius: 3px 3px 3px 3px;
     box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.075) inset;
-    height: 250px;
+    height: 100px;
     max-height: 250px;
     width: 710px;
     outline: medium none;
     overflow: scroll;
     padding: 4px;
 }
-
+div.editor.full {
+	height: 300px;
+}
 div.editor ul {
 	list-style: disc outside none !important;
 }
@@ -204,7 +206,7 @@ input[type="button"].btn {
 	padding: 10px;
 }
 
-#clearicon {
+.clearicon {
 	color: #bbb;
 	background: none repeat scroll 0 0 transparent;
     border: 0 none;
@@ -214,7 +216,7 @@ input[type="button"].btn {
     vertical-align: top;
     font-size: 16pt;
 }
-#clearicon:hover {
+.clearicon:hover {
 	color: #888;
 }
 

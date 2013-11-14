@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 08, 2013 at 12:01 AM
+-- Generation Time: Nov 14, 2013 at 12:30 AM
 -- Server version: 5.1.49
 -- PHP Version: 5.3.3-7+squeeze1
 
@@ -46,12 +46,15 @@ CREATE TABLE IF NOT EXISTS `events_special` (
   `group_id` int(11) NOT NULL,
   `url` text NOT NULL,
   `tags` varchar(255) NOT NULL,
+  `big_image` varchar(255) NOT NULL,
+  `col1` text NOT NULL,
+  `col2` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `date` (`date`),
   KEY `active` (`active`),
   KEY `end_date` (`end_date`),
   KEY `tags` (`tags`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=133 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=134 ;
 
 -- --------------------------------------------------------
 
@@ -80,7 +83,6 @@ CREATE TABLE IF NOT EXISTS `events_weekly` (
   KEY `active` (`active`),
   KEY `mon` (`mon`,`tue`,`wed`,`thu`,`fri`,`sat`,`sun`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=56 ;
-
 
 -- --------------------------------------------------------
 

@@ -55,7 +55,7 @@
 	
 		//Create the "View" link
 		$viewLink = "<a class=\"createLink\" href=\"";
-		$viewLink .= NCMLS_MONTHLY_EVENTS_ENDPOINT;	//TODO: This won't work for certain tags (like adults, etc)
+		$viewLink .= NCMLS_MONTHLY_EVENTS_ENDPOINT;
 		
 		$_d = strtotime($event->date);
 		$viewLink .= "?month=" . date('m', $_d) . "&year=" . date('Y', $_d);
@@ -181,9 +181,9 @@
 	        	</td>
 	        </tr>
 	        <tr>
-	            <td>Description: </td>
+	            <td>Summary: </td>
 	            <td>
-		            <div data-target="#editor" data-role="editor-toolbar" class="btn-toolbar">
+		            <div data-target="#editor" id="editor-toolbar" class="btn-toolbar">
 				      <div class="btn-group">
 				        <a title="" data-edit="bold" class="btn" data-original-title="Bold"><i class="icon-bold"></i></a>
 				        <a title="" data-edit="italic" class="btn" data-original-title="Italic"><i class="icon-italic"></i></a>
@@ -213,7 +213,7 @@
 				      <div class="btn-group">
 				        <a id="pictureBtn" title="" class="btn" data-original-title="Insert picture (or just drag &amp; drop)"><i class="icon-picture"></i></a>
 				        <input type="file" data-edit="insertImage" data-target="#pictureBtn" data-role="magic-overlay" style="opacity: 0; position: absolute; top: 0px; left: 0px; width: 39px; height: 30px;">
-				        <a title="" onclick="viewHTML(this)" class="btn" data-original-title="View HTML"><i class="icon-code"></i></a>
+				        <a title="" onclick="viewHTML(this, '#editor')" class="btn" data-original-title="View HTML"><i class="icon-code"></i></a>
 				      </div>
 				      <div class="btn-group">
 				        <a title="" data-edit="undo" class="btn" data-original-title="Undo"><i class="icon-undo"></i></a>
@@ -226,6 +226,96 @@
 					<textarea id="original_description" name="original_description" style="display: none;"><?= ($event) ? $event->description : "" ?></textarea>
 	        </tr>
 	        <tr>
+	            <td>Left Column: </td>
+	            <td>
+		            <div data-target="#col1" id="col1-toolbar" class="btn-toolbar">
+				      <div class="btn-group">
+				        <a title="" data-edit="bold" class="btn" data-original-title="Bold"><i class="icon-bold"></i></a>
+				        <a title="" data-edit="italic" class="btn" data-original-title="Italic"><i class="icon-italic"></i></a>
+				        <a title="" data-edit="strikethrough" class="btn" data-original-title="Strikethrough"><i class="icon-strikethrough"></i></a>
+				        <a title="" data-edit="underline" class="btn" data-original-title="Underline"><i class="icon-underline"></i></a>
+				      </div>
+				      <div class="btn-group">
+				        <a title="" data-edit="insertunorderedlist" class="btn" data-original-title="Bullet list"><i class="icon-list-ul"></i></a>
+				        <a title="" data-edit="insertorderedlist" class="btn" data-original-title="Number list"><i class="icon-list-ol"></i></a>
+				        <a title="" data-edit="outdent" class="btn" data-original-title="Reduce indent"><i class="icon-indent-left"></i></a>
+				        <a title="" data-edit="indent" class="btn" data-original-title="Indent"><i class="icon-indent-right"></i></a>
+				      </div>
+				      <div class="btn-group">
+				        <a title="" data-edit="justifyleft" class="btn" data-original-title="Align Left"><i class="icon-align-left"></i></a>
+				        <a title="" data-edit="justifycenter" class="btn" data-original-title="Center"><i class="icon-align-center"></i></a>
+				        <a title="" data-edit="justifyright" class="btn" data-original-title="Align Right"><i class="icon-align-right"></i></a>
+				        <a title="" data-edit="justifyfull" class="btn" data-original-title="Justify"><i class="icon-align-justify"></i></a>
+				      </div>
+				      <div class="btn-group">
+						<a title="" data-toggle="dropdown" class="btn dropdown-toggle" data-original-title="Hyperlink"><i class="icon-link"></i></a>
+					    <div class="dropdown-menu input-append">
+						    <input type="text" data-edit="createLink" placeholder="URL" class="span2" />
+						    <button type="button" class="btn">Add</button>
+						</div>
+				        <a title="" data-edit="unlink" class="btn" data-original-title="Remove Hyperlink"><i class="icon-cut"></i></a>
+				      </div>
+				      <div class="btn-group">
+				        <a id="pictureBtn" title="" class="btn" data-original-title="Insert picture (or just drag &amp; drop)"><i class="icon-picture"></i></a>
+				        <input type="file" data-edit="insertImage" data-target="#pictureBtn" data-role="magic-overlay" style="opacity: 0; position: absolute; top: 0px; left: 0px; width: 39px; height: 30px;">
+				        <a title="" onclick="viewHTML(this, '#col1')" class="btn" data-original-title="View HTML"><i class="icon-code"></i></a>
+				      </div>
+				      <div class="btn-group">
+				        <a title="" data-edit="undo" class="btn" data-original-title="Undo"><i class="icon-undo"></i></a>
+				        <a title="" data-edit="redo" class="btn" data-original-title="Redo"><i class="icon-repeat"></i></a>
+				      </div>
+				    </div>
+					
+					<div id="col1" class="editor full"><?= ($event) ? $event->col1 : "" ?></div></td>
+					<textarea id="col1_desc" name="col1_desc" style="display: none;"></textarea>
+					<textarea id="col1_original_description" name="col1_original_description" style="display: none;"><?= ($event) ? $event->col1 : "" ?></textarea>
+	        </tr>
+	        <tr>
+	            <td>Right Column: </td>
+	            <td>
+		            <div data-target="#col2" id="col2-toolbar" class="btn-toolbar">
+				      <div class="btn-group">
+				        <a title="" data-edit="bold" class="btn" data-original-title="Bold"><i class="icon-bold"></i></a>
+				        <a title="" data-edit="italic" class="btn" data-original-title="Italic"><i class="icon-italic"></i></a>
+				        <a title="" data-edit="strikethrough" class="btn" data-original-title="Strikethrough"><i class="icon-strikethrough"></i></a>
+				        <a title="" data-edit="underline" class="btn" data-original-title="Underline"><i class="icon-underline"></i></a>
+				      </div>
+				      <div class="btn-group">
+				        <a title="" data-edit="insertunorderedlist" class="btn" data-original-title="Bullet list"><i class="icon-list-ul"></i></a>
+				        <a title="" data-edit="insertorderedlist" class="btn" data-original-title="Number list"><i class="icon-list-ol"></i></a>
+				        <a title="" data-edit="outdent" class="btn" data-original-title="Reduce indent"><i class="icon-indent-left"></i></a>
+				        <a title="" data-edit="indent" class="btn" data-original-title="Indent"><i class="icon-indent-right"></i></a>
+				      </div>
+				      <div class="btn-group">
+				        <a title="" data-edit="justifyleft" class="btn" data-original-title="Align Left"><i class="icon-align-left"></i></a>
+				        <a title="" data-edit="justifycenter" class="btn" data-original-title="Center"><i class="icon-align-center"></i></a>
+				        <a title="" data-edit="justifyright" class="btn" data-original-title="Align Right"><i class="icon-align-right"></i></a>
+				        <a title="" data-edit="justifyfull" class="btn" data-original-title="Justify"><i class="icon-align-justify"></i></a>
+				      </div>
+				      <div class="btn-group">
+						<a title="" data-toggle="dropdown" class="btn dropdown-toggle" data-original-title="Hyperlink"><i class="icon-link"></i></a>
+					    <div class="dropdown-menu input-append">
+						    <input type="text" data-edit="createLink" placeholder="URL" class="span2" />
+						    <button type="button" class="btn">Add</button>
+						</div>
+				        <a title="" data-edit="unlink" class="btn" data-original-title="Remove Hyperlink"><i class="icon-cut"></i></a>
+				      </div>
+				      <div class="btn-group">
+				        <a id="pictureBtn" title="" class="btn" data-original-title="Insert picture (or just drag &amp; drop)"><i class="icon-picture"></i></a>
+				        <input type="file" data-edit="insertImage" data-target="#pictureBtn" data-role="magic-overlay" style="opacity: 0; position: absolute; top: 0px; left: 0px; width: 39px; height: 30px;">
+				        <a title="" onclick="viewHTML(this, '#col2')" class="btn" data-original-title="View HTML"><i class="icon-code"></i></a>
+				      </div>
+				      <div class="btn-group">
+				        <a title="" data-edit="undo" class="btn" data-original-title="Undo"><i class="icon-undo"></i></a>
+				        <a title="" data-edit="redo" class="btn" data-original-title="Redo"><i class="icon-repeat"></i></a>
+				      </div>
+				    </div>
+					
+					<div id="col2" class="editor full"><?= ($event) ? $event->col2 : "" ?></div></td>
+					<textarea id="col2_desc" name="col2_desc" style="display: none;"></textarea>
+					<textarea id="col2_original_description" name="col2_original_description" style="display: none;"><?= ($event) ? $event->col2 : "" ?></textarea>
+	        </tr>
+	        <tr>
 	            <td>Event URL: </td>
 	            <td><input type="text" name="url" id="url" class="inputfield" placeholder="http://" value="<?= ($event) ? $event->url : "" ?>" />
 	            <span class="tiny formHelp">Optional. Enter an existing URL that you would like this event to link to.</span></td>
@@ -236,7 +326,7 @@
 	            <span class="tiny formHelp" >Specify cost, age limitations, or other special requirements.</span></td>
 	        </tr>
 	        <tr>
-	            <td>Image: </td>
+	            <td>Small Image: </td>
 	            <td>
 	            	<span class="file-wrapper">
 					  <input type="file" name="thumbnail" id="thumbnail" />
@@ -246,9 +336,27 @@
 		            <?php
 		            	if($event && $event->image) {
 		            		$path = "/events/uploads/" . $event->image;
-		            		echo "<img src=\"" . $path . "\" height='50' width='50' id=\"theicon\" />";
-		            		echo "<button id=\"clearicon\" title=\"Remove image\">&times;</button>";
+		            		echo "<img src=\"" . $path . "\" style='height:auto;width:100px;' id=\"theicon\" />";
+		            		echo "<button id=\"clearicon\" title=\"Remove image\" class=\"clearicon\">&times;</button>";
 							echo "<input type=\"hidden\" name=\"originalImage\" id=\"originalImage\" value=\"" . $event->image . "\" />";
+		            	}
+		            ?>
+	            </td>
+	        </tr>
+	        <tr>
+	            <td>Large Image: </td>
+	            <td>
+	            	<span class="file-wrapper">
+					  <input type="file" name="bigimage" id="bigimage" />
+					  <input type="hidden" name="removebigimage" id="removebigimage" value="false" />
+					  <span class="button">Choose a <?= ($event && $event->big_image) ? " different " : "" ?> photo</span>
+					</span>
+		            <?php
+		            	if($event && $event->big_image) {
+		            		$path = "/events/uploads/" . $event->big_image;
+		            		echo "<img src=\"" . $path . "\" style='height:auto;width:200px;' id=\"thebigimage\" />";
+		            		echo "<button id=\"clearbigimage\" title=\"Remove image\" class=\"clearicon\">&times;</button>";
+							echo "<input type=\"hidden\" name=\"originalBigImage\" id=\"originalBigImage\" value=\"" . $event->big_image . "\" />";
 		            	}
 		            ?>
 	            </td>
@@ -297,8 +405,7 @@
 <script type="text/javascript">
 
 	initToolbarBootstrapBindings();
-	$('#editor').wysiwyg({
-	  hotKeys: {
+	var _hotKeys = {
 	  	'shift+tab': 'outdent',
 	  	'tab' : 'indent',
 	    'ctrl+b meta+b': 'bold',
@@ -306,7 +413,18 @@
 	    'ctrl+u meta+u': 'underline',
 	    'ctrl+z meta+z': 'undo',
 	    'ctrl+y meta+y meta+shift+z': 'redo'
-	  }
+	};
+	$('#editor').wysiwyg({
+	  toolbarSelector: "#editor-toolbar",
+	  hotKeys: _hotKeys
+	});
+	$('#col1').wysiwyg({
+	  toolbarSelector: "#col1-toolbar",
+	  hotKeys: _hotKeys
+	});
+	$('#col2').wysiwyg({
+	  toolbarSelector: "#col2-toolbar",
+	  hotKeys: _hotKeys
 	});
 	
 	var datepicker = $.fn.datepicker.noConflict(); // return $.fn.datepicker to previously assigned value
@@ -323,6 +441,13 @@
 		$('#clearicon').hide();
 		$('#removeicon').val(true);
 	});
+
+	$('#clearbigimage').click(function(e) {
+		e.preventDefault();
+		$('#thebigimage').hide();
+		$('#clearbigimage').hide();
+		$('#removebigimage').val(true);
+	});	
 	
 	//Toggle between the two date formats
 	$('#radio_datenormal').click(function(e) {
@@ -338,15 +463,15 @@
 	
 	//Create a custom button for toggling HTML view on/off
 	var viewMode = "text";
-	function viewHTML(btn) {
+	function viewHTML(btn, editor) {
 		if(viewMode == "text") {
-			var html = $('#editor').html();
-			$('#editor').text(html);
+			var html = $(editor).html();
+			$(editor).text(html);
 			viewMode = "html";
 			if(btn) $(btn).attr("data-original-title", "Switch to WYSIWYG Editor");
 		} else {
-			var text = $('#editor').text();
-			$('#editor').html(text);
+			var text = $(editor).text();
+			$(editor).html(text);
 			viewMode = "text";
 			if(btn) $(btn).attr("data-original-title", "View HTML");
 		}
@@ -356,6 +481,12 @@
 		$('#editor').cleanHtml();
 		//Copy editor content into textarea before submitting.
 		$('#description').val($('#editor').html());
+		
+		$('#col1').cleanHtml();
+		$('#col1_desc').val($('#col1').html());
+		$('#col2').cleanHtml();
+		$('#col2_desc').val($('#col2').html());
+		
 		$('#addEvent').submit();
 	}
 	

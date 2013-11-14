@@ -54,6 +54,15 @@
 			move_uploaded_file($filetmp, $dir . "/" . $filename);	
 		}
 		
+		$bigimage = "";
+		if( $_FILES['bigimage']['name'] ) {
+			$rand_num = rand(1, 9999);
+			$bigimage = $rand_num . $_FILES['bigimage']['name'];
+			$bigimage = str_replace(" ","_",$bigimage);
+			$filetmp2 = $_FILES['bigimage']['tmp_name'];
+			move_uploaded_file($filetmp2, $dir . "/" . $bigimage);
+		}
+		
 		if($dateType == "multidate") {
 			//See if we have multiple events
 			$dates = explode(",", $_POST["date"]);
@@ -87,7 +96,10 @@
 									"custom_1" => $_POST['custom_1'],
 									"added" => date("Y-m-d H:i:s"),
 									"group_id" => $group_id,
-									"tags" => $tags
+									"tags" => $tags,
+									"col1" => $_POST['col1_desc'],
+									"col2" => $_POST['col2_desc'],
+									"big_image" => $bigimage
 									);
 				
 				foreach($timeFields as $field) {
@@ -163,12 +175,21 @@
 									"url" => $_POST['url'],
 									"display_date" => $_POST['display_date'],
 									"tags" => $tags,
+									"col1" => $_POST['col1_desc'],
+									"col2" => $_POST['col2_desc'],
 									"custom_1" => $_POST['custom_1'] );
 			//Only update the filename if the user uploaded a new one.
 			if($filename != "") {
 				$params["image"] = $filename;
 			} else if($_POST["removeicon"] === "true") {
 				$params["image"] = "";
+			}
+			
+			//Only update the bigimage filename if the user uploaded a new one.
+			if($bigimage != "") {
+				$params["big_image"] = $bigimage;
+			} else if($_POST["removebigimage"] === "true") {
+				$params["big_image"] = "";
 			}
 			
 			if($isDateRange) {
@@ -215,6 +236,11 @@
 						$params["image"] = $filename;
 					} else {
 						$params["image"] = $_POST["originalImage"];
+					}
+					if(!empty($bigimage)) {
+						$params["big_image"] = $bigimage;
+					} else {
+						$params["big_image"] = $_POST["originalBigImage"];
 					}
 					//Check to see if this event has a group_id intact, if so, use it on these new events as well. If not, we should still set a group_id for the new rows to the id of the initial edit event.
 					if($group_id === "0") {
