@@ -37,7 +37,10 @@
 				"sat": "1",
 				"sun": "0",
 				"group_id":"28",
-				"tags":"1,3"				
+				"tags":"1,3",
+				"big_image": "event28_lrg.png",
+				"col1": "This is a big description for the left column.",
+				"col2": "This is a big description for the right column."
 			},
 			{
 				...
