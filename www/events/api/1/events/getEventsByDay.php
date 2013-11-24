@@ -27,7 +27,9 @@
 				"description":"Lots of monkeys all over the place.",
 				"icon":"mm3.png",
 				"active":"1",
-				"added":"2012-06-24 23:46:04"
+				"added":"2012-06-24 23:46:04",
+				"registration_code": "2",
+				"registration_url": "http://ticketmaster.com/blah/3"
 			},
 			{
 				...

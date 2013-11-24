@@ -17,7 +17,6 @@
 		$tags = "";
 	}
 	
-	
 	$timeFields = array("start_time","end_time","sun_start_time","sun_end_time");
 	
 	$dateType = $_POST['dates_radio'];
@@ -99,7 +98,9 @@
 									"tags" => $tags,
 									"col1" => $_POST['col1_desc'],
 									"col2" => $_POST['col2_desc'],
-									"big_image" => $bigimage
+									"big_image" => $bigimage,
+									"registration_code" => $_POST['registration_radio'],
+									"registration_url" => $_POST['registration_url']																
 									);
 				
 				foreach($timeFields as $field) {
@@ -177,7 +178,9 @@
 									"tags" => $tags,
 									"col1" => $_POST['col1_desc'],
 									"col2" => $_POST['col2_desc'],
-									"custom_1" => $_POST['custom_1'] );
+									"custom_1" => $_POST['custom_1'],
+									"registration_code" => $_POST['registration_radio'],
+									"registration_url" => $_POST['registration_url'] );
 			//Only update the filename if the user uploaded a new one.
 			if($filename != "") {
 				$params["image"] = $filename;

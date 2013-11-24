@@ -43,7 +43,9 @@
 									"description" => $_POST['description'],
 									"all_day" => $all_day,
 									"added" => date("Y-m-d H:i:s"),
-									"icon" => $filename
+									"icon" => $filename,
+									"registration_code" => $_POST['registration_radio'],
+									"registration_url" => $_POST['registration_url']
 									);
 			
 			if($_POST['start_time']) {
@@ -67,7 +69,9 @@
 		
 			$params = array("name" => $_POST['name'],
 							"description" => $_POST['description'],
-							"all_day" => $all_day );
+							"all_day" => $all_day,
+							"registration_code" => $_POST['registration_radio'],
+							"registration_url" => $_POST['registration_url'] );
 			//Only update the filename if the user uploaded a new one.
 			if($filename != "") {
 				$params["icon"] = $filename;

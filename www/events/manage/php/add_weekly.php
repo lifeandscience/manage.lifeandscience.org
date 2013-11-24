@@ -19,6 +19,8 @@
 			echo "<div class=\"alert alert-error\">This event has been archived. <a id=\"restoreLink\" href=\"#\">Restore it.</a></div>";
 		}
 	}
+	
+	$REGISTRATION_CODES = array("Free with admission", "Fee applies", "Registration Required", "Buy Tickets"); //use index as 'code'
 
 ?>
 
@@ -160,6 +162,23 @@
 					<textarea id="description" name="description" style="display: none;"></textarea>
 	        </tr>
 	        <tr>
+	        	<td>Registration: <span class="required">*</span></td>
+	        	<td>
+	        		<?php
+	        			foreach($REGISTRATION_CODES as $code => $label) {
+		        			$checked = ($event && $event->registration_code == $code) ? "checked" : "";
+		        			echo "<label class=\"radio\"><input type=\"radio\" name=\"registration_radio\" value=\"" . $code . "\"" . $checked . " >" . $label . "</label>";
+	        			}
+	        		?>
+	        		<span class="inlineError" id="registrationError">You must select a registration type.</span>
+	        	</td>
+	        </tr>
+	        <tr>
+	        	<td>Registration URL: </td>
+	        	<td><input type="text" name="registration_url" id="registration_url" class="inputfield" placeholder="http://" value="<?= ($event) ? $event->registration_url : "" ?>" />
+	        	<span class="tiny formHelp">Required if "Registration Required" or "Buy Tickets" is selected above.</span></td>
+	        </tr>
+	        <tr>
 	            <td>Icon: </td>
 	            <td>
 	            	<span class="file-wrapper">
@@ -246,6 +265,13 @@
 		var start_time = $('#start_time').val();
 		var end_time = $('#end_time').val();
 		var all_day = $('#all_day').is(':checked');
+		var registration_radio = $('input:radio[name=registration_radio]:checked').length;
+		
+		if(!registration_radio) {
+			$('#registrationError').show();
+		} else {
+			$('#registrationError').hide();
+		}
 		
 		//Make sure the end time is not earlier than start time
 		var end_time_error = false;
@@ -276,7 +302,7 @@
 		
 		$('#nameError').toggle(name == "");
 		
-		if(!days.length || !name || (!start_time && !all_day) || end_time_error ) {
+		if(!days.length || !name || (!start_time && !all_day) || end_time_error || !registration_radio) {
 			$("#validationdiv").show();
 		}
 		else {

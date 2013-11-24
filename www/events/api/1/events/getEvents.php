@@ -40,7 +40,9 @@
 				"tags":"1,3",
 				"big_image": "event28_lrg.png",
 				"col1": "This is a big description for the left column.",
-				"col2": "This is a big description for the right column."
+				"col2": "This is a big description for the right column.",
+				"registration_code": "2",
+				"registration_url": "http://ticketmaster.com/blah/3"
 			},
 			{
 				...
@@ -61,7 +63,9 @@
 				"image":"event28.png",
 				"url":"http://lifeandscience.org/event/123",
 				"description":"Two dates in Feb 2012",
-				"active":"1"
+				"active":"1",
+				"registration_code": "2",
+				"registration_url": "http://ticketmaster.com/blah/3"
 			},
 			{
 				...
@@ -87,7 +91,7 @@
 			return $error;
 		}
 		
-		$summary_fields = "`id`,`name`,`date`,`end_date`,`start_time`,`end_time`,`sun_start_time`,`sun_end_time`,`all_day`,`image`,`description`,`active`,`tags`,`url`,`group_id`";
+		$summary_fields = "`id`,`name`,`date`,`end_date`,`start_time`,`end_time`,`sun_start_time`,`sun_end_time`,`all_day`,`image`,`description`,`active`,`tags`,`url`,`group_id`,`registration_code`,`registration_url`";
 		$select_params = (strtolower($detail_level) === "summary") ? $summary_fields : "*";
 
 		if(!$start_date) $start_date = date("Ymd"); //Default value = current date

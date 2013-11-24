@@ -41,6 +41,9 @@
 	//Get the list of all tags
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/events/api/1/events/getTags.php");
 	$tags = getTags();
+	
+	$REGISTRATION_CODES = array("Free with admission", "Fee applies", "Registration Required", "Buy Tickets"); //use index as 'code'
+	
 ?>
 
 <div id="errordiv" class="noDisplay alert alert-error">
@@ -316,9 +319,21 @@
 					<textarea id="col2_original_description" name="col2_original_description" style="display: none;"><?= ($event) ? $event->col2 : "" ?></textarea>
 	        </tr>
 	        <tr>
-	            <td>Event URL: </td>
-	            <td><input type="text" name="url" id="url" class="inputfield" placeholder="http://" value="<?= ($event) ? $event->url : "" ?>" />
-	            <span class="tiny formHelp">Optional. Enter an existing URL that you would like this event to link to.</span></td>
+	        	<td>Registration: <span class="required">*</span></td>
+	        	<td>
+	        		<?php
+	        			foreach($REGISTRATION_CODES as $code => $label) {
+		        			$checked = ($event && $event->registration_code == $code) ? "checked" : "";
+		        			echo "<label class=\"radio\"><input type=\"radio\" name=\"registration_radio\" value=\"" . $code . "\"" . $checked . " >" . $label . "</label>";
+	        			}
+	        		?>
+	        		<span class="inlineError" id="registrationError">You must select a registration type.</span>
+	        	</td>
+	        </tr>
+	        <tr>
+	        	<td>Registration URL: </td>
+	        	<td><input type="text" name="registration_url" id="registration_url" class="inputfield" placeholder="http://" value="<?= ($event) ? $event->registration_url : "" ?>" />
+	        	<span class="tiny formHelp">Required if "Registration Required" or "Buy Tickets" is selected above.</span></td>
 	        </tr>
 	        <tr>
 	            <td>Cost/Requirements: </td>
@@ -371,9 +386,13 @@
 	            <td><input type="text" name="fb_link" id="fb_link" placeholder="http://" class="inputfield" value="<?= ($event) ? $event->fb_link : "" ?>" /></td>
 	        </tr>
 	        <tr>
+	            <td>Event URL: </td>
+	            <td><input type="text" name="url" id="url" class="inputfield" placeholder="http://" value="<?= ($event) ? $event->url : "" ?>" />
+	            <span class="tiny formHelp">Overrides the default event details page with a custom link to an external page.</span></td>
+	        </tr>
+	        <tr>
 	            <td colspan="2" align="center">
 		            <?php
-					
 						//Show an archive or delete link if we are in edit mode
 						if($event) {
 							if($isArchived) {
@@ -382,12 +401,12 @@
 								echo "<button class=\"btn btn-small btn-danger\" href=\"#\" id=\"deleteLink\">Archive</button>";
 							}
 						}
-						
 					?>
 		            <input type="button" onclick="validate()" class="btn" value="<?= ($event) ? "Save" : "Create Event" ?>" />
 					<span class="tiny">or</span> <a class="tiny" href="#" onclick="cancel();">Cancel</a>
 				</td>
-			</tr> 
+			</tr>
+			
 		</tbody>
     </table>
 </form>
@@ -510,6 +529,13 @@
 		var sun_start_time = $('#sun_start_time').val();
 		var sun_end_time = $('#sun_end_time').val();
 		var all_day = $('#all_day').is(':checked');
+		var registration_radio = $('input:radio[name=registration_radio]:checked').length;
+		
+		if(!registration_radio) {
+			$('#registrationError').show();
+		} else {
+			$('#registrationError').hide();
+		}
 		
 		var date_format = $('input:radio[name=dates_radio]:checked').val();
 		var areDatesValid = false;
@@ -552,7 +578,7 @@
 			
 		$('#nameError').toggle(name == "");
 		
-		if( !areDatesValid || !name || (!start_time && !all_day) || !isEndValid || !isSundayEndValid) {
+		if( !areDatesValid || !name || (!start_time && !all_day) || !isEndValid || !isSundayEndValid || !registration_radio) {
 			$("#validationdiv").show();
 		}
 		else {

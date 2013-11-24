@@ -34,7 +34,9 @@
 				"tags":"1,3",
 				"big_image": "event28_lrg.png",
 				"col1": "This is a big description for the left column.",
-				"col2": "This is a big description for the right column."
+				"col2": "This is a big description for the right column.",
+				"registration_code": "2",
+				"registration_url": "http://ticketmaster.com/blah/3"
 			},
 			{
 				...
