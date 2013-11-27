@@ -481,31 +481,45 @@
 	});
 	
 	//Create a custom button for toggling HTML view on/off
-	var viewMode = "text";
 	function viewHTML(btn, editor) {
+		var $editor = $(editor);
+		var viewMode = $editor.attr("data-viewMode");
+
+		//Set default
+		if(!viewMode) {
+			viewMode = "text";
+		}
 		if(viewMode == "text") {
 			var html = $(editor).html();
-			$(editor).text(html);
-			viewMode = "html";
+			$editor.text(html);
+			$editor.attr("data-viewMode", "html");
 			if(btn) $(btn).attr("data-original-title", "Switch to WYSIWYG Editor");
 		} else {
 			var text = $(editor).text();
-			$(editor).html(text);
-			viewMode = "text";
+			$editor.html(text);
+			$editor.attr("data-viewMode", "text");
 			if(btn) $(btn).attr("data-original-title", "View HTML");
 		}
 	}
 	
+	function copyHtmlContent(editor, textarea) {
+		var $editor = $(editor);
+		$editor.cleanHtml();
+		var viewMode = $editor.attr("data-viewMode");
+		if(viewMode == "html") {
+			console.log($editor.text());
+			$(textarea).val($editor.text());	
+		} else {
+			$(textarea).val($editor.html());
+		}
+	}
+	
 	function submitForm() {
-		$('#editor').cleanHtml();
 		//Copy editor content into textarea before submitting.
-		$('#description').val($('#editor').html());
-		
-		$('#col1').cleanHtml();
-		$('#col1_desc').val($('#col1').html());
-		$('#col2').cleanHtml();
-		$('#col2_desc').val($('#col2').html());
-		
+		copyHtmlContent('#editor', '#description');
+		copyHtmlContent('#col1', '#col1_desc');
+		copyHtmlContent('#col2', '#col2_desc');
+				
 		$('#addEvent').submit();
 	}
 	

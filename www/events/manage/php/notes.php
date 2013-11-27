@@ -48,7 +48,7 @@
 	  <div class="btn-group">
 	    <a id="pictureBtn" title="" class="btn" data-original-title="Insert picture (or just drag &amp; drop)"><i class="icon-picture"></i></a>
 	    <input type="file" data-edit="insertImage" data-target="#pictureBtn" data-role="magic-overlay" style="opacity: 0; position: absolute; top: 0px; left: 0px; width: 39px; height: 30px;">
-	    <a title="" onclick="viewHTML(this)" class="btn" data-original-title="View HTML"><i class="icon-code"></i></a>
+	    <a title="" onclick="viewHTML(this, '#editor')" class="btn" data-original-title="View HTML"><i class="icon-code"></i></a>
 	  </div>
 	  <div class="btn-group">
 	    <a title="" data-edit="undo" class="btn" data-original-title="Undo"><i class="icon-undo"></i></a>
@@ -79,27 +79,42 @@
 	var datepicker = $.fn.datepicker.noConflict(); // return $.fn.datepicker to previously assigned value
 	$.fn.bootstrapDP = datepicker;  // give $().bootstrapDP the bootstrap-datepicker functionality
 	
-
 	//Create a custom button for toggling HTML view on/off
-	var viewMode = "text";
-	function viewHTML(btn) {
+	function viewHTML(btn, editor) {
+		var $editor = $(editor);
+		var viewMode = $editor.attr("data-viewMode");
+
+		//Set default
+		if(!viewMode) {
+			viewMode = "text";
+		}
 		if(viewMode == "text") {
-			var html = $('#editor').html();
-			$('#editor').text(html);
-			viewMode = "html";
+			var html = $(editor).html();
+			$editor.text(html);
+			$editor.attr("data-viewMode", "html");
 			if(btn) $(btn).attr("data-original-title", "Switch to WYSIWYG Editor");
 		} else {
-			var text = $('#editor').text();
-			$('#editor').html(text);
-			viewMode = "text";
+			var text = $(editor).text();
+			$editor.html(text);
+			$editor.attr("data-viewMode", "text");
 			if(btn) $(btn).attr("data-original-title", "View HTML");
 		}
 	}
 	
+	function copyHtmlContent(editor, textarea) {
+		var $editor = $(editor);
+		$editor.cleanHtml();
+		var viewMode = $editor.attr("data-viewMode");
+		if(viewMode == "html") {
+			console.log($editor.text());
+			$(textarea).val($editor.text());	
+		} else {
+			$(textarea).val($editor.html());
+		}
+	}
+	
 	function submitForm() {
-		$('#editor').cleanHtml();
-		//Copy editor content into textarea before submitting.
-		$('#notes').val($('#editor').html());
+		copyHtmlContent('#editor', '#notes');
 		$('#addNotes').submit();
 	}
 
