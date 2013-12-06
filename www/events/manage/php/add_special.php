@@ -43,6 +43,7 @@
 	$tags = getTags();
 	
 	$REGISTRATION_CODES = array("Free with admission", "Fee applies", "Registration Required", "Buy Tickets"); //use index as 'code'
+	$DEFAULT_TWEET = "Check out this cool event happening @lifeandscience: ";
 	
 ?>
 
@@ -386,6 +387,13 @@
 	            <td><input type="text" name="fb_link" id="fb_link" placeholder="http://" class="inputfield" value="<?= ($event) ? $event->fb_link : "" ?>" /></td>
 	        </tr>
 	        <tr>
+	            <td>Default Tweet: </td>
+	            <?php $tweet = ($event && $event->tweet) ? $event->tweet : $DEFAULT_TWEET; ?>
+	            <td><input type="text" name="tweet" id="tweet" class="inputfield" onKeyUp="tweetCharacterCount()" value="<?= $tweet ?>" />
+	            <span id="characterCount"><?= 117 - strlen($tweet) ?></span>
+	            <span class="tiny formHelp">A link to this event will be automatically appended to this tweet.</span></td>
+	        </tr>
+	        <tr>
 	            <td>Event URL: </td>
 	            <td><input type="text" name="url" id="url" class="inputfield" placeholder="http://" value="<?= ($event) ? $event->url : "" ?>" />
 	            <span class="tiny formHelp">Overrides the default event details page with a custom link to an external page.</span></td>
@@ -669,6 +677,17 @@
 	
 	function cancel() {
 		window.location.href = "/events/special/";
+	}
+
+	function tweetCharacterCount() {
+		var MAX = 117; //Since we are appending a URL, the t.co shortener currently uses 23 characters
+		var $tweet = $('#tweet');
+		var val = $tweet.val();
+		if(val.length > MAX) {
+			$tweet.val(val.substring(0, MAX));
+		} else {
+			$('#characterCount').html(MAX - val.length);
+		}
 	}
 	
 	<?php if($event) { ?>

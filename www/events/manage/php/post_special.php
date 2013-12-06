@@ -87,6 +87,7 @@
 									"date" => date("Y-m-d",strtotime($dates[$x])),
 									"image" => $filename,
 									"fb_link" => $_POST['fb_link'],
+									"tweet" => $_POST['tweet'],
 									"description" => $_POST['description'],
 									"special_note" => $_POST['special_note'],
 									"all_day" => $all_day,
@@ -170,6 +171,7 @@
 			$params = array("name" => $_POST['name'],
 							//		"date" => date("Y-m-d",strtotime($dates[0])), //just use the first date for this edit. We'll address the other dates later.
 									"fb_link" => $_POST['fb_link'],
+									"tweet" => $_POST['tweet'],									
 									"description" => $_POST['description'],
 									"special_note" => $_POST['special_note'],
 									"all_day" => $all_day,

@@ -303,6 +303,10 @@ div.eventList > .event {
 
 /* Weekly/Special pages */
 
+#characterCount {
+	color: #75cbd1;
+}
+
 div.day_selector {
 	margin: 10px 0;
 	padding: 0 0 20px;

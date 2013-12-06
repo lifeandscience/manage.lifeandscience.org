@@ -23,6 +23,7 @@
 				"all_day":"0",
 				"image":"event28.png",
 				"fb_link":"http://facebook.com/blah",
+				"tweet":"Check out this event happening at @lifeandscience",
 				"description":"Two dates in Feb 2012",
 				"special_note":"This goes under the image",
 				"url":"http://lifeandscience.org/event/123",
