@@ -34,9 +34,8 @@
 	//Need to show unique labels if we are in Edit vs. Create mode
 	if($event) {
 	
-		//Create the "View" link
-		$viewLink = "<a class=\"createLink\" href=\"";
-		$viewLink .= NCMLS_DAILY_EVENTS_ENDPOINT;
+		//Create the "View" links
+		$viewLinks = "<div class=\"createLink\"> (View: <a href=\"";
 		
 		//Determine the first day that this event occurs on
 		if($event->mon) $_dayName = "Monday";
@@ -47,12 +46,16 @@
 		else if($event->sat) $_dayName = "Saturday";
 		else if($event->sun) $_dayName = "Sunday";
 		
-		$viewLink .= "?date=" . date('Ymd', strtotime("this " . $_dayName));
-		$viewLink .= "\">View Event</a>";
+		$dispDate = date('Ymd', strtotime("this " . $_dayName));
+		
+		$viewLinks .= NCMLS_DAILY_EVENTS_ENDPOINT . "?date=" . $dispDate;
+		$viewLinks .= "\">Desktop</a> / <a href=\"";
+		$viewLinks .= NCMLS_DAILY_EVENTS_ENDPOINT_MOBILE . "?date=" . $dispDate;
+		$viewLinks .= "\">Mobile</a>)</div>";
 		
 		echo "<div id=\"successdiv\" class=\"noDisplay alert alert-success\">";
 		echo "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>Event has been saved.</div>";
-		echo "<h2 class=\"eventTitle\"><span class=\"editEventName\">" . $event->name . $viewLink . "</span>";
+		echo "<h2 class=\"eventTitle\"><span class=\"editEventName\">" . $event->name . $viewLinks . "</span>";
 		if(!$isArchived) {
 			echo "<a class=\"backLink\" href=\"/events/weekly/\">Back to event list</a></h2>";	
 		} else {

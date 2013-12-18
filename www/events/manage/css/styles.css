@@ -354,7 +354,9 @@ h2.eventTitle {
 .createLink {
 	font-size: 10pt;
 	padding: 3px;
-	margin-left: 5px;
+	margin-left: 10px;
+	vertical-align: middle;
+	display: inline-block;
 	text-transform: uppercase;
 }
 
