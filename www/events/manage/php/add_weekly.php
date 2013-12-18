@@ -20,7 +20,7 @@
 		}
 	}
 	
-	$REGISTRATION_CODES = array("Free with admission", "Fee applies", "Registration Required", "Buy Tickets"); //use index as 'code'
+	$REGISTRATION_CODES = array("Free with admission", "Fee applies", "Registration Required", "Buy Tickets", "Sold Out"); //use index as 'code'
 
 ?>
 

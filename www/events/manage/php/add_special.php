@@ -42,7 +42,7 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/events/api/1/events/getTags.php");
 	$tags = getTags();
 	
-	$REGISTRATION_CODES = array("Free with admission", "Fee applies", "Registration Required", "Buy Tickets"); //use index as 'code'
+	$REGISTRATION_CODES = array("Free with admission", "Fee applies", "Registration Required", "Buy Tickets", "Sold Out"); //use index as 'code'
 	$DEFAULT_TWEET = "Check out this cool event happening @lifeandscience: ";
 	
 ?>
