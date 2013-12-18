@@ -73,7 +73,7 @@
 	?>
     <table>
 		<thead>
-			<th style="width:130px;">&nbsp;</th>
+			<th style="width:200px;">&nbsp;</th>
 			<th>&nbsp;</th>
 		</thead>
 		<tbody>
@@ -162,7 +162,7 @@
 					<textarea id="description" name="description" style="display: none;"></textarea>
 	        </tr>
 	        <tr>
-	        	<td>Registration: <span class="required">*</span></td>
+	        	<td>Registration Type: <span class="required">*</span></td>
 	        	<td>
 	        		<?php
 	        			foreach($REGISTRATION_CODES as $code => $label) {
@@ -176,15 +176,15 @@
 	        <tr>
 	        	<td>Registration URL: </td>
 	        	<td><input type="text" name="registration_url" id="registration_url" class="inputfield" placeholder="http://" value="<?= ($event) ? $event->registration_url : "" ?>" />
-	        	<span class="tiny formHelp">Required if "Registration Required" or "Buy Tickets" is selected above.</span></td>
+	        	<span class="tiny formHelp">RegOnline Link. (Required if "Registration Required" or "Buy Tickets" is selected.)</span></td>
 	        </tr>
 	        <tr>
-	            <td>Icon: </td>
+	            <td>Image: </td>
 	            <td>
 	            	<span class="file-wrapper">
 					  <input type="file" name="thumbnail" id="thumbnail" />
 					  <input type="hidden" name="removeicon" id="removeicon" value="false" />
-					  <span class="button">Choose a <?= ($event && $event->icon) ? " different " : "" ?> photo</span>
+					  <span class="button">Choose a <?= ($event && $event->icon) ? " different " : "" ?> photo</span> 
 					</span>
 		            <?php
 		            	if($event && $event->icon) {
@@ -193,6 +193,7 @@
 		            		echo "<button id=\"clearicon\" title=\"Remove icon\">&times;</button>";
 		            	}
 		            ?>
+		            <span class="tiny formHelp" style="vertical-align:top;margin-top:10px;display:inline-block;">Menu/Default Image (550x300px)</span></td>
 	            </td>
 	        </tr>
 	        <tr>

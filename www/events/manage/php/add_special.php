@@ -225,12 +225,14 @@
 				      </div>
 				    </div>
 					
-					<div id="editor" class="editor"><?= ($event) ? $event->description : "" ?></div></td>
+					<div id="editor" class="editor"><?= ($event) ? $event->description : "" ?></div>
+					<span class="tiny formHelp" style="margin:0;">A brief blurb excerpt approximately 40 words, more or less.</span>
 					<textarea id="description" name="description" style="display: none;"></textarea>
 					<textarea id="original_description" name="original_description" style="display: none;"><?= ($event) ? $event->description : "" ?></textarea>
+				</td>
 	        </tr>
 	        <tr>
-	            <td>Left Column: </td>
+	            <td>Details Page <br />(Left Column): </td>
 	            <td>
 		            <div data-target="#col1" id="col1-toolbar" class="btn-toolbar">
 				      <div class="btn-group">
@@ -270,12 +272,14 @@
 				      </div>
 				    </div>
 					
-					<div id="col1" class="editor full"><?= ($event) ? $event->col1 : "" ?></div></td>
+					<div id="col1" class="editor full"><?= ($event) ? $event->col1 : "" ?></div>
+					<span class="tiny formHelp" style="margin:0;">Register/Buy button, Event Date (Month XX), Event Time (X:xxam), Cost</span>
 					<textarea id="col1_desc" name="col1_desc" style="display: none;"></textarea>
 					<textarea id="col1_original_description" name="col1_original_description" style="display: none;"><?= ($event) ? $event->col1 : "" ?></textarea>
+				</td>					
 	        </tr>
 	        <tr>
-	            <td>Right Column: </td>
+	            <td>Details Page <br />(Right Column): </td>
 	            <td>
 		            <div data-target="#col2" id="col2-toolbar" class="btn-toolbar">
 				      <div class="btn-group">
@@ -315,12 +319,14 @@
 				      </div>
 				    </div>
 					
-					<div id="col2" class="editor full"><?= ($event) ? $event->col2 : "" ?></div></td>
+					<div id="col2" class="editor full"><?= ($event) ? $event->col2 : "" ?></div>
+					<span class="tiny formHelp" style="margin:0;">Event description, Learn More button</span>
 					<textarea id="col2_desc" name="col2_desc" style="display: none;"></textarea>
 					<textarea id="col2_original_description" name="col2_original_description" style="display: none;"><?= ($event) ? $event->col2 : "" ?></textarea>
+				</td>
 	        </tr>
 	        <tr>
-	        	<td>Registration: <span class="required">*</span></td>
+	        	<td>Registration Type: <span class="required">*</span></td>
 	        	<td>
 	        		<?php
 	        			foreach($REGISTRATION_CODES as $code => $label) {
@@ -334,7 +340,7 @@
 	        <tr>
 	        	<td>Registration URL: </td>
 	        	<td><input type="text" name="registration_url" id="registration_url" class="inputfield" placeholder="http://" value="<?= ($event) ? $event->registration_url : "" ?>" />
-	        	<span class="tiny formHelp">Required if "Registration Required" or "Buy Tickets" is selected above.</span></td>
+	        	<span class="tiny formHelp">RegOnline Link. (Required if "Registration Required" or "Buy Tickets" is selected above.)</span></td>
 	        </tr>
 	        <tr>
 	            <td>Cost/Requirements: </td>
@@ -357,6 +363,7 @@
 							echo "<input type=\"hidden\" name=\"originalImage\" id=\"originalImage\" value=\"" . $event->image . "\" />";
 		            	}
 		            ?>
+		            <span class="tiny formHelp" style="vertical-align:top;margin-top:10px;display:inline-block;">Menu/Default Image (550x300px)</span></td>
 	            </td>
 	        </tr>
 	        <tr>
@@ -375,6 +382,7 @@
 							echo "<input type=\"hidden\" name=\"originalBigImage\" id=\"originalBigImage\" value=\"" . $event->big_image . "\" />";
 		            	}
 		            ?>
+		            <span class="tiny formHelp" style="vertical-align:top;margin-top:10px;display:inline-block;">Details Page Image (550x300px)</span></td>
 	            </td>
 	        </tr>
 	        <tr>
@@ -396,7 +404,7 @@
 	        <tr>
 	            <td>Event URL: </td>
 	            <td><input type="text" name="url" id="url" class="inputfield" placeholder="http://" value="<?= ($event) ? $event->url : "" ?>" />
-	            <span class="tiny formHelp">Overrides the default event details page with a custom link to an external page.</span></td>
+	            <span class="tiny formHelp">MLS Landing Page URL (Overrides default event landing page)</span></td>
 	        </tr>
 	        <tr>
 	            <td colspan="2" align="center">
