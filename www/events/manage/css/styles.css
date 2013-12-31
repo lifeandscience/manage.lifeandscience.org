@@ -207,7 +207,7 @@ input[type="button"].btn {
 }
 
 .clearicon {
-	color: #bbb;
+	color: #DA4F49;
 	background: none repeat scroll 0 0 transparent;
     border: 0 none;
     cursor: pointer;
@@ -394,6 +394,28 @@ p.description {
 	color: #bbb;
 }
 
+.attachments h4 {
+	border-bottom: 1px solid #676767;
+    color: #BBBBBB;
+    font-size: 10pt;
+    font-weight: normal;
+    margin-top: 10px;
+    padding-bottom: 5px;
+}
+
+.attachments .file-wrapper {
+	display: block;
+}
+
+.attachment a {
+	font-size: 10pt;
+}
+
+.attachments .delAttachmentBtn {
+	font-size: 13pt;
+	margin: 0 4px;
+}
+
 /* Fix links inside of alert boxes */
 
 .alert a {	
@@ -402,7 +424,6 @@ p.description {
 .alert a:hover {
 	color: #555;
 }
-
 
 /* Pretty browse button */
 

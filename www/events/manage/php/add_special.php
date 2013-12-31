@@ -3,6 +3,9 @@
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/events/bin/config.inc.php");
 	require_once($_SERVER['DOCUMENT_ROOT'] . "/events/bin/wp-db.php");
 	
+	$MANAGE_ENDPOINT = "http://manage.lifeandscience.org";
+	$upload_dir = "/events/uploads/";
+	
 	//Check to see if we are editing an existing event
 	$event = null;
 	$isArchived = 0;
@@ -360,7 +363,7 @@
 					</span>
 		            <?php
 		            	if($event && $event->image) {
-		            		$path = "/events/uploads/" . $event->image;
+		            		$path = $upload_dir . $event->image;
 		            		echo "<img src=\"" . $path . "\" style='height:auto;width:100px;' id=\"theicon\" />";
 		            		echo "<button id=\"clearicon\" title=\"Remove image\" class=\"clearicon\">&times;</button>";
 							echo "<input type=\"hidden\" name=\"originalImage\" id=\"originalImage\" value=\"" . $event->image . "\" />";
@@ -379,7 +382,7 @@
 					</span>
 		            <?php
 		            	if($event && $event->big_image) {
-		            		$path = "/events/uploads/" . $event->big_image;
+		            		$path = $upload_dir . $event->big_image;
 		            		echo "<img src=\"" . $path . "\" style='height:auto;width:200px;' id=\"thebigimage\" />";
 		            		echo "<button id=\"clearbigimage\" title=\"Remove image\" class=\"clearicon\">&times;</button>";
 							echo "<input type=\"hidden\" name=\"originalBigImage\" id=\"originalBigImage\" value=\"" . $event->big_image . "\" />";
@@ -408,6 +411,25 @@
 	            <td>Event URL: </td>
 	            <td><input type="text" name="url" id="url" class="inputfield" placeholder="http://" value="<?= ($event) ? $event->url : "" ?>" />
 	            <span class="tiny formHelp">MLS Landing Page URL (Overrides default event landing page)</span></td>
+	        </tr>
+	        <tr>
+	            <td>Attachments: </td>
+	            <td class="attachments">
+	            	<div class="file-wrapper"><input type="file" name="attachments[]" /><span class="button">Attach File 1</span></div>
+	            	<div class="file-wrapper"><input type="file" name="attachments[]" /><span class="button">Attach File 2</span></div>	
+	            	<?php
+	            		//List existing attachments
+	            		if($event && $event->attachments) {
+	            			echo "<h4>Existing attachments:</h4>";
+		            		foreach($event->attachments as $i=>$attachment) {
+		            			$path = $MANAGE_ENDPOINT . $upload_dir . $attachment->filename;
+			            		echo "<div class=\"attachment\" id=\"attachment_" . $attachment->id  . "\"><a href=\"" . $path . "\">" . $path . "</a>
+			            			<span class=\"delAttachmentBtn clearicon\" title=\"Delete Attachment\" data-attachment=\"" . $attachment->id . "\">x</span>
+			            		</div>";
+		            		}
+	            		}
+	            	?>
+	            </td>
 	        </tr>
 	        <tr>
 	            <td colspan="2" align="center">
@@ -777,6 +799,21 @@
 			});
 		}
 		
+		function postDeleteAttachment(attachment_id) {
+			$.ajax({
+				type: "POST",
+				url: "/events/manage/php/delete_attachment.php",
+				data: { id: attachment_id },
+				success: function(response){
+			  		if(response.trim() === "OK") {
+			  			$('#attachment_' + attachment_id).fadeOut();
+			  		} else {
+				  		console.error("Unable to delete attachment");
+			  		}
+			  }
+			});
+		}
+		
 		function restoreEvent(e) {
 			e.preventDefault();
 			var event_id = <?= $event->id ?>;
@@ -816,7 +853,13 @@
 		$("#deleteLink").click(function(e) {
 			deleteEvent(e);		
 		});
-	
+		
+		$(".delAttachmentBtn").click(function(e) {
+			if(confirm("Are you sure you want to delete this attachment?")) {
+				postDeleteAttachment($(this).data('attachment'));	
+			}
+		});
+		
 	<?php } ?>
 
 	if(window.location.search.indexOf("error") != -1) {

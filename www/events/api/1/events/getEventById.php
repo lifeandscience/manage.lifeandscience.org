@@ -36,7 +36,11 @@
 				"col1": "This is a big description for the left column.",
 				"col2": "This is a big description for the right column.",
 				"registration_code": "2",
-				"registration_url": "http://ticketmaster.com/blah/3"
+				"registration_url": "http://ticketmaster.com/blah/3",
+				"attachments": [
+					{"id":"43","filename":"attachment895_1.pdf","event_id":"28","added":"2013-12-30 23:11:24"},
+					{"id":"44","filename":"attachment54_2.doc","event_id":"28","added":"2013-12-30 23:11:25"}
+				]
 			}
 		
 		NOTE: This API is for special events occurring on a fixed date, not daily reocurring events.
@@ -61,7 +65,13 @@
 			return $error;
 		}
 		
-		$event = $db->get_row($db->prepare("SELECT * FROM `events_special` WHERE `id` = %d", $id));
+		 $event = $db->get_row($db->prepare("SELECT * FROM `events_special` WHERE `id` = %d", $id));
+		
+		//Get attachments
+		$attachments = $db->get_results($db->prepare("SELECT * FROM `attachments` WHERE `event_id` = %d", $event->group_id ? $event->group_id : $id));
+		if($attachments) {
+			$event->attachments = $attachments;
+		}
 		
 		if(!$event) {
 			$event = array(); //return an empty array instead of null if no event is found (TODO: does this make sense?)

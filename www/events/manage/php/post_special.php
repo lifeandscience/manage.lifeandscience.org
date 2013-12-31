@@ -62,6 +62,21 @@
 			move_uploaded_file($filetmp2, $dir . "/" . $bigimage);
 		}
 		
+		//Upload attachments
+		$attachments = array();
+		if( $_FILES['attachments']['name'] ) {
+			for($a=0; $a < count($_FILES['attachments']['name']); $a++) {
+				if($_FILES['attachments']['name'][$a] != "") {
+					$rand_num = rand(1, 9999);
+					$attach = "attachment" . $rand_num . "_" . $_FILES['attachments']['name'][$a];
+					$attach = str_replace(" ","_",$attach);
+					$filetmp3 = $_FILES['attachments']['tmp_name'][$a];
+					move_uploaded_file($filetmp3, $dir . "/" . $attach);
+					array_push($attachments, $attach);	
+				}				
+			}
+		}
+		
 		if($dateType == "multidate") {
 			//See if we have multiple events
 			$dates = explode(",", $_POST["date"]);
@@ -131,6 +146,7 @@
 					//now, update that first row we just inserted with the right group_id
 					$db->update('events_special', array("group_id" => $group_id), array("id" => $db->insert_id));
 				}
+				
 			}
 			
 			if($rows_inserted == $num_dates) $success = 1; //only claim success if we inserted all of the rows
@@ -272,6 +288,15 @@
 					$success = 0;
 				}
 			}
+		}
+		
+		//Process attachemnts
+		foreach($attachments as $i => $name) {
+			$db->insert('attachments', array(
+				"filename" => $name,
+				"added" => date("Y-m-d H:i:s"),
+				"event_id" => $group_id ? $group_id : $event_id
+			));	
 		}
 
 	} //end validation block
