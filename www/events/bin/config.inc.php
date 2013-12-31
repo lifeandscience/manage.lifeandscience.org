@@ -13,9 +13,11 @@ if(file_exists($_SERVER['DOCUMENT_ROOT'] . '/../config.inc.php')){
 
 	define('NCMLS_DAILY_EVENTS_ENDPOINT', 'http://lifeandscience.org/visit/calendar');
 	define('NCMLS_MONTHLY_EVENTS_ENDPOINT', 'http://lifeandscience.org/visit/calendar/all');
+	define('NCMLS_MONTHLY_DETAILS_ENDPOINT', 'http://lifeandscience.org/visit/calendar/details');
 	
 	define('NCMLS_DAILY_EVENTS_ENDPOINT_MOBILE', 'http://m.lifeandscience.org/daily-events');
 	define('NCMLS_MONTHLY_EVENTS_ENDPOINT_MOBILE', 'http://m.lifeandscience.org/monthly-events');
+	define('NCMLS_MONTHLY_DETAILS_ENDPOINT_MOBILE', 'http://m.lifeandscience.org/event-details');
 	
 }
 ?>

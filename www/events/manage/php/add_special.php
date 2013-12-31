@@ -62,13 +62,9 @@
 	
 		//Create the "View" links
 		$viewLinks = "<div class=\"createLink\"> (View: <a href=\"";
-		
-		$_d = strtotime($event->date);	
-		$dispDate = "?month=" . date('m', $_d) . "&year=" . date('Y', $_d);
-		
-		$viewLinks .= NCMLS_MONTHLY_EVENTS_ENDPOINT . $dispDate;
+		$viewLinks .= NCMLS_MONTHLY_DETAILS_ENDPOINT . "?id=" . $event->id;
 		$viewLinks .= "\">Desktop</a> / <a href=\"";
-		$viewLinks .= NCMLS_MONTHLY_EVENTS_ENDPOINT_MOBILE . $dispDate;
+		$viewLinks .= NCMLS_MONTHLY_DETAILS_ENDPOINT_MOBILE . "?id=" . $event->id;
 		$viewLinks .= "\">Mobile</a>)</div>";
 		
 		echo "<div id=\"successdiv\" class=\"noDisplay alert alert-success\">";
