@@ -46,7 +46,7 @@
 					<li><a href="/events/manage"<?php if(!$page) echo " class='selected' "; ?>>Home</a></li>				
 					<li><a href="/events/weekly"<?php if(strpos($page,"weekly") !== FALSE) echo " class='selected' "; ?>>Daily Events</a></li>
 					<li><a href="/events/special"<?php if(strpos($page,"special") !== FALSE) echo " class='selected' "; ?>>Monthly Events</a></li>
-					<li><a href="/events/notes"<?php if(strpos($page,"notes") !== FALSE) echo " class='selected' "; ?>>Notes</a></li>
+					<li><a href="/events/notes"<?php if(strpos($page,"notes") !== FALSE) echo " class='selected' "; ?>>Exceptions</a></li>
 					<li><a href="/events/archive"<?php if(strpos($page,"archive") !== FALSE) echo " class='selected' "; ?>>Archive</a></li>
 		        </ul>
 			</nav>

@@ -11,7 +11,11 @@
 		
 		EXAMPLE RESPONSE:
 		
-			"This is a note"
+			{
+				"date": "2013-12-04",
+				"notes": "This is a note.",
+				"dailyEventsDisabled": "0"
+			}
 	
 	*/
 
@@ -32,7 +36,7 @@
 			return $error;
 		}
 		$note = $db->get_row($db->prepare("SELECT * FROM `special_notes` WHERE `date` = %s", $date));
-		return $note->notes;
+		return $note;
 	}
 	
 	$date = isset($_GET["date"]) ? $_GET["date"] : null;

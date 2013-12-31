@@ -1,14 +1,15 @@
-<h2 class="sectionTitle">Create/Update Notes</h2>
 
 <div id="successdiv" class="noDisplay alert alert-success">
-<button type="button" class="close" data-dismiss="alert">&times;</button>Note saved successfully.</div>
+<button type="button" class="close" data-dismiss="alert">&times;</button>Changes saved successfully.</div>
 
 <div id="errordiv" class="noDisplay alert alert-error">
-<button type="button" class="close" data-dismiss="alert">&times;</button>An error occurred while trying to save the note. Please try again.</div>
+<button type="button" class="close" data-dismiss="alert">&times;</button>An error occurred while trying to save the changes. Please try again.</div>
 
+<h2 class="sectionTitle" id="managingExceptionsTitle">Manage Exceptions</h2>
+<p>This page is designed to address the various exceptions that may occur at certain times throughout the calendar year. Events such as holidays, weather delays, or seasonal changes can impact the normal daily schedule. To address these events, use the form below. You can edit existing exceptions by selecting the desired date, updating the note and/or settings, and saving the changes.</p>
 
-<p>Use this form to create notes for special circumstances that may occur on certain days.</p>
-<p>To modify an existing note, select the date below.</p>
+<h2 class="exceptionsStepTitle">Step 1: Select date</h2>
+
 <form id="addNotes" enctype="multipart/form-data" action="/events/manage/php/post_notes.php" method="post">
 
 	<div class="input-append date" id="date-picker" data-date-format="mm/dd/yyyy">
@@ -17,6 +18,9 @@
         
     </div>
     <span class="inlineError" id="dateRequired"></span>
+    
+	<h2 id="specialNoteTitle" class="exceptionsStepTitle">Step 2: Special Note (Optional)</h2>
+	<p>You can specify a message that will appear at the top of the daily page for this date.</p>
 
 	<div data-target="#editor" data-role="editor-toolbar" class="btn-toolbar">
 	  <div class="btn-group">
@@ -57,7 +61,24 @@
 	</div>
 	<div id="editor" class="editor" style="height:150px;"></div>
 	<textarea id="notes" name="notes" style="display: none;"></textarea>
-	<input type="button" onclick="validate()" class="btn" id="submitBtn" value="Create Note" />
+	
+
+	<h2 id="dailyEventsTitle" class="exceptionsStepTitle">Step 3: Show Daily Events (Optional)</h2>
+	<p>You can disable (hide) all daily events for this date. Daily events are enabled by default.</p>
+	<div class="radio">
+	  <label>
+	    <input type="radio" name="dailyEventsDisabled" id="dailyEventsDisabled0" value="0" checked>
+	    Enabled 
+	  </label>
+	</div>
+	<div class="radio">
+	  <label>
+	    <input type="radio" name="dailyEventsDisabled" id="dailyEventsDisabled1" value="1">
+	    Disabled
+	  </label>
+	</div>
+	
+	<input type="button" onclick="validate()" class="btn" id="submitBtn" disabled value="Save Changes" />
 	<input type="hidden" name="isEditing" id="isEditing" value="0" />
 </form>
 
@@ -132,23 +153,24 @@
 	
 	function checkForExistingNote(date) {
 		if(date) {
-			$.ajax({
-				type: "POST",
-				url: "/events/manage/php/post_notes.php",
-				data: { "date-input" : date, mode : "check" },
-				success: function(response){
-			  		if(response) {
-					  	$('#editor').html(response);	
-					  	$('#submitBtn').val("Save Changes");
-					  	$('#isEditing').val("1");
-			  		}
-			  		else {
-				  		$('#editor').html("");	
-				  		$('#submitBtn').val("Create Note");
-				  		$('#isEditing').val("0");
-			  		}
-			  	}
-			});			
+			var f_date = $.datepicker.formatDate('yymmdd', new Date(date));
+			$.getJSON("/events/api/1/events/getNote.php?date=" + f_date, function(response) {
+				if(response) {
+				  	$('#editor').html(response.notes);
+				  	if(response.dailyEventsDisabled === "0") {
+					  	$('#dailyEventsDisabled0').prop('checked', true);
+				  	} else {
+					  	$('#dailyEventsDisabled1').prop('checked', true);					  	
+				  	}
+				  	$('#isEditing').val("1");
+		  		}
+		  		else {
+			  		$('#editor').html("");	
+			  		$('#isEditing').val("0");
+			  		$('#dailyEventsDisabled0').prop('checked', true);
+		  		}
+			
+			});	
 		}
 	}
 
@@ -156,7 +178,9 @@
 		$('#date-picker').bootstrapDP().on("changeDate", function() {
 			$('#date-picker').bootstrapDP("hide");
 			var date = $('#date-input').val();
+			$("#managingExceptionsTitle").html("Managing Exceptions for <span style='color:#75CBD1;'> " + date + "</span>");
 			checkForExistingNote(date);
+			$("#submitBtn").attr("disabled", false);
 			$('#dateRequired').hide();
 		});
 	});
