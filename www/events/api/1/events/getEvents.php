@@ -11,8 +11,9 @@
 			page		(optional)		ex. 3				Pass the page number if you need result paging for big result sets. The count param is required when paging.
 			start_date	(optional)		ex. 20120701		Will only return events starting from this date until end_date (if specified). 
 															If start_date is not specified, the default value is the current date. (i.e. no past events shown)
-			end_date	(optional)		ex. 20120801		Will only return events from start_date (or current date if no start is specified) to end_date.
+			end_date	 (optional)		ex. 20120801		Will only return events from start_date (or current date if no start is specified) to end_date.
 			detail_level (required)		ex. summary			Specifies the level of detail included in the response. Accepted values are 'summary' or 'full'.
+			only_labs    (optional)		ex. 1				When set to 1, only lab programs (isLab=1) events will be returned. By default, this is set to 0 (never show labs).
 		
 		EXAMPLE RESPONSES:
 		
@@ -36,6 +37,7 @@
 				"url":"http://lifeandscience.org/event/123",
 				"custom_1":"Cost $30, Ages 12-18",
 				"active":"1",
+				"isLab":"0",
 				"added":"2012-06-24 23:46:04",
 				"group_id":"28",
 				"tags":"1,3",
@@ -75,7 +77,7 @@
 	
 	*/
 	
-	function getEvents($count = null, $page = null, $start_date = null, $end_date = null, $detail_level = null) {
+	function getEvents($count = null, $page = null, $start_date = null, $end_date = null, $detail_level = null, $only_labs = null) {
 
 		require_once($_SERVER['DOCUMENT_ROOT'] . "/events/bin/config.inc.php");
 		require_once($_SERVER['DOCUMENT_ROOT'] . "/events/bin/wp-db.php");
@@ -97,6 +99,8 @@
 
 		if(!$start_date) $start_date = date("Ymd"); //Default value = current date
 		
+		if(!$only_labs) $only_labs = "0"; //Default value = never include labs in results
+		
 		$offset = ($page != null && $count != null) ? $page * $count : 0;
 		
 		if($end_date) {
@@ -113,11 +117,11 @@
 				
 				*/
 				
-				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND ( (`date` BETWEEN %d AND %d) OR (`end_date` BETWEEN %d AND %d) OR (`date` <= %d AND `end_date` >= %d) ) ORDER BY `date` ASC  LIMIT %d, %d", $start_date, $end_date, $start_date, $end_date, $start_date, $end_date, $offset, $count));
+				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND `isLab` = " . $only_labs . " AND ( (`date` BETWEEN %d AND %d) OR (`end_date` BETWEEN %d AND %d) OR (`date` <= %d AND `end_date` >= %d) ) ORDER BY `date` ASC  LIMIT %d, %d", $start_date, $end_date, $start_date, $end_date, $start_date, $end_date, $offset, $count));
 				
 			} else {
 				
-				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND ( (`date` BETWEEN %d AND %d) OR (`end_date` BETWEEN %d AND %d) OR (`date` <= %d AND `end_date` >= %d) ) ORDER BY `date` ASC", $start_date, $end_date, $start_date, $end_date, $start_date, $end_date));
+				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND `isLab` = " . $only_labs . " AND ( (`date` BETWEEN %d AND %d) OR (`end_date` BETWEEN %d AND %d) OR (`date` <= %d AND `end_date` >= %d) ) ORDER BY `date` ASC", $start_date, $end_date, $start_date, $end_date, $start_date, $end_date));
 				
 			}
 			
@@ -134,11 +138,11 @@
 				
 				*/
 			
-				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND (`date` >= %d OR `end_date` >= %d) ORDER BY `date` ASC LIMIT %d, %d", $start_date, $start_date, $offset, $count));
+				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND `isLab` = " . $only_labs . " AND (`date` >= %d OR `end_date` >= %d) ORDER BY `date` ASC LIMIT %d, %d", $start_date, $start_date, $offset, $count));
 				
 			} else {
 				
-				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND (`date` >= %d OR `end_date` >= %d) ORDER BY `date` ASC", $start_date, $start_date));
+				$events = $db->get_results($db->prepare("SELECT " . $select_params . " FROM `events_special` WHERE `active` = 1 AND `isLab` = " . $only_labs . " AND (`date` >= %d OR `end_date` >= %d) ORDER BY `date` ASC", $start_date, $start_date));
 				
 			}
 
@@ -152,11 +156,12 @@
 	$start_date = isset($_GET["start_date"]) ? $_GET["start_date"] : null;
 	$end_date = isset($_GET["end_date"]) ? $_GET["end_date"] : null;
 	$detail_level = isset($_GET["detail_level"]) ? $_GET["detail_level"] : null;
+	$only_labs = isset($_GET["only_labs"]) ? $_GET["only_labs"] : null;
 	
 	//Check to see if this is a direct GET request, or a PHP include from another page.
 	if(stripos($_SERVER["SCRIPT_FILENAME"], "/api/1/events/getEvents.php") !== FALSE) {
 		//this script was called directly, likely as a GET request from some javascript
-		$events = getEvents($count, $page, $start_date, $end_date, $detail_level);
+		$events = getEvents($count, $page, $start_date, $end_date, $detail_level, $only_labs);
 		echo json_encode($events);
 	}
 

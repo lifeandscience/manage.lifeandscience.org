@@ -29,6 +29,7 @@
 				"special_note":"This goes under the image",
 				"custom_1":"Cost $30, Ages 12-18",
 				"active":"1",
+				"isLab":"0",				
 				"added":"2012-06-24 23:46:04",
 				"mon": "1",
 				"tue": "0",

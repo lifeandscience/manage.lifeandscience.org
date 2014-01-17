@@ -21,6 +21,7 @@
 				"sun_start_time":"13:00:00",		
 				"sun_end_time":"16:00:00",		
 				"all_day":"0",
+				"isLab":"0",
 				"image":"event28.png",
 				"fb_link":"http://facebook.com/blah",
 				"tweet":"Check out this event happening at @lifeandscience",
@@ -62,7 +63,7 @@
 			return $error;
 		}
 		$now = date("Ymd");
-		$all_events = $db->get_results($db->prepare("SELECT * FROM `events_special` WHERE `active` = 1 AND (`date` >= %d OR `end_date` >= %d) ORDER BY `date` ASC", $now, $now));
+		$all_events = $db->get_results($db->prepare("SELECT * FROM `events_special` WHERE `active` = 1 AND `isLab` = 0 AND (`date` >= %d OR `end_date` >= %d) ORDER BY `date` ASC", $now, $now));
 		$matching_events = array();
 		foreach($all_events as $event) {
 			$tags = explode(",", $event->tags);

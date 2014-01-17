@@ -50,7 +50,7 @@
 		}
 ?>
 
-<h2 class="sectionTitle" style="margin-top: 70px;">Archived Daily Events</h2>
+<h2 class="sectionTitle" style="margin-top: 40px;">Archived Daily Events</h2>
 
 <?php
 		
@@ -78,3 +78,25 @@
 			echo "<p>There are no archived daily events.</p>";
 		}
 ?>
+
+<h2 class="sectionTitle" style="margin-top: 40px;">Archived Lab Programs</h2>
+
+<?php
+		
+		$events = $db->get_results($db->prepare("SELECT * FROM `events_special` WHERE `active` = 0 AND `isLab` = 1 ORDER BY `date` DESC"));
+		foreach($events as $event) {
+			echo "
+				<div class=\"event\">
+					<span class=\"eventDate\">" . formatDate($event) . "</span>
+					<span class=\"eventName\"><a title=\"Click to Edit\" href=\"/events/special/edit/" . $event->id . "\">" . $event->name . "</a></span>
+				</div>
+			";		
+		}
+		
+		//There are no archived events
+		if(!$events) {
+			echo "<p>There are no archived lab programs.</p>";
+		}
+?>
+
+

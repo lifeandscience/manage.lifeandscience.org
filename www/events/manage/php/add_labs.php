@@ -14,7 +14,7 @@
 		require_once($_SERVER['DOCUMENT_ROOT'] . "/events/api/1/events/getEventById.php");
 		$event = getEventById($event_id);
 		if(!$event) {
-			echo "<div class=\"alert alert-warning\">Unable to load event. This can occur if you just removed one or more dates from an existing event. <a href=\"/events/special\">Go back.</a></div>";
+			echo "<div class=\"alert alert-warning\">Unable to load event. This can occur if you just removed one or more dates from an existing event. <a href=\"/events/labs\">Go back.</a></div>";
 		}
 		else if($event->active === "0") {
 			//This event is archived
@@ -61,29 +61,30 @@
 	if($event) {
 	
 		//Create the "View" links
+		$dispDate = date('Ymd', strtotime($event->date));
 		$viewLinks = "<div class=\"createLink\"> (View: <a href=\"";
-		$viewLinks .= NCMLS_MONTHLY_DETAILS_ENDPOINT . "?id=" . $event->id;
+		$viewLinks .= NCMLS_DAILY_EVENTS_ENDPOINT . "?date=" . $dispDate;
 		$viewLinks .= "\">Desktop</a> / <a href=\"";
-		$viewLinks .= NCMLS_MONTHLY_DETAILS_ENDPOINT_MOBILE . "?id=" . $event->id;
+		$viewLinks .= NCMLS_DAILY_EVENTS_ENDPOINT_MOBILE . "?date=" . $dispDate;
 		$viewLinks .= "\">Mobile</a>)</div>";
 		
 		echo "<div id=\"successdiv\" class=\"noDisplay alert alert-success\">";
 		echo "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>Event has been saved.</div>";
 		echo "<h2 class=\"eventTitle\"><span class=\"editEventName\">" . $event->name . $viewLinks . "</span>" ;
 		if(!$isArchived) {
-			echo "<a class=\"backLink\" href=\"/events/special/\">Back to event list</a></h2>";	
+			echo "<a class=\"backLink\" href=\"/events/labs/\">Back to event list</a></h2>";	
 		} else {
 			echo "<a class=\"backLink\" href=\"/events/archive/\">Back to Archive</a></h2>";
 		}
 		
 	} else {
-		echo "<h2 class=\"eventTitle\">Create Monthly Event</h2>";
-		echo "<p class=\"description\">These events occur on a specific date(s). (ex. Dec 25 at 7 AM, Sundays in April, July 20-25)</p>";
+		echo "<h2 class=\"eventTitle\">Create Lab Programs</h2>";
+		echo "<p class=\"description\">These events occur on a specific date(s) and will only appear on the daily calendar.</p>";
 	}
 ?>
 
 <form id="addEvent" enctype="multipart/form-data" action="/events/manage/php/post_special.php" method="post">
-	<input type="hidden" name="isLab" id="isLab" value="0" />
+	<input type="hidden" name="isLab" id="isLab" value="1" />
 	<?php
 		//We should send the event_id so the posting script knows to do an update instead of an insert
 		if($event_id) {
@@ -100,7 +101,7 @@
 		</thead>
 		<tbody>
 	        <tr>
-	            <td>Event Name: <span class="required">*</span></td>
+	            <td>Lab Name: <span class="required">*</span></td>
 	            <td><input type="text" name="name" id="name" class="inputfield" required value="<?= ($event) ? $event->name : "" ?>" />
 		            <span class="inlineError" id="nameError">Enter an event name</span></td>
 	        </tr>
@@ -235,100 +236,6 @@
 				</td>
 	        </tr>
 	        <tr>
-	            <td>Details Page <br />(Left Column): </td>
-	            <td>
-		            <div data-target="#col1" id="col1-toolbar" class="btn-toolbar">
-				      <div class="btn-group">
-				        <a title="" data-edit="bold" class="btn" data-original-title="Bold"><i class="icon-bold"></i></a>
-				        <a title="" data-edit="italic" class="btn" data-original-title="Italic"><i class="icon-italic"></i></a>
-				        <a title="" data-edit="strikethrough" class="btn" data-original-title="Strikethrough"><i class="icon-strikethrough"></i></a>
-				        <a title="" data-edit="underline" class="btn" data-original-title="Underline"><i class="icon-underline"></i></a>
-				      </div>
-				      <div class="btn-group">
-				        <a title="" data-edit="insertunorderedlist" class="btn" data-original-title="Bullet list"><i class="icon-list-ul"></i></a>
-				        <a title="" data-edit="insertorderedlist" class="btn" data-original-title="Number list"><i class="icon-list-ol"></i></a>
-				        <a title="" data-edit="outdent" class="btn" data-original-title="Reduce indent"><i class="icon-indent-left"></i></a>
-				        <a title="" data-edit="indent" class="btn" data-original-title="Indent"><i class="icon-indent-right"></i></a>
-				      </div>
-				      <div class="btn-group">
-				        <a title="" data-edit="justifyleft" class="btn" data-original-title="Align Left"><i class="icon-align-left"></i></a>
-				        <a title="" data-edit="justifycenter" class="btn" data-original-title="Center"><i class="icon-align-center"></i></a>
-				        <a title="" data-edit="justifyright" class="btn" data-original-title="Align Right"><i class="icon-align-right"></i></a>
-				        <a title="" data-edit="justifyfull" class="btn" data-original-title="Justify"><i class="icon-align-justify"></i></a>
-				      </div>
-				      <div class="btn-group">
-						<a title="" data-toggle="dropdown" class="btn dropdown-toggle" data-original-title="Hyperlink"><i class="icon-link"></i></a>
-					    <div class="dropdown-menu input-append">
-						    <input type="text" data-edit="createLink" placeholder="URL" class="span2" />
-						    <button type="button" class="btn">Add</button>
-						</div>
-				        <a title="" data-edit="unlink" class="btn" data-original-title="Remove Hyperlink"><i class="icon-cut"></i></a>
-				      </div>
-				      <div class="btn-group">
-				        <a id="pictureBtn" title="" class="btn" data-original-title="Insert picture (or just drag &amp; drop)"><i class="icon-picture"></i></a>
-				        <input type="file" data-edit="insertImage" data-target="#pictureBtn" data-role="magic-overlay" style="opacity: 0; position: absolute; top: 0px; left: 0px; width: 39px; height: 30px;">
-				        <a title="" onclick="viewHTML(this, '#col1')" class="btn" data-original-title="View HTML"><i class="icon-code"></i></a>
-				      </div>
-				      <div class="btn-group">
-				        <a title="" data-edit="undo" class="btn" data-original-title="Undo"><i class="icon-undo"></i></a>
-				        <a title="" data-edit="redo" class="btn" data-original-title="Redo"><i class="icon-repeat"></i></a>
-				      </div>
-				    </div>
-					
-					<div id="col1" class="editor full"><?= ($event) ? $event->col1 : "" ?></div>
-					<span class="tiny formHelp" style="margin:0;">Register/Buy button, Event Date (Month XX), Event Time (X:xxam), Cost</span>
-					<textarea id="col1_desc" name="col1_desc" style="display: none;"></textarea>
-					<textarea id="col1_original_description" name="col1_original_description" style="display: none;"><?= ($event) ? $event->col1 : "" ?></textarea>
-				</td>					
-	        </tr>
-	        <tr>
-	            <td>Details Page <br />(Right Column): </td>
-	            <td>
-		            <div data-target="#col2" id="col2-toolbar" class="btn-toolbar">
-				      <div class="btn-group">
-				        <a title="" data-edit="bold" class="btn" data-original-title="Bold"><i class="icon-bold"></i></a>
-				        <a title="" data-edit="italic" class="btn" data-original-title="Italic"><i class="icon-italic"></i></a>
-				        <a title="" data-edit="strikethrough" class="btn" data-original-title="Strikethrough"><i class="icon-strikethrough"></i></a>
-				        <a title="" data-edit="underline" class="btn" data-original-title="Underline"><i class="icon-underline"></i></a>
-				      </div>
-				      <div class="btn-group">
-				        <a title="" data-edit="insertunorderedlist" class="btn" data-original-title="Bullet list"><i class="icon-list-ul"></i></a>
-				        <a title="" data-edit="insertorderedlist" class="btn" data-original-title="Number list"><i class="icon-list-ol"></i></a>
-				        <a title="" data-edit="outdent" class="btn" data-original-title="Reduce indent"><i class="icon-indent-left"></i></a>
-				        <a title="" data-edit="indent" class="btn" data-original-title="Indent"><i class="icon-indent-right"></i></a>
-				      </div>
-				      <div class="btn-group">
-				        <a title="" data-edit="justifyleft" class="btn" data-original-title="Align Left"><i class="icon-align-left"></i></a>
-				        <a title="" data-edit="justifycenter" class="btn" data-original-title="Center"><i class="icon-align-center"></i></a>
-				        <a title="" data-edit="justifyright" class="btn" data-original-title="Align Right"><i class="icon-align-right"></i></a>
-				        <a title="" data-edit="justifyfull" class="btn" data-original-title="Justify"><i class="icon-align-justify"></i></a>
-				      </div>
-				      <div class="btn-group">
-						<a title="" data-toggle="dropdown" class="btn dropdown-toggle" data-original-title="Hyperlink"><i class="icon-link"></i></a>
-					    <div class="dropdown-menu input-append">
-						    <input type="text" data-edit="createLink" placeholder="URL" class="span2" />
-						    <button type="button" class="btn">Add</button>
-						</div>
-				        <a title="" data-edit="unlink" class="btn" data-original-title="Remove Hyperlink"><i class="icon-cut"></i></a>
-				      </div>
-				      <div class="btn-group">
-				        <a id="pictureBtn" title="" class="btn" data-original-title="Insert picture (or just drag &amp; drop)"><i class="icon-picture"></i></a>
-				        <input type="file" data-edit="insertImage" data-target="#pictureBtn" data-role="magic-overlay" style="opacity: 0; position: absolute; top: 0px; left: 0px; width: 39px; height: 30px;">
-				        <a title="" onclick="viewHTML(this, '#col2')" class="btn" data-original-title="View HTML"><i class="icon-code"></i></a>
-				      </div>
-				      <div class="btn-group">
-				        <a title="" data-edit="undo" class="btn" data-original-title="Undo"><i class="icon-undo"></i></a>
-				        <a title="" data-edit="redo" class="btn" data-original-title="Redo"><i class="icon-repeat"></i></a>
-				      </div>
-				    </div>
-					
-					<div id="col2" class="editor full"><?= ($event) ? $event->col2 : "" ?></div>
-					<span class="tiny formHelp" style="margin:0;">Event description, Learn More button</span>
-					<textarea id="col2_desc" name="col2_desc" style="display: none;"></textarea>
-					<textarea id="col2_original_description" name="col2_original_description" style="display: none;"><?= ($event) ? $event->col2 : "" ?></textarea>
-				</td>
-	        </tr>
-	        <tr>
 	        	<td>Registration Type: <span class="required">*</span></td>
 	        	<td>
 	        		<?php
@@ -346,12 +253,7 @@
 	        	<span class="tiny formHelp">RegOnline Link. (Required if "Registration Required" or "Buy Tickets" is selected above.)</span></td>
 	        </tr>
 	        <tr>
-	            <td>Cost/Requirements: </td>
-	            <td><textarea name="custom_1" id="custom_1" class="short"><?= ($event) ? $event->custom_1 : "" ?></textarea>
-	            <span class="tiny formHelp" >Specify cost, age limitations, or other special requirements.</span></td>
-	        </tr>
-	        <tr>
-	            <td>Small Image: </td>
+	            <td>Image: </td>
 	            <td>
 	            	<span class="file-wrapper">
 					  <input type="file" name="thumbnail" id="thumbnail" />
@@ -366,66 +268,7 @@
 							echo "<input type=\"hidden\" name=\"originalImage\" id=\"originalImage\" value=\"" . $event->image . "\" />";
 		            	}
 		            ?>
-		            <span class="tiny formHelp" style="vertical-align:top;margin-top:10px;display:inline-block;">Menu/Default Image (550x300px)</span></td>
-	            </td>
-	        </tr>
-	        <tr>
-	            <td>Large Image: </td>
-	            <td>
-	            	<span class="file-wrapper">
-					  <input type="file" name="bigimage" id="bigimage" />
-					  <input type="hidden" name="removebigimage" id="removebigimage" value="false" />
-					  <span class="button">Choose a <?= ($event && $event->big_image) ? " different " : "" ?> photo</span>
-					</span>
-		            <?php
-		            	if($event && $event->big_image) {
-		            		$path = $upload_dir . $event->big_image;
-		            		echo "<img src=\"" . $path . "\" style='height:auto;width:200px;' id=\"thebigimage\" />";
-		            		echo "<button id=\"clearbigimage\" title=\"Remove image\" class=\"clearicon\">&times;</button>";
-							echo "<input type=\"hidden\" name=\"originalBigImage\" id=\"originalBigImage\" value=\"" . $event->big_image . "\" />";
-		            	}
-		            ?>
-		            <span class="tiny formHelp" style="vertical-align:top;margin-top:10px;display:inline-block;">Details Page Image (550x300px)</span></td>
-	            </td>
-	        </tr>
-	        <tr>
-	            <td>Caption: </td>
-	            <td><textarea name="special_note" id="special_note" class="short"><?= ($event) ? $event->special_note : "" ?></textarea>
-	            <span class="tiny formHelp">This message will be displayed under the image.</span></td>
-	        </tr>
-	        <tr>
-	            <td>Facebook URL: </td>
-	            <td><input type="text" name="fb_link" id="fb_link" placeholder="http://" class="inputfield" value="<?= ($event) ? $event->fb_link : "" ?>" /></td>
-	        </tr>
-	        <tr>
-	            <td>Default Tweet: </td>
-	            <?php $tweet = ($event && $event->tweet) ? $event->tweet : $DEFAULT_TWEET; ?>
-	            <td><input type="text" name="tweet" id="tweet" class="inputfield" onKeyUp="tweetCharacterCount()" value="<?= $tweet ?>" />
-	            <span id="characterCount"><?= 117 - strlen($tweet) ?></span>
-	            <span class="tiny formHelp">A link to this event will be automatically appended to this tweet.</span></td>
-	        </tr>
-	        <tr>
-	            <td>Event URL: </td>
-	            <td><input type="text" name="url" id="url" class="inputfield" placeholder="http://" value="<?= ($event) ? $event->url : "" ?>" />
-	            <span class="tiny formHelp">MLS Landing Page URL (Overrides default event landing page)</span></td>
-	        </tr>
-	        <tr>
-	            <td>Attachments: </td>
-	            <td class="attachments">
-	            	<div class="file-wrapper"><input type="file" name="attachments[]" /><span class="button">Attach File 1</span></div>
-	            	<div class="file-wrapper"><input type="file" name="attachments[]" /><span class="button">Attach File 2</span></div>	
-	            	<?php
-	            		//List existing attachments
-	            		if($event && $event->attachments) {
-	            			echo "<h4>Existing attachments:</h4>";
-		            		foreach($event->attachments as $i=>$attachment) {
-		            			$path = $MANAGE_ENDPOINT . $upload_dir . $attachment->filename;
-			            		echo "<div class=\"attachment\" id=\"attachment_" . $attachment->id  . "\"><a href=\"" . $path . "\">" . $path . "</a>
-			            			<span class=\"delAttachmentBtn clearicon\" title=\"Delete Attachment\" data-attachment=\"" . $attachment->id . "\">x</span>
-			            		</div>";
-		            		}
-	            		}
-	            	?>
+		            <span class="tiny formHelp" style="vertical-align:top;margin-top:10px;display:inline-block;">(550 x 300px)</span></td>
 	            </td>
 	        </tr>
 	        <tr>
@@ -440,7 +283,7 @@
 							}
 						}
 					?>
-		            <input type="button" onclick="validate()" class="btn" value="<?= ($event) ? "Save" : "Create Event" ?>" />
+		            <input type="button" onclick="validate()" class="btn" value="<?= ($event) ? "Save" : "Create Lab" ?>" />
 					<span class="tiny">or</span> <a class="tiny" href="#" onclick="cancel();">Cancel</a>
 				</td>
 			</tr>
@@ -706,7 +549,7 @@
 	});
 	
 	function cancel() {
-		window.location.href = "/events/special/";
+		window.location.href = "/events/labs/";
 	}
 
 	function tweetCharacterCount() {
@@ -786,7 +629,7 @@
 			  			if(isArchived) {
 				  			window.location.href = "/events/archive/";
 			  			} else {
-				  			window.location.href = "/events/special/";	
+				  			window.location.href = "/events/labs/";	
 			  			}
 				  		
 			  		} else {
@@ -820,7 +663,7 @@
 				data: { event_type : "special", event_id : event_id },
 				success: function(response){
 			  		if(response.trim() === "OK") {
-				  		window.location.href = "/events/special";
+				  		window.location.href = "/events/labs";
 			  		} else {
 				  		$("#errordiv").show();
 			  		}

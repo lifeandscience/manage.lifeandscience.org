@@ -109,6 +109,7 @@
 									"url" => $_POST['url'],
 									"display_date" => $_POST['display_date'],
 									"custom_1" => $_POST['custom_1'],
+									"isLab" => $_POST['isLab'],
 									"added" => date("Y-m-d H:i:s"),
 									"group_id" => $group_id,
 									"tags" => $tags,
@@ -192,6 +193,7 @@
 									"special_note" => $_POST['special_note'],
 									"all_day" => $all_day,
 									"url" => $_POST['url'],
+									"isLab" => $_POST['isLab'],
 									"display_date" => $_POST['display_date'],
 									"tags" => $tags,
 									"col1" => $_POST['col1_desc'],
@@ -301,11 +303,12 @@
 
 	} //end validation block
 	
+	$endpoint = $_POST["isLab"] === "1" ? "labs" : "special";
 	if($success === 1) {	
-		echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/special/edit/{$event_id}/?success=true';</script>";
+		echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/{$endpoint}/edit/{$event_id}/?success=true';</script>";
 	} else {
 		//An error occurred while adding the row. Could be validation related, but the client-side validation should have caught it.
-		echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/special/add/?error';</script>";
+		echo "<SCRIPT LANGUAGE='JavaScript'>window.location='/events/{$endpoint}/add/?error';</script>";
 	}	
 ?>
 

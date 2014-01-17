@@ -28,8 +28,14 @@
 					$displayTime .= " - " . date("g:i A", strtotime($end_time));
 				}
 			}	
-	
-			$edit_link = $isWeekly ? "weekly" : "special";
+			
+			if($isWeekly) {
+				$edit_link = "weekly";	
+			} else if($event->isLab === "1") {
+				$edit_link = "labs";
+			} else {
+				$edit_link = "special";
+			}
 			
 			$html .= "
 			
@@ -52,6 +58,7 @@
 <div class="eventActions" style="float:right">
 	<h3>Create Events</h3>
 	<div><a href="/events/weekly/add">Create Daily Event</a></div>
+	<div><a href="/events/labs/add">Create Lab Programs</a></div>
 	<div><a href="/events/special/add">Create Monthly Event</a></div>
 </div>
 

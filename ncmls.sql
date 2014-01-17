@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 05, 2013 at 11:37 PM
+-- Generation Time: Jan 17, 2014 at 01:17 AM
 -- Server version: 5.1.49
 -- PHP Version: 5.3.3-7+squeeze1
 
@@ -18,6 +18,21 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 --
 -- Database: `manage`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `attachments`
+--
+
+CREATE TABLE IF NOT EXISTS `attachments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `filename` varchar(500) NOT NULL,
+  `event_id` int(11) NOT NULL,
+  `added` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `event_id` (`event_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
 
 -- --------------------------------------------------------
 
@@ -43,6 +58,7 @@ CREATE TABLE IF NOT EXISTS `events_special` (
   `special_note` text NOT NULL,
   `custom_1` text NOT NULL,
   `active` tinyint(1) NOT NULL DEFAULT '1',
+  `isLab` int(1) NOT NULL DEFAULT '0',
   `added` datetime NOT NULL,
   `group_id` int(11) NOT NULL,
   `url` text NOT NULL,
@@ -56,8 +72,9 @@ CREATE TABLE IF NOT EXISTS `events_special` (
   KEY `date` (`date`),
   KEY `active` (`active`),
   KEY `end_date` (`end_date`),
-  KEY `tags` (`tags`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=189 ;
+  KEY `tags` (`tags`),
+  KEY `isLab` (`isLab`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=309 ;
 
 -- --------------------------------------------------------
 
@@ -87,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `events_weekly` (
   PRIMARY KEY (`id`),
   KEY `active` (`active`),
   KEY `mon` (`mon`,`tue`,`wed`,`thu`,`fri`,`sat`,`sun`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=56 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=57 ;
 
 -- --------------------------------------------------------
 
@@ -105,7 +122,6 @@ CREATE TABLE IF NOT EXISTS `settings` (
   UNIQUE KEY `property_2` (`property`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
 -- --------------------------------------------------------
 
 --
@@ -115,9 +131,9 @@ CREATE TABLE IF NOT EXISTS `settings` (
 CREATE TABLE IF NOT EXISTS `special_notes` (
   `date` date NOT NULL,
   `notes` text NOT NULL,
+  `dailyEventsDisabled` int(1) NOT NULL DEFAULT '0',
   UNIQUE KEY `date` (`date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
 
 -- --------------------------------------------------------
 

@@ -40,12 +40,13 @@
 	<div class="wrapper">
 	
 		<header>
-			<h2 class="site_title"><a href="/events/manage">NCMLS Event Management</a></h2>
+			<h2 class="site_title"><a href="/events/manage">Event Management</a></h2>
 			<nav>
 				<ul class="topnav"> 
 					<li><a href="/events/manage"<?php if(!$page) echo " class='selected' "; ?>>Home</a></li>				
 					<li><a href="/events/weekly"<?php if(strpos($page,"weekly") !== FALSE) echo " class='selected' "; ?>>Daily Events</a></li>
 					<li><a href="/events/special"<?php if(strpos($page,"special") !== FALSE) echo " class='selected' "; ?>>Monthly Events</a></li>
+					<li><a href="/events/labs"<?php if(strpos($page,"labs") !== FALSE) echo " class='selected' "; ?>>Labs</a></li>
 					<li><a href="/events/notes"<?php if(strpos($page,"notes") !== FALSE) echo " class='selected' "; ?>>Exceptions</a></li>
 					<li><a href="/events/archive"<?php if(strpos($page,"archive") !== FALSE) echo " class='selected' "; ?>>Archive</a></li>
 		        </ul>
