@@ -264,8 +264,8 @@
 				        <a title="" data-edit="unlink" class="btn" data-original-title="Remove Hyperlink"><i class="icon-cut"></i></a>
 				      </div>
 				      <div class="btn-group">
-				        <a id="pictureBtn" title="" class="btn" data-original-title="Insert picture (or just drag &amp; drop)"><i class="icon-picture"></i></a>
-				        <input type="file" data-edit="insertImage" data-target="#pictureBtn" data-role="magic-overlay" style="opacity: 0; position: absolute; top: 0px; left: 0px; width: 39px; height: 30px;">
+				        <a id="pictureBtn2" title="" class="btn" data-original-title="Insert picture (or just drag &amp; drop)"><i class="icon-picture"></i></a>
+				        <input type="file" data-edit="insertImage" data-target="#pictureBtn2" data-role="magic-overlay" style="opacity: 0; position: absolute; top: 0px; left: 0px; width: 39px; height: 30px;">
 				        <a title="" onclick="viewHTML(this, '#col1')" class="btn" data-original-title="View HTML"><i class="icon-code"></i></a>
 				      </div>
 				      <div class="btn-group">
@@ -311,8 +311,8 @@
 				        <a title="" data-edit="unlink" class="btn" data-original-title="Remove Hyperlink"><i class="icon-cut"></i></a>
 				      </div>
 				      <div class="btn-group">
-				        <a id="pictureBtn" title="" class="btn" data-original-title="Insert picture (or just drag &amp; drop)"><i class="icon-picture"></i></a>
-				        <input type="file" data-edit="insertImage" data-target="#pictureBtn" data-role="magic-overlay" style="opacity: 0; position: absolute; top: 0px; left: 0px; width: 39px; height: 30px;">
+				        <a id="pictureBtn3" title="" class="btn" data-original-title="Insert picture (or just drag &amp; drop)"><i class="icon-picture"></i></a>
+				        <input type="file" data-edit="insertImage" data-target="#pictureBtn3" data-role="magic-overlay" style="opacity: 0; position: absolute; top: 0px; left: 0px; width: 39px; height: 30px;">
 				        <a title="" onclick="viewHTML(this, '#col2')" class="btn" data-original-title="View HTML"><i class="icon-code"></i></a>
 				      </div>
 				      <div class="btn-group">
