@@ -473,14 +473,17 @@
 	};
 	$('#editor').wysiwyg({
 	  toolbarSelector: "#editor-toolbar",
+	  uploadScript: '/events/manage/php/upload_photo.php',
 	  hotKeys: _hotKeys
 	});
 	$('#col1').wysiwyg({
 	  toolbarSelector: "#col1-toolbar",
+	  uploadScript: '/events/manage/php/upload_photo.php',
 	  hotKeys: _hotKeys
 	});
 	$('#col2').wysiwyg({
 	  toolbarSelector: "#col2-toolbar",
+	  uploadScript: '/events/manage/php/upload_photo.php',
 	  hotKeys: _hotKeys
 	});
 	

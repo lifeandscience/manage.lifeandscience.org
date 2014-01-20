@@ -1,19 +1,53 @@
 /* http://github.com/mindmup/bootstrap-wysiwyg */
 /*global jQuery, $, FileReader*/
 /*jslint browser:true*/
+/* UPDATED 1/20/2014 - Added support for uploading files to the server rather than inline with base64. Adopted pull request: #117 */
 (function ($) {
 	'use strict';
 	var readFileIntoDataUrl = function (fileInfo) {
 		var loader = $.Deferred(),
 			fReader = new FileReader();
 		fReader.onload = function (e) {
-			loader.resolve(e.target.result);
+			loader.resolve({url: e.target.result});
 		};
 		fReader.onerror = loader.reject;
 		fReader.onprogress = loader.notify;
 		fReader.readAsDataURL(fileInfo);
 		return loader.promise();
 	};
+	
+	var uploadFileToServer = function (fileInfo, script, options) {
+        var loader = $.Deferred();
+		var fReader = new FileReader();
+        fReader.onload = function (e) {
+                var blob = new Blob([e.target.result], {type: "application/octet-stream"});
+                var data = new FormData();
+                data.append("image", blob);
+                data.append("filename", fileInfo.name);
+                if(options) {
+		        	$.each(options, function(name, value) {
+	                	data.append(name, value)
+	                });        
+                }
+                $.ajax({
+                    url: script,
+                    type: "POST",
+                    data: data,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).done(function(data) {
+                    loader.resolve(JSON.parse(data));
+                }).fail(function(xhr, error) {
+                    loader.reject({xhr: xhr, error: error});
+                });
+        };
+        fReader.onerror = loader.reject;
+        fReader.onprogress = loader.notify;
+        fReader.readAsArrayBuffer(fileInfo);
+        return loader.promise();
+    };
+        
 	$.fn.cleanHtml = function () {
 		var html = $(this).html();
 		return html && html.replace(/(<br>|\s|<div><br><\/div>|&nbsp;)*$/, '');
@@ -194,12 +228,13 @@
 					selection.addRange(selectedRange);
 				}
 			},
-			insertFiles = function (files) {
+			insertFiles = function (files, uploadScript, uploadOptions) {
+				var uploadFunction = uploadScript ? uploadFileToServer : readFileIntoDataUrl;
 				editor.focus();
 				$.each(files, function (idx, fileInfo) {
 					if (/^image\//.test(fileInfo.type)) {
-						$.when(readFileIntoDataUrl(fileInfo)).done(function (dataUrl) {
-							execCommand('insertimage', dataUrl);
+						$.when(uploadFunction(fileInfo, uploadScript, uploadOptions)).done(function (data) {
+							execCommand('insertimage', data.url);
 						}).fail(function (e) {
 								options.fileUploadError("file-reader", e);
 							});
@@ -251,20 +286,20 @@
 				toolbar.find('input[type=file][data-' + options.commandRole + ']').on(namespaceEvents('change'), (function () {
 					restoreSelection();
 					if (this.type === 'file' && this.files && this.files.length > 0) {
-						insertFiles(this.files);
+						insertFiles(this.files, options.uploadScript, options.uploadOptions);
 					}
 					saveSelection();
 					this.value = '';
 				}));
 			},
-			initFileDrops = function () {
+			initFileDrops = function (options) {
 				editor.on(namespaceEvents('dragenter dragover'), false)
 					.on(namespaceEvents('drop'), function (e) {
 						var dataTransfer = e.originalEvent.dataTransfer;
 						e.stopPropagation();
 						e.preventDefault();
 						if (dataTransfer && dataTransfer.files && dataTransfer.files.length > 0) {
-							insertFiles(dataTransfer.files);
+							insertFiles(dataTransfer.files, options.uploadScript, options.uploadOptions);
 						}
 					});
 			};
@@ -272,7 +307,7 @@
 		toolbarBtnSelector = 'a[data-' + options.commandRole + '],button[data-' + options.commandRole + '],input[type=button][data-' + options.commandRole + ']';
 		bindHotkeys(options.hotKeys);
 		if (options.dragAndDropImages) {
-			initFileDrops();
+			initFileDrops(options);
 		}
 		bindToolbar($(options.toolbarSelector), options);
 		editor.attr('contenteditable', true)
@@ -319,6 +354,7 @@
 		dragAndDropImages: true,
 		eventNamespace: 'bootstrap-wysiwyg',
 		hotKeyEnabledCallback: function(command) { return true; },
-		fileUploadError: function (reason, detail) { console.log("File upload error", reason, detail); }
+		fileUploadError: function (reason, detail) { console.log("File upload error", reason, detail); },
+		uploadScript: ''
 	};
 }(window.jQuery));

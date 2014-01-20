@@ -316,14 +316,7 @@
 	};
 	$('#editor').wysiwyg({
 	  toolbarSelector: "#editor-toolbar",
-	  hotKeys: _hotKeys
-	});
-	$('#col1').wysiwyg({
-	  toolbarSelector: "#col1-toolbar",
-	  hotKeys: _hotKeys
-	});
-	$('#col2').wysiwyg({
-	  toolbarSelector: "#col2-toolbar",
+	  uploadScript: '/events/manage/php/upload_photo.php',
 	  hotKeys: _hotKeys
 	});
 	
@@ -397,10 +390,7 @@
 	
 	function submitForm() {
 		//Copy editor content into textarea before submitting.
-		copyHtmlContent('#editor', '#description');
-		copyHtmlContent('#col1', '#col1_desc');
-		copyHtmlContent('#col2', '#col2_desc');
-				
+		copyHtmlContent('#editor', '#description');			
 		$('#addEvent').submit();
 	}
 	

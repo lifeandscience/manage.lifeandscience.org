@@ -94,7 +94,8 @@
 	    'ctrl+u meta+u': 'underline',
 	    'ctrl+z meta+z': 'undo',
 	    'ctrl+y meta+y meta+shift+z': 'redo'
-	  }
+	  },
+	  uploadScript: '/events/manage/php/upload_photo.php'
 	});
 	
 	var datepicker = $.fn.datepicker.noConflict(); // return $.fn.datepicker to previously assigned value
