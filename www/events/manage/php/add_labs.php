@@ -41,11 +41,6 @@
 	}
 	$isDateRange = ($event && $event->end_date);
 	
-	//Get the list of all tags
-	require_once($_SERVER['DOCUMENT_ROOT'] . "/events/api/1/events/getTags.php");
-	$tags = getTags();
-	
-	$REGISTRATION_CODES = array("Free with admission", "Fee applies", "Registration Required", "Buy Tickets", "Sold Out"); //use index as 'code'
 	$DEFAULT_TWEET = "Check out this cool event happening @lifeandscience: ";
 	
 ?>
@@ -85,6 +80,7 @@
 
 <form id="addEvent" enctype="multipart/form-data" action="/events/manage/php/post_special.php" method="post">
 	<input type="hidden" name="isLab" id="isLab" value="1" />
+	<input type="hidden" name="registration_radio" value="0" /> <!-- Labs are always 'Free with Admission' -->
 	<?php
 		//We should send the event_id so the posting script knows to do an update instead of an insert
 		if($event_id) {
@@ -122,11 +118,6 @@
 			            <?php if(!$event) echo "<span class=\"tiny formHelp\">You can select multiple dates.</span>"; ?><span class="inlineError" id="dateError">Select a date</span>
 		            </div>
 	           </td>
-	        </tr>
-	        <tr>
-	            <td>Custom Date Text: </td>
-	            <td><input type="text" name="display_date" id="display_date" class="inputfield" value="<?= ($event) ? $event->display_date : "" ?>" />
-	            <span class="tiny formHelp">Optional. Use this to override the default date description. (e.g. Mondays in May)</span></td>
 	        </tr>
 			<tr>
 	            <td>Start Time: <span class="required">*</span></td>
@@ -168,25 +159,6 @@
 			        </div>
 			        <span class="inlineError" id="sundayEndError">Sunday End time must be later than Sunday Start time.</span>
 	            </td>
-	        </tr>
-	        <tr>
-	        	<td>Tag(s):</td>
-	        	<td>
-	        		<?php
-	        			if($event) {
-		        			$existing_tags = explode(",", $event->tags);
-	        			}
-	        			foreach($tags as $tag) {
-							$tagId = $tag->id;
-							$selected = "";
-							if($existing_tags && in_array($tagId, $existing_tags)) {
-								$selected = "checked";
-							}
-		        			echo "<label class=\"checkbox inline\"><input type=\"checkbox\" name=\"tags[]\" id=\"tag_" . $tagId . "\" value=\"" . $tagId . "\" " . $selected. " /> " . $tag->tag . "</label>";		
-	        			}
-	        		?>
-		        	<span class="inlineError" id="dayError">Select a tag</div>
-	        	</td>
 	        </tr>
 	        <tr>
 	            <td>Summary: </td>
@@ -234,23 +206,6 @@
 					<textarea id="description" name="description" style="display: none;"></textarea>
 					<textarea id="original_description" name="original_description" style="display: none;"><?= ($event) ? $event->description : "" ?></textarea>
 				</td>
-	        </tr>
-	        <tr>
-	        	<td>Registration Type: <span class="required">*</span></td>
-	        	<td>
-	        		<?php
-	        			foreach($REGISTRATION_CODES as $code => $label) {
-		        			$checked = ($event && $event->registration_code == $code) ? "checked" : "";
-		        			echo "<label class=\"radio\"><input type=\"radio\" name=\"registration_radio\" value=\"" . $code . "\"" . $checked . " >" . $label . "</label>";
-	        			}
-	        		?>
-	        		<span class="inlineError" id="registrationError">You must select a registration type.</span>
-	        	</td>
-	        </tr>
-	        <tr>
-	        	<td>Registration URL: </td>
-	        	<td><input type="text" name="registration_url" id="registration_url" class="inputfield" placeholder="http://" value="<?= ($event) ? $event->registration_url : "" ?>" />
-	        	<span class="tiny formHelp">RegOnline Link. (Required if "Registration Required" or "Buy Tickets" is selected above.)</span></td>
 	        </tr>
 	        <tr>
 	            <td>Image: </td>
@@ -414,13 +369,6 @@
 		var sun_start_time = $('#sun_start_time').val();
 		var sun_end_time = $('#sun_end_time').val();
 		var all_day = $('#all_day').is(':checked');
-		var registration_radio = $('input:radio[name=registration_radio]:checked').length;
-		
-		if(!registration_radio) {
-			$('#registrationError').show();
-		} else {
-			$('#registrationError').hide();
-		}
 		
 		var date_format = $('input:radio[name=dates_radio]:checked').val();
 		var areDatesValid = false;
@@ -463,7 +411,7 @@
 			
 		$('#nameError').toggle(name == "");
 		
-		if( !areDatesValid || !name || (!start_time && !all_day) || !isEndValid || !isSundayEndValid || !registration_radio) {
+		if( !areDatesValid || !name || (!start_time && !all_day) || !isEndValid || !isSundayEndValid ) {
 			$("#validationdiv").show();
 		}
 		else {
