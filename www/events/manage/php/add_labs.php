@@ -208,7 +208,7 @@
 				</td>
 	        </tr>
 	        <tr>
-	            <td>Image: </td>
+	            <td>Custom Image: </td>
 	            <td>
 	            	<span class="file-wrapper">
 					  <input type="file" name="thumbnail" id="thumbnail" />
@@ -223,7 +223,8 @@
 							echo "<input type=\"hidden\" name=\"originalImage\" id=\"originalImage\" value=\"" . $event->image . "\" />";
 		            	}
 		            ?>
-		            <span class="tiny formHelp" style="vertical-align:top;margin-top:10px;display:inline-block;">(550 x 300px)</span></td>
+		            <span class="tiny formHelp" style="vertical-align:top;margin-top:10px;display:inline-block;">(550 x 300px) - 
+		            If no image is uploaded, the <a class="default-img" style="cursor:pointer;">default image</a> will be used.</span></td>
 	            </td>
 	        </tr>
 	        <tr>
@@ -307,6 +308,13 @@
 		$('#date-range-picker').show();
 		$('#normal-date-picker').hide();
 		$('#dateTypeError').hide();
+	});
+	
+	$('.default-img').popover({
+		trigger: "hover",
+		html: true,
+		placement: "top",
+		content: "<img src='../uploads/default-labs.jpg' />"
 	});
 	
 	//Create a custom button for toggling HTML view on/off
