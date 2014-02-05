@@ -20,7 +20,7 @@
 		}
 	}
 	
-	$REGISTRATION_CODES = array("Free with admission", "Fee applies", "Registration Required", "Buy Tickets", "Sold Out"); //use index as 'code'
+	$REGISTRATION_CODES = array("Free with admission", "Fee applies", "Register", "Buy Tickets", "Sold Out"); //use index as 'code'
 
 ?>
 
@@ -179,7 +179,7 @@
 	        <tr>
 	        	<td>Registration URL: </td>
 	        	<td><input type="text" name="registration_url" id="registration_url" class="inputfield" placeholder="http://" value="<?= ($event) ? $event->registration_url : "" ?>" />
-	        	<span class="tiny formHelp">RegOnline Link. (Required if "Registration Required" or "Buy Tickets" is selected.)</span></td>
+	        	<span class="tiny formHelp">RegOnline Link. (Required if "Register" or "Buy Tickets" is selected.)</span></td>
 	        </tr>
 	        <tr>
 	            <td>Image: </td>
