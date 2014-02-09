@@ -407,6 +407,10 @@ p.description {
 	display: block;
 }
 
+.attachment_area {
+	padding: 30px;
+}
+
 .attachment a {
 	font-size: 10pt;
 }

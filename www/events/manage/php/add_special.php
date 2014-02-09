@@ -418,12 +418,14 @@
 	            		//List existing attachments
 	            		if($event && $event->attachments) {
 	            			echo "<h4>Existing attachments:</h4>";
+	            			echo "<div class=\"attachment_area\">";
 		            		foreach($event->attachments as $i=>$attachment) {
 		            			$path = $MANAGE_ENDPOINT . $upload_dir . $attachment->filename;
 			            		echo "<div class=\"attachment\" id=\"attachment_" . $attachment->id  . "\"><a href=\"" . $path . "\">" . $path . "</a>
 			            			<span class=\"delAttachmentBtn clearicon\" title=\"Delete Attachment\" data-attachment=\"" . $attachment->id . "\">x</span>
 			            		</div>";
 		            		}
+		            		echo "</div>";
 	            		}
 	            	?>
 	            </td>
